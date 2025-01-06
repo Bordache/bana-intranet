@@ -9,7 +9,25 @@ class MilitaryCampaign extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['profile_id', 'title', 'campaign_period', 'campaign_locations'];
+    /**
+     * Nom de la table associée au modèle.
+     *
+     * @var string
+     */
+    protected $table = 'military_campaigns';
+
+    /**
+     * Champs remplissables (Mass Assignment).
+     *
+     * @var array
+     */
+
+    protected $fillable = [
+        'profile_id',
+        'campaign_title',
+        'campaign_period',
+        'campaign_locations',
+    ];
 
     public function profile()
     {

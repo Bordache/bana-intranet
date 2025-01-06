@@ -9,6 +9,19 @@ class SpouseDetail extends Model
 {
     use HasFactory;
 
+     /**
+     * Nom de la table associée au modèle.
+     *
+     * @var string
+     */
+    protected $table = 'spouse_details';
+
+    /**
+     * Champs remplissables (Mass Assignment).
+     *
+     * @var array
+     */
+
     protected $fillable = [
         'profile_id',
         'spouse_name',

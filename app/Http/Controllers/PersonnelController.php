@@ -7,8 +7,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\PasswordInit;
+
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +16,21 @@ use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use App\Services\UsernameGeneratorService;
 use App\Services\PasswordGeneratorService;
+
+use App\Models\User;
+use App\Models\PasswordInit;
 use App\Models\Profile;
 use App\Models\Rank;
 use App\Models\Unit;
+use App\Models\AcademicPath;
+use App\Models\ChildrenDetail;
+use App\Models\HonoraryDistinction;
+use App\Models\MilitaryCampaign;
+use App\Models\MilitaryDetail;
+use App\Models\MilitaryPath;
+use App\Models\ProfessionalCareer;
+use App\Models\RankHistory;
+use App\Models\SpouseDetail;
 
 
 class PersonnelController extends Controller
@@ -75,12 +86,12 @@ class PersonnelController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-/*     public function store(Request $request)
+    public function store(Request $request)
     {
         $this->authorize("create {$this->entity}");
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|regex:/^[A-ZÀ-ÖØ-öø-ÿa-z\s\'\-]+$/u',
             'firstname' => 'nullable|string|max:255',
             'gender' => 'nullable|string|max:255',
             'birth_date' => 'nullable|date',
@@ -91,10 +102,10 @@ class PersonnelController extends Controller
             'duplicate_date' => 'nullable|date',
             'duplicate_place' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:15|regex:/^\+?\d{9,15}$/', // Validation pour téléphone international
+            'phone' => 'nullable|string|max:15|regex:/^\+?\d{9,15}$/',
             'email' => 'nullable|email|max:255',
             'blood_group' => 'nullable|string|max:10',
-            'size' => 'nullable|integer|min:1', // Taille doit être un entier positif
+            'size' => 'nullable|integer|min:1',
             'father_name' => 'nullable|string|max:255',
             'mother_name' => 'nullable|string|max:255',
             'marital_status' => 'nullable|string|max:255',
@@ -131,14 +142,8 @@ class PersonnelController extends Controller
         // Création de l'événement Registered pour envoyer un email de bienvenue, etc.
         event(new Registered($user));
 
-    } */
-
-    public function store(Request $request){
-        $request->validate([
-            'name' => 'required|string|max:255|regex:/^[A-ZÀ-ÖØ-öø-ÿa-z\s\'\-]+$/u',
-        ]);
-        return redirect()->back()->with('success', 'Validation réussie');
     }
+
     /**
      * Display the specified resource.
      */

@@ -9,8 +9,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="school_name" name="school_name[]" type="text" placeholder="Entrer nom de l'établissement fréquenté" class="{{ $errors->has('school_name.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('school_name.*')" />
+            <x-text-input id="school_name" name="school_name[]" type="text" placeholder="Entrer nom de l'établissement fréquenté" class="{{ $errors->has('school_name[]') ? 'is-invalid' : '' }}" :value="old('school_name[]')" />
+            <x-input-error class="mt-2" :messages="$errors->get('school_name[]')" />
         </div>
 
         <!-- Duration -->
@@ -22,8 +22,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="duration" name="duration[]" type="text" placeholder="Entrer période" class="{{ $errors->has('duration.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('duration.*')" />
+            <x-text-input id="duration" name="duration[]" type="text" placeholder="Entrer période" class="{{ $errors->has('duration[]') ? 'is-invalid' : '' }}" :value="old('duration[]')" />
+            <x-input-error class="mt-2" :messages="$errors->get('duration[]')" />
         </div>
 
         <!-- Diploma -->
@@ -34,8 +34,8 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Sanctions d'études" role="img" aria-label="Sanctions d'études"></i>
         </div>
         <div class="col-md-7">
-            <x-textarea-input id="diploma" name="diploma[]" rows="3" class="{{ $errors->has('diploma.*') ? 'is-invalid' : '' }}" placeholder="Entrer diplômes, certificats ou attestations obtenus">{{ old('diploma') }}</x-textarea-input>
-            <x-input-error class="mt-2" :messages="$errors->get('diploma.*')" />
+            <x-textarea-input id="diploma" name="diploma[]" rows="3" class="{{ $errors->has('diploma[]') ? 'is-invalid' : '' }}" placeholder="Entrer diplômes, certificats ou attestations obtenus">{{ old('diploma[]') }}</x-textarea-input>
+            <x-input-error class="mt-2" :messages="$errors->get('diploma[]')" />
         </div>
 
         <!-- Remove button -->
@@ -75,11 +75,17 @@
         const clone = template.cloneNode(true);
 
         const timestamp = Date.now();
-        clone.querySelectorAll('[id]').forEach(input => {
-            const newId = `${input.id}_${timestamp}`;
-            clone.querySelector(`label[for="${input.id}"]`)?.setAttribute('for', newId);
-            input.id = newId;
-            input.value = '';
+        clone.querySelectorAll('[id]').forEach(element => {
+            const newId = `${element.id}_${timestamp}`;
+            clone.querySelector(`label[for="${element.id}"]`)?.setAttribute('for', newId);
+            element.id = newId;
+
+            // Réinitialiser les valeurs des champs
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.value = '';
+            } else if (element.tagName === 'SELECT') {
+                element.selectedIndex = 0;
+            }
         });
 
         const removeBtn = clone.querySelector('.remove-academic-btn');
@@ -97,7 +103,13 @@
 
         if (allPaths.length === 1) {
             // Si c'est la dernière section, on la réinitialise et on la masque
-            childPath.querySelectorAll('input, select').forEach(input => (input.value = ''));
+            childPath.querySelectorAll('input, textarea, select').forEach(element => {
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    element.value = '';
+                } else if (element.tagName === 'SELECT') {
+                    element.selectedIndex = 0;
+                }
+            });
             academicContainer.style.display = 'none';
             addFirstacademicBtn.style.display = 'inline-block';
             addacademicBtn.style.display = 'none';
@@ -107,3 +119,4 @@
         }
     }
 </script>
+

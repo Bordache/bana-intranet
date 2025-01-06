@@ -55,13 +55,7 @@ class MilitaryDetail extends Model
      *
      * @var array
      */
-    protected $casts = [
-        'position_date' => 'date',
-        'service_entry_date' => 'date',
-        'rank_date' => 'date',
-        'interruption_start_date' => 'date',
-        'interruption_end_date' => 'date',
-    ];
+
 
     /**
      * Relation : Un profil a un utilisateur associé.

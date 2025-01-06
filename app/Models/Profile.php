@@ -50,12 +50,7 @@ class Profile extends Model
      *
      * @var array
      */
-    protected $casts = [
-        'birth_date' => 'date',
-        'issue_date' => 'date',
-        'duplicate_date' => 'date',
-        'size' => 'integer',
-    ];
+
 
     /**
      * Relation : Un profil a un utilisateur associé.

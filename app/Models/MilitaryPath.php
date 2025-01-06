@@ -10,6 +10,20 @@ class MilitaryPath extends Model
     /** @use HasFactory<\Database\Factories\MilitaryPathFactory> */
     use HasFactory;
 
+
+    /**
+     * Nom de la table associée au modèle.
+     *
+     * @var string
+     */
+    protected $table = 'military_paths';
+
+    /**
+     * Champs remplissables (Mass Assignment).
+     *
+     * @var array
+     */
+
     protected $fillable = [
         'profile_id',
         'academy_name',

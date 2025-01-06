@@ -9,8 +9,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="company_name" name="company_name[]" type="text" placeholder="Entrer lieu d'emploi" class="{{ $errors->has('company_name.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('company_name.*')" />
+            <x-text-input id="company_name" name="company_name[]" type="text" placeholder="Entrer lieu d'emploi" class="{{ $errors->has('company_name[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('company_name[]')" />
         </div>
 
         <!-- Job title -->
@@ -22,8 +22,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="job_title" name="job_title[]" type="text" placeholder="Entrer fonction ou emploi" class="{{ $errors->has('job_title.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('job_title.*')" />
+            <x-text-input id="job_title" name="job_title[]" type="text" placeholder="Entrer fonction ou emploi" class="{{ $errors->has('job_title[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('job_title[]')" />
         </div>
 
         <!-- Start date -->
@@ -35,8 +35,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="start_date" name="start_date[]" type="date" class="{{ $errors->has('start_date.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('start_date.*')" />
+            <x-text-input id="start_date" name="start_date[]" type="date" class="{{ $errors->has('start_date[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('start_date[]')" />
         </div>
 
         <!-- End date -->
@@ -47,8 +47,8 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de fin d'affectation" role="img" aria-label="Date de fin d'affectation"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="end_date" name="end_date[]" type="date" class="{{ $errors->has('end_date.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('end_date.*')" />
+            <x-text-input id="end_date" name="end_date[]" type="date" class="{{ $errors->has('end_date[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('end_date[]')" />
         </div>
 
         <!-- Description -->
@@ -59,8 +59,8 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Décision ou décret" role="img" aria-label="Décision ou décret"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="description" name="description[]" type="text" placeholder="Entrer décision ou décret" class="{{ $errors->has('description.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('description.*')" />
+            <x-text-input id="description" name="description[]" type="text" placeholder="Entrer décision ou décret" class="{{ $errors->has('description[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('description[]')" />
         </div>
 
         <!-- Remove button -->

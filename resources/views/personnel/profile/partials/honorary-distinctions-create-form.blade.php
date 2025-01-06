@@ -9,8 +9,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="honorary_title" name="honorary_title[]" type="text" placeholder="Entrer intitulé distinction" class="{{ $errors->has('honorary_title.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('honorary_title.*')" />
+            <x-text-input id="honorary_title" name="honorary_title[]" type="text" placeholder="Entrer intitulé distinction" class="{{ $errors->has('honorary_title[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('honorary_title[]')" />
         </div>
 
         <!-- Promotion -->
@@ -22,8 +22,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="honorary_promotion" name="honorary_promotion[]" type="text" placeholder="Entrer promotion" class="{{ $errors->has('honorary_promotion.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('honorary_promotion.*')" />
+            <x-text-input id="honorary_promotion" name="honorary_promotion[]" type="text" placeholder="Entrer promotion" class="{{ $errors->has('honorary_promotion[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('honorary_promotion[]')" />
         </div>
 
         <!-- Description -->
@@ -34,8 +34,8 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Référence" role="img" aria-label="Référence"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="honorary_reference" name="honorary_reference[]" type="text" placeholder="Entrer référence" class="{{ $errors->has('honorary_reference.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('honorary_reference.*')" />
+            <x-text-input id="honorary_reference" name="honorary_reference[]" type="text" placeholder="Entrer référence" class="{{ $errors->has('honorary_reference[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('honorary_reference[]')" />
         </div>
 
         <!-- Remove button -->

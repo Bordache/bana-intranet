@@ -9,6 +9,19 @@ class ProfessionalCareer extends Model
 {
     use HasFactory;
 
+    /**
+     * Nom de la table associée au modèle.
+     *
+     * @var string
+     */
+    protected $table = 'professional_careers';
+
+    /**
+     * Champs remplissables (Mass Assignment).
+     *
+     * @var array
+     */
+
     protected $fillable = [
         'profile_id',
         'company_name',

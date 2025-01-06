@@ -23,8 +23,8 @@ class AcademicPathController extends Controller
     {
         $validated = $request->validate([
             'school_name' => 'required|string|max:255',
-            'degree' => 'required|string|max:255',
-            'graduation_date' => 'nullable|date',
+            'duration' => 'required|string|max:255',
+            'diploma' => 'nullable|text',
         ]);
 
         $profile->academicPaths()->create($validated);

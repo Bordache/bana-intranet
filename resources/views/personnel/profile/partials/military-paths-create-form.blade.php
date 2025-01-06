@@ -9,8 +9,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="academy_name" name="academy_name[]" type="text" placeholder="Entrer nom du centre ou école fréquenté" class="{{ $errors->has('academy_name.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('academy_name.*')" />
+            <x-text-input id="academy_name" name="academy_name[]" type="text" placeholder="Entrer nom du centre ou école fréquenté" class="{{ $errors->has('academy_name[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('academy_name[]')" />
         </div>
 
         <!-- Duration -->
@@ -22,8 +22,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="academy_duration" name="academy_duration[]" type="text" placeholder="Entrer période" class="{{ $errors->has('academy_duration.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('academy_duration.*')" />
+            <x-text-input id="academy_duration" name="academy_duration[]" type="text" placeholder="Entrer période" class="{{ $errors->has('academy_duration[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('academy_duration[]')" />
         </div>
 
         <!-- Diploma -->
@@ -34,8 +34,8 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Sanctions de stage ou de formation" role="img" aria-label="Sanctions de stage ou de formation"></i>
         </div>
         <div class="col-md-7">
-            <x-textarea-input id="academy_diploma" name="academy_diploma[]" rows="3" class="{{ $errors->has('academy_diploma.*') ? 'is-invalid' : '' }}" placeholder="Entrer diplômes, certificats ou attestations obtenus">{{ old('academy_diploma') }}</x-textarea-input>
-            <x-input-error class="mt-2" :messages="$errors->get('academy_diploma.*')" />
+            <x-textarea-input id="academy_diploma" name="academy_diploma[]" rows="3" class="{{ $errors->has('academy_diploma[]') ? 'is-invalid' : '' }}" placeholder="Entrer diplômes, certificats ou attestations obtenus">{{ old('academy_diploma[]') }}</x-textarea-input>
+            <x-input-error class="mt-2" :messages="$errors->get('academy_diploma[]')" />
         </div>
 
         <!-- Remove button -->

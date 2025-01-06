@@ -14,11 +14,11 @@
                 </ol>
               </nav>
             <!-- Étape 1 : Etat civil -->
+            <form method="post" action="{{ route('personnel.store') }}">
+            @csrf
             <div class="p-4 sm:p-8 bg-white">
                 <div class="mx-auto">
                     <section>
-                    <form method="post" action="{{ route('personnel.store') }}">
-                        @csrf
                         <div class="text-end">
                             <span class="btn btn-secondary mb-3" id="expandAllBtn">Tout déplier</span>
                         </div>
@@ -149,12 +149,29 @@
                                   </div>
                                 </div>
                               </div>
+
+                              <!-- Accordion Item #10 -->
+                             <div class="accordion-item">
+                                <h2 class="accordion-header" id="flush-headingTen">
+                                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTen" aria-expanded="false" aria-controls="flush-collapseTen">
+                                    Campagnes militaires
+                                  </button>
+                                </h2>
+                                <div id="flush-collapseTen" class="accordion-collapse collapse" aria-labelledby="flush-headingTen" data-bs-parent="#accordionFlushExample">
+                                  <div class="accordion-body">
+                                    @include('personnel.profile.partials.military-campaigns-create-form')
+                                  </div>
+                                </div>
+                              </div>
                         </div>
-                        <x-primary-button>{{ __('Save') }}</x-primary-button>
-                        </form>
                     </section>
                 </div>
             </div>
+            <div class="text-center p-4">
+                <x-primary-button>{{ __('Créer le profil') }}</x-primary-button>
+            </div>
+
+        </form>
         </div>
     </div>
 </x-app-layout>

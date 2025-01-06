@@ -9,13 +9,13 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-select-input id="history_rank" name="history_rank[]" class="{{ $errors->has('history_rank.*') ? 'is-invalid' : '' }}" >
+            <x-select-input id="history_rank" name="history_rank[]" class="{{ $errors->has('history_rank[]') ? 'is-invalid' : '' }}" >
                 <option value="" disabled {{ old('history_rank[]') == null ? 'selected' : '' }} >Choisir à la selection</option>
                 @foreach($ranks as $rank)
                     <option value="{{ $rank->abbreviate }}" {{ old('history_rank[]') == $rank->abbreviate ? 'selected' : '' }} title="{{ $rank->abbreviate }}" >{{ $rank->name }}</option>
                 @endforeach
             </x-select-input>
-            <x-input-error class="mt-2" :messages="$errors->get('history_rank.*')" />
+            <x-input-error class="mt-2" :messages="$errors->get('history_rank[]')" />
         </div>
 
         <!-- Rank date -->
@@ -27,8 +27,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="history_promotion_date" name="history_promotion_date[]" type="date" class="{{ $errors->has('history_promotion_date.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('history_promotion_date.*')" />
+            <x-text-input id="history_promotion_date" name="history_promotion_date[]" type="date" class="{{ $errors->has('history_promotion_date[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('history_promotion_date[]')" />
         </div>
 
         <!-- Reference -->
@@ -39,8 +39,8 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Décision ou décret" role="img" aria-label="Décision ou décret"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="history_rank_reference" name="history_rank_reference[]" type="text" placeholder="Entrer décision ou décret" class="{{ $errors->has('history_rank_reference.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('history_rank_reference.*')" />
+            <x-text-input id="history_rank_reference" name="history_rank_reference[]" type="text" placeholder="Entrer décision ou décret" class="{{ $errors->has('history_rank_reference[]') ? 'is-invalid' : '' }}" />
+            <x-input-error class="mt-2" :messages="$errors->get('history_rank_reference[]')" />
         </div>
 
         <!-- Remove button -->

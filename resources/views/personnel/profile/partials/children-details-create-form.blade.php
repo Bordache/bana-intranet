@@ -9,8 +9,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="child_full_name" name="child_full_name[]" type="text" placeholder="Entrer nom et prénoms" class="{{ $errors->has('child_full_name.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('child_full_name.*')" />
+            <x-text-input id="child_full_name" name="child_full_name[]" type="text" placeholder="Entrer nom et prénoms" class="{{ $errors->has('child_full_name[]') ? 'is-invalid' : '' }}" :value="old('child_full_name[]')"/>
+            <x-input-error class="mt-2" :messages="$errors->get('child_full_name[]')" />
         </div>
 
         <!-- Birth Date -->
@@ -22,8 +22,8 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="child_birth_date" name="child_birth_date[]" type="date" class="{{ $errors->has('child_birth_date.*') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('child_birth_date.*')" />
+            <x-text-input id="child_birth_date" name="child_birth_date[]" type="date" class="{{ $errors->has('child_birth_date[]') ? 'is-invalid' : '' }}" :value="old('child_birth_date[]')" />
+            <x-input-error class="mt-2" :messages="$errors->get('child_birth_date[]')" />
         </div>
 
         <!-- Birth Place -->
@@ -34,8 +34,8 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu de naissance" role="img" aria-label="Lieu de naissance"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="child_birth_place" name="child_birth_place[]" type="text" placeholder="Entrer lieu de naissance" />
-            <x-input-error class="mt-2" :messages="$errors->get('child_birth_place.*')" />
+            <x-text-input id="child_birth_place" name="child_birth_place[]" type="text" placeholder="Entrer lieu de naissance" :value="old('child_birth_place[]')" />
+            <x-input-error class="mt-2" :messages="$errors->get('child_birth_place[]')" />
         </div>
 
         <!-- Gender -->
@@ -47,12 +47,12 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-select-input id="child_gender" name="child_gender[]" class="{{ $errors->has('child_gender.*') ? 'is-invalid' : '' }}">
+            <x-select-input id="child_gender" name="child_gender[]" class="{{ $errors->has('child_gender[]') ? 'is-invalid' : '' }}">
                 <option value="">{{ __('Choisir à la selection') }}</option>
                 <option value="M">{{ __('Masculin') }}</option>
                 <option value="F">{{ __('Féminin') }}</option>
             </x-select-input>
-            <x-input-error class="mt-2" :messages="$errors->get('child_gender.*')" />
+            <x-input-error class="mt-2" :messages="$errors->get('child_gender[]')" />
         </div>
 
         <!-- Child status -->
@@ -70,7 +70,7 @@
                 <option value="AD">{{ __('Adopté') }}</option>
                 <option value="NL">{{ __('Non-légitime') }}</option>
             </x-select-input>
-            <x-input-error class="mt-2" :messages="$errors->get('child_status.*')" />
+            <x-input-error class="mt-2" :messages="$errors->get('child_status[]')" />
         </div>
 
         <!-- Remove button -->
