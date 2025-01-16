@@ -1,6 +1,74 @@
-<section id="honorary-distinctions-container" style="display: none;">
+<!-- Conteneur des distinctions honorifiques -->
+<section id="honorary-distinctions-container">
+    @if (old('honorary_title'))
+        @foreach (old('honorary_title') as $index => $honoraryTitle)
+            <div class="honorary-distinction pb-4 row g-3">
+
+                <!-- Intitulé -->
+                <div class="col-md-4 d-flex pt-2">
+                    <x-input-label for="honorary_title_{{ $index }}" :value="__('Intitulé')" />
+                </div>
+                <div class="col-md-1 d-flex pt-2">
+                    <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Décoration" role="img" aria-label="Décoration"></i>
+                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
+                </div>
+                <div class="col-md-7">
+                    <x-text-input id="honorary_title_{{ $index }}" name="honorary_title[]" type="text"
+                                  placeholder="Entrer intitulé distinction"
+                                  value="{{ $honoraryTitle }}"
+                                  class="{{ $errors->has('honorary_title.' . $index) ? 'is-invalid' : '' }}" />
+                    <x-input-error class="mt-2" :messages="$errors->get('honorary_title.' . $index)" />
+                </div>
+
+                <!-- Promotion -->
+                <div class="col-md-4 d-flex pt-2">
+                    <x-input-label for="honorary_promotion_{{ $index }}" :value="__('Promotion')" />
+                </div>
+                <div class="col-md-1 d-flex pt-2">
+                    <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Promotion" role="img" aria-label="Promotion"></i>
+                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
+                </div>
+                <div class="col-md-7">
+                    <x-text-input id="honorary_promotion_{{ $index }}" name="honorary_promotion[]" type="text"
+                                  placeholder="Entrer promotion"
+                                  value="{{ old('honorary_promotion.' . $index) }}"
+                                  class="{{ $errors->has('honorary_promotion.' . $index) ? 'is-invalid' : '' }}" />
+                    <x-input-error class="mt-2" :messages="$errors->get('honorary_promotion.' . $index)" />
+                </div>
+
+                <!-- Référence -->
+                <div class="col-md-4 d-flex pt-2">
+                    <x-input-label for="honorary_reference_{{ $index }}" :value="__('Référence')" />
+                </div>
+                <div class="col-md-1 d-flex pt-2">
+                    <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Référence" role="img" aria-label="Référence"></i>
+                </div>
+                <div class="col-md-7">
+                    <x-text-input id="honorary_reference_{{ $index }}" name="honorary_reference[]" type="text"
+                                  placeholder="Entrer référence"
+                                  value="{{ old('honorary_reference.' . $index) }}"
+                                  class="{{ $errors->has('honorary_reference.' . $index) ? 'is-invalid' : '' }}" />
+                    <x-input-error class="mt-2" :messages="$errors->get('honorary_reference.' . $index)" />
+                </div>
+
+                <div class="col-md-12 text-end mt-3">
+                    <button type="button" class="btn btn-danger remove-honorary-btn">Supprimer cette distinction</button>
+                </div>
+                <hr class="mt-4">
+            </div>
+        @endforeach
+    @endif
+</section>
+
+<!-- Bouton "Ajouter distinction honorifique" -->
+<div class="mb-3 text-end">
+    <button id="add-honorary-btn" type="button" class="btn btn-primary">Ajouter distinction honorifique</button>
+</div>
+
+<!-- Template pour les distinctions honorifiques -->
+<template id="honorary-template">
     <div class="honorary-distinction pb-4 row g-3">
-        <!-- Title -->
+        <!-- Intitulé -->
         <div class="col-md-4 d-flex pt-2">
             <x-input-label for="honorary_title" :value="__('Intitulé')" />
         </div>
@@ -9,8 +77,7 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="honorary_title" name="honorary_title[]" type="text" placeholder="Entrer intitulé distinction" class="{{ $errors->has('honorary_title[]') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('honorary_title[]')" />
+            <x-text-input id="honorary_title" name="honorary_title[]" type="text" placeholder="Entrer intitulé distinction" />
         </div>
 
         <!-- Promotion -->
@@ -22,11 +89,10 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="honorary_promotion" name="honorary_promotion[]" type="text" placeholder="Entrer promotion" class="{{ $errors->has('honorary_promotion[]') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('honorary_promotion[]')" />
+            <x-text-input id="honorary_promotion" name="honorary_promotion[]" type="text" placeholder="Entrer promotion" />
         </div>
 
-        <!-- Description -->
+        <!-- Référence -->
         <div class="col-md-4 d-flex pt-2">
             <x-input-label for="honorary_reference" :value="__('Référence')" />
         </div>
@@ -34,76 +100,48 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Référence" role="img" aria-label="Référence"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="honorary_reference" name="honorary_reference[]" type="text" placeholder="Entrer référence" class="{{ $errors->has('honorary_reference[]') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('honorary_reference[]')" />
+            <x-text-input id="honorary_reference" name="honorary_reference[]" type="text" placeholder="Entrer référence" />
         </div>
 
-        <!-- Remove button -->
         <div class="col-md-12 text-end mt-3">
-            <span type="button" class="btn btn-danger remove-honorary-btn" style="display: none;">Supprimer cette distinction</span>
+            <button type="button" class="btn btn-danger remove-honorary-btn">Supprimer cette distinction</button>
         </div>
-
         <hr class="mt-4">
     </div>
-</section>
-
-<div class="py-2 text-end">
-    <span id="add-first-honorary-btn" class="btn btn-primary">Ajouter une distinction</span>
-    <span id="add-honorary-btn" class="btn btn-primary" style="display: none;">Ajouter une autre distinction</span>
-</div>
-
+</template>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const addHonoraryBtn = document.getElementById('add-honorary-btn');
     const honoraryContainer = document.getElementById('honorary-distinctions-container');
-    const addFirsthonoraryBtn = document.getElementById('add-first-honorary-btn');
-    const addhonoraryBtn = document.getElementById('add-honorary-btn');
+    const honoraryTemplate = document.getElementById('honorary-template');
 
-    addFirsthonoraryBtn.addEventListener('click', () => {
-        honoraryContainer.style.display = 'block';
-        addFirsthonoraryBtn.style.display = 'none';
-        addhonoraryBtn.style.display = 'inline-block';
-
-        const firstRemoveBtn = document.querySelector('.honorary-distinction .remove-honorary-btn');
-        if (firstRemoveBtn) {
-            firstRemoveBtn.style.display = 'inline-block';
-            firstRemoveBtn.addEventListener('click', handleRemovehonorary);
-        }
-    });
-
-    addhonoraryBtn.addEventListener('click', () => {
-        const template = document.querySelector('.honorary-distinction');
-        const clone = template.cloneNode(true);
-
+    // Ajout dynamique des distinctions
+    addHonoraryBtn.addEventListener('click', () => {
+        const templateContent = honoraryTemplate.content.cloneNode(true);
         const timestamp = Date.now();
-        clone.querySelectorAll('[id]').forEach(input => {
+
+        // Modifier les IDs et attributs "for" pour chaque élément dynamique
+        templateContent.querySelectorAll('[id]').forEach(input => {
             const newId = `${input.id}_${timestamp}`;
-            clone.querySelector(`label[for="${input.id}"]`)?.setAttribute('for', newId);
+            const label = templateContent.querySelector(`label[for="${input.id}"]`);
+            if (label) {
+                label.setAttribute('for', newId);
+            }
             input.id = newId;
-            input.value = '';
         });
 
-        const removeBtn = clone.querySelector('.remove-honorary-btn');
-        if (removeBtn) {
-            removeBtn.style.display = 'inline-block';
-            removeBtn.addEventListener('click', handleRemovehonorary);
-        }
-
-        honoraryContainer.appendChild(clone);
+        honoraryContainer.appendChild(templateContent);
     });
 
-    function handleRemovehonorary(event) {
-        const childdistinction = event.target.closest('.honorary-distinction');
-        const alldistinctions = honoraryContainer.querySelectorAll('.honorary-distinction');
-
-        if (alldistinctions.length === 1) {
-            // Si c'est la dernière section, on la réinitialise et on la masque
-            childdistinction.querySelectorAll('input, select').forEach(input => (input.value = ''));
-            honoraryContainer.style.display = 'none';
-            addFirsthonoraryBtn.style.display = 'inline-block';
-            addhonoraryBtn.style.display = 'none';
-        } else {
-            // Sinon, on la supprime
-            childdistinction.remove();
+    // Suppression dynamique des distinctions
+    honoraryContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-honorary-btn')) {
+            const honoraryDistinction = event.target.closest('.honorary-distinction');
+            if (honoraryDistinction) {
+                honoraryDistinction.remove();
+            }
         }
-    }
+    });
+});
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use Illuminate\Support\Facades\Hash;
 use App\Models\Profile;
 use App\Models\User;
 use App\Models\PasswordInit;

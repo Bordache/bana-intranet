@@ -1,19 +1,115 @@
-<section id="career-paths-container" style="display: none;">
+<!-- Conteneur des sections de carrière -->
+<section id="career-paths-container">
+    @if (old('company_name'))
+        @foreach (old('company_name') as $index => $companyName)
+            <div class="career-path pb-4 row g-3">
+
+                <!-- Lieu d'emploi -->
+                <div class="col-md-4 d-flex pt-2">
+                    <x-input-label for="company_name_{{ $index }}" :value="__('Lieu d\'emploi')" />
+                </div>
+                <div class="col-md-1 d-flex pt-2">
+                    <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu d'affectation" role="img" aria-label="Lieu d'affectation"></i>
+                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
+                </div>
+                <div class="col-md-7">
+                    <x-text-input id="company_name_{{ $index }}" name="company_name[]" type="text"
+                                  placeholder="Entrer lieu d'emploi"
+                                  value="{{ $companyName }}"
+                                  class="{{ $errors->has('company_name.' . $index) ? 'is-invalid' : '' }}" />
+                    <x-input-error class="mt-2" :messages="$errors->get('company_name.' . $index)" />
+                </div>
+
+                <!-- Fonction ou emploi -->
+                <div class="col-md-4 d-flex pt-2">
+                    <x-input-label for="job_title_{{ $index }}" :value="__('Fonction ou emploi tenu')" />
+                </div>
+                <div class="col-md-1 d-flex pt-2">
+                    <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Fonction ou emploi tenu" role="img" aria-label="Fonction ou emploi tenu"></i>
+                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
+                </div>
+                <div class="col-md-7">
+                    <x-text-input id="job_title_{{ $index }}" name="job_title[]" type="text"
+                                  placeholder="Entrer fonction ou emploi"
+                                  value="{{ old('job_title.' . $index) }}"
+                                  class="{{ $errors->has('job_title.' . $index) ? 'is-invalid' : '' }}" />
+                    <x-input-error class="mt-2" :messages="$errors->get('job_title.' . $index)" />
+                </div>
+
+                <!-- Début d'affectation -->
+                <div class="col-md-4 d-flex pt-2">
+                    <x-input-label for="start_date_{{ $index }}" :value="__('Début d\'affectation')" />
+                </div>
+                <div class="col-md-1 d-flex pt-2">
+                    <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de début d'affectation" role="img" aria-label="Date de début d'affectation"></i>
+                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
+                </div>
+                <div class="col-md-7">
+                    <x-text-input id="start_date_{{ $index }}" name="start_date[]" type="date"
+                                  value="{{ old('start_date.' . $index) }}"
+                                  class="{{ $errors->has('start_date.' . $index) ? 'is-invalid' : '' }}" />
+                    <x-input-error class="mt-2" :messages="$errors->get('start_date.' . $index)" />
+                </div>
+
+                <!-- Fin d'affectation -->
+                <div class="col-md-4 d-flex pt-2">
+                    <x-input-label for="end_date_{{ $index }}" :value="__('Fin d\'affectation')" />
+                </div>
+                <div class="col-md-1 d-flex pt-2">
+                    <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de fin d'affectation" role="img" aria-label="Date de fin d'affectation"></i>
+                </div>
+                <div class="col-md-7">
+                    <x-text-input id="end_date_{{ $index }}" name="end_date[]" type="date"
+                                  value="{{ old('end_date.' . $index) }}"
+                                  class="{{ $errors->has('end_date.' . $index) ? 'is-invalid' : '' }}" />
+                    <x-input-error class="mt-2" :messages="$errors->get('end_date.' . $index)" />
+                </div>
+
+                <!-- Référence -->
+                <div class="col-md-4 d-flex pt-2">
+                    <x-input-label for="description_{{ $index }}" :value="__('Référence')" />
+                </div>
+                <div class="col-md-1 d-flex pt-2">
+                    <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Décision ou décret" role="img" aria-label="Décision ou décret"></i>
+                </div>
+                <div class="col-md-7">
+                    <x-text-input id="description_{{ $index }}" name="description[]" type="text"
+                                  placeholder="Entrer décision ou décret"
+                                  value="{{ old('description.' . $index) }}"
+                                  class="{{ $errors->has('description.' . $index) ? 'is-invalid' : '' }}" />
+                    <x-input-error class="mt-2" :messages="$errors->get('description.' . $index)" />
+                </div>
+
+                <div class="col-md-12 text-end mt-3">
+                    <button type="button" class="btn btn-danger remove-career-btn">Supprimer ce parcours</button>
+                </div>
+                <hr class="mt-4">
+            </div>
+        @endforeach
+    @endif
+</section>
+
+<!-- Bouton "Ajouter parcours professionnel" -->
+<div class="mb-3 text-end">
+    <button id="add-career-btn" type="button" class="btn btn-primary">Ajouter parcours professionnel</button>
+</div>
+
+<!-- Template pour les sections de carrière -->
+<template id="career-template">
     <div class="career-path pb-4 row g-3">
-        <!-- Company -->
+        <!-- Lieu d'emploi -->
         <div class="col-md-4 d-flex pt-2">
             <x-input-label for="company_name" :value="__('Lieu d\'emploi')" />
         </div>
         <div class="col-md-1 d-flex pt-2">
-            <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu d\'affectation" role="img" aria-label="Lieu d\'affectation"></i>
+            <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu d'affectation" role="img" aria-label="Lieu d'affectation"></i>
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="company_name" name="company_name[]" type="text" placeholder="Entrer lieu d'emploi" class="{{ $errors->has('company_name[]') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('company_name[]')" />
+            <x-text-input id="company_name" name="company_name[]" type="text" placeholder="Entrer lieu d'emploi" />
         </div>
 
-        <!-- Job title -->
+        <!-- Fonction ou emploi -->
         <div class="col-md-4 d-flex pt-2">
             <x-input-label for="job_title" :value="__('Fonction ou emploi tenu')" />
         </div>
@@ -22,24 +118,21 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="job_title" name="job_title[]" type="text" placeholder="Entrer fonction ou emploi" class="{{ $errors->has('job_title[]') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('job_title[]')" />
+            <x-text-input id="job_title" name="job_title[]" type="text" placeholder="Entrer fonction ou emploi" />
         </div>
 
-        <!-- Start date -->
+        <!-- Début d'affectation -->
         <div class="col-md-4 d-flex pt-2">
             <x-input-label for="start_date" :value="__('Début d\'affectation')" />
         </div>
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de début d'affectation" role="img" aria-label="Date de début d'affectation"></i>
-            <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="start_date" name="start_date[]" type="date" class="{{ $errors->has('start_date[]') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('start_date[]')" />
+            <x-text-input id="start_date" name="start_date[]" type="date" />
         </div>
 
-        <!-- End date -->
+        <!-- Fin d'affectation -->
         <div class="col-md-4 d-flex pt-2">
             <x-input-label for="end_date" :value="__('Fin d\'affectation')" />
         </div>
@@ -47,11 +140,10 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de fin d'affectation" role="img" aria-label="Date de fin d'affectation"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="end_date" name="end_date[]" type="date" class="{{ $errors->has('end_date[]') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('end_date[]')" />
+            <x-text-input id="end_date" name="end_date[]" type="date" />
         </div>
 
-        <!-- Description -->
+        <!-- Référence -->
         <div class="col-md-4 d-flex pt-2">
             <x-input-label for="description" :value="__('Référence')" />
         </div>
@@ -59,76 +151,48 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Décision ou décret" role="img" aria-label="Décision ou décret"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="description" name="description[]" type="text" placeholder="Entrer décision ou décret" class="{{ $errors->has('description[]') ? 'is-invalid' : '' }}" />
-            <x-input-error class="mt-2" :messages="$errors->get('description[]')" />
+            <x-text-input id="description" name="description[]" type="text" placeholder="Entrer décision ou décret" />
         </div>
 
-        <!-- Remove button -->
         <div class="col-md-12 text-end mt-3">
-            <span type="button" class="btn btn-danger remove-career-btn" style="display: none;">Supprimer ce parcours</span>
+            <button type="button" class="btn btn-danger remove-career-btn">Supprimer ce parcours</button>
         </div>
-
         <hr class="mt-4">
     </div>
-</section>
-
-<div class="py-2 text-end">
-    <span id="add-first-career-btn" class="btn btn-primary">Ajouter un parcours</span>
-    <span id="add-career-btn" class="btn btn-primary" style="display: none;">Ajouter un autre parcours</span>
-</div>
-
+</template>
 
 <script>
-    const careerContainer = document.getElementById('career-paths-container');
-    const addFirstCareerBtn = document.getElementById('add-first-career-btn');
+document.addEventListener('DOMContentLoaded', () => {
     const addCareerBtn = document.getElementById('add-career-btn');
+    const careerPathsContainer = document.getElementById('career-paths-container');
+    const careerTemplate = document.getElementById('career-template');
 
-    addFirstCareerBtn.addEventListener('click', () => {
-        careerContainer.style.display = 'block';
-        addFirstCareerBtn.style.display = 'none';
-        addCareerBtn.style.display = 'inline-block';
-
-        const firstRemoveBtn = document.querySelector('.career-path .remove-career-btn');
-        if (firstRemoveBtn) {
-            firstRemoveBtn.style.display = 'inline-block';
-            firstRemoveBtn.addEventListener('click', handleRemoveCareer);
-        }
-    });
-
+    // Ajout dynamique des parcours professionnels
     addCareerBtn.addEventListener('click', () => {
-        const template = document.querySelector('.career-path');
-        const clone = template.cloneNode(true);
-
+        const templateContent = careerTemplate.content.cloneNode(true);
         const timestamp = Date.now();
-        clone.querySelectorAll('[id]').forEach(input => {
+
+        // Modifier les IDs et les attributs "for" pour chaque élément dynamique
+        templateContent.querySelectorAll('[id]').forEach(input => {
             const newId = `${input.id}_${timestamp}`;
-            clone.querySelector(`label[for="${input.id}"]`)?.setAttribute('for', newId);
+            const label = templateContent.querySelector(`label[for="${input.id}"]`);
+            if (label) {
+                label.setAttribute('for', newId);
+            }
             input.id = newId;
-            input.value = '';
         });
 
-        const removeBtn = clone.querySelector('.remove-career-btn');
-        if (removeBtn) {
-            removeBtn.style.display = 'inline-block';
-            removeBtn.addEventListener('click', handleRemoveCareer);
-        }
-
-        careerContainer.appendChild(clone);
+        careerPathsContainer.appendChild(templateContent);
     });
 
-    function handleRemoveCareer(event) {
-        const childPath = event.target.closest('.career-path');
-        const allPaths = careerContainer.querySelectorAll('.career-path');
-
-        if (allPaths.length === 1) {
-            // Si c'est la dernière section, on la réinitialise et on la masque
-            childPath.querySelectorAll('input, select').forEach(input => (input.value = ''));
-            careerContainer.style.display = 'none';
-            addFirstCareerBtn.style.display = 'inline-block';
-            addCareerBtn.style.display = 'none';
-        } else {
-            // Sinon, on la supprime
-            childPath.remove();
+    // Suppression dynamique des parcours professionnels
+    careerPathsContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-career-btn')) {
+            const careerPath = event.target.closest('.career-path');
+            if (careerPath) {
+                careerPath.remove();
+            }
         }
-    }
+    });
+});
 </script>

@@ -55,4 +55,8 @@
             document.getElementById('email').value = email;
         }
     </script>
+    <script>
+        // Supprimer toutes les données du sessionStorage
+        sessionStorage.clear();
+    </script>
 </x-guest-layout>

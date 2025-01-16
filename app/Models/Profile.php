@@ -62,57 +62,41 @@ class Profile extends Model
         return $this->hasOne(User::class, 'profile_id');
     }
 
-    /**
-     * Relation : Un profil a un ou plusieurs parcours professionnels associés.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
-     */
     public function professionalCareers()
     {
         return $this->hasMany(ProfessionalCareer::class, 'profile_id');
     }
 
-     /**
-     * Relation : Un profil a un ou plusieurs parcours scolaires associés.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
-     */
     public function academicPaths()
     {
         return $this->hasMany(AcademicPath::class, 'profile_id');
     }
 
-    // Renseignement militaire (One-to-One)
     public function militaryDetail()
     {
         return $this->hasOne(MilitaryDetail::class, 'profile_id');
     }
 
-    // Historique de grades (One-to-Many)
     public function rankHistories()
     {
         return $this->hasMany(RankHistory::class, 'profile_id');
     }
 
-    // Campagnes militaires (One-to-Many)
     public function militaryCampaigns()
     {
         return $this->hasMany(MilitaryCampaign::class, 'profile_id');
     }
 
-    // Enfants (One-to-Many)
     public function childrenDetails()
     {
         return $this->hasMany(ChildrenDetail::class, 'profile_id');
     }
 
-    // Distinctions honorifiques (One-to-Many)
     public function honoraryDistinctions()
     {
         return $this->hasMany(HonoraryDistinction::class, 'profile_id');
     }
 
-    // Conjoint (One-to-One)
     public function spouseDetail()
     {
         return $this->hasOne(SpouseDetail::class, 'profile_id');

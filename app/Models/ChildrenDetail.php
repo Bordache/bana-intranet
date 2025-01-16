@@ -28,7 +28,8 @@ class ChildrenDetail extends Model
         'child_birth_date',
         'child_birth_place',
         'child_gender',
-        'child_status'];
+        'child_status',
+    ];
 
     public function profile()
     {

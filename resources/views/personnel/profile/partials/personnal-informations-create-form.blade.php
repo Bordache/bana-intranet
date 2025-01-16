@@ -24,7 +24,7 @@
         <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
     </div>
     <div class="col-md-7">
-        <x-text-input id="name" name="name" type="text" :value="old('name')" placeholder="Entrer nom" class="{{ $errors->has('name') ? 'is-invalid' : '' }}" />
+        <x-text-input id="name" name="name" type="text" :value="old('name')" placeholder="Entrer nom" />
         <x-input-error class="mt-2" :messages="$errors->get('name')" />
     </div>
 
@@ -73,7 +73,7 @@
         <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
     </div>
     <div class="col-md-7">
-        <x-text-input id="national_id" name="national_id" type="number" min="0" :value="old('national_id')" placeholder="Entrer numéro CIN" class="{{ $errors->has('national_id') ? 'is-invalid' : '' }}" />
+        <x-text-input id="national_id" name="national_id" type="number" min="0" :value="old('national_id')" placeholder="Entrer numéro CIN" />
         <x-input-error class="mt-2" :messages="$errors->get('national_id')" />
     </div>
 

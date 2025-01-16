@@ -8,7 +8,7 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-select-input id="position" name="position" class="{{ $errors->has('position') ? 'is-invalid' : '' }}">
+            <x-select-input id="position" name="position">
                 <option value="" {{ old('position') == null ? 'selected' : '' }} disabled >{{ __('Choisir à la selection') }}</option>
                 <option value="active" {{ old('position') == 'active' ? 'selected' : '' }}>{{ __('En activité') }}</option>
                 <option value="detache" {{ old('position') == 'detache' ? 'selected' : '' }}>{{ __('En service détaché') }}</option>
@@ -51,7 +51,7 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-select-input id="army" name="army" class="{{ $errors->has('army') ? 'is-invalid' : '' }}">
+            <x-select-input id="army" name="army" >
                 <option value="" {{ old('army') == null ? 'selected' : '' }} disabled>{{ __('Choisir à la selection') }}</option>
                 <option value="land" {{ old('army') == 'land' ? 'selected' : '' }}>{{ __('Terre') }}</option>
                 <option value="air" {{ old('army') == 'air' ? 'selected' : '' }}>{{ __('Air') }}</option>
@@ -70,7 +70,7 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-select-input id="corps_assignment" name="corps_assignment" class="{{ $errors->has('corps_assignment') ? 'is-invalid' : '' }}">
+            <x-select-input id="corps_assignment" name="corps_assignment">
                 <option value="" {{ old('corps_assignment') == null ? 'selected' : '' }} disabled>{{ __('Choisir à la selection') }}</option>
                 <option value="BANA" {{ old('corps_assignment') == 'BANA' ? 'selected' : '' }}>{{ __('BANA') }}</option>
                 <option value="BIMA" {{ old('corps_assignment') == 'BIMA' ? 'selected' : '' }}>{{ __('BIMA') }}</option>
@@ -88,10 +88,10 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-select-input id="unit" name="unit" class="{{ $errors->has('unit') ? 'is-invalid' : '' }}" >
-                <option value="" disabled {{ old('unit') == null ? 'selected' : '' }} >Choisir à la selection</option>
+            <x-select-input id="unit_assignment" name="unit_assignment" >
+                <option value="" disabled {{ old('unit_assignment') == null ? 'selected' : '' }} >{{ __('Choisir à la selection') }}</option>
                 @foreach($units as $unit)
-                    <option value="{{ $unit->abbreviate }}" {{ old('unit') == $unit->abbreviate ? 'selected' : '' }} title="{{ $unit->abbreviate }}" >{{ $unit->name }}</option>
+                    <option value="{{ $unit->abbreviate }}" {{ old('unit_assignment') == $unit->abbreviate ? 'selected' : '' }} title="{{ $unit->abbreviate }}" >{{ $unit->name }}</option>
                 @endforeach
             </x-select-input>
             <x-input-error class="mt-2" :messages="$errors->get('unit_assignment')" />
@@ -118,7 +118,7 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-select-input id="rank" name="rank" class="{{ $errors->has('rank') ? 'is-invalid' : '' }}" >
+            <x-select-input id="rank" name="rank" >
                 <option value="" disabled {{ old('rank') == null ? 'selected' : '' }} >Choisir à la selection</option>
                 @foreach($ranks as $rank)
                     <option value="{{ $rank->abbreviate }}" {{ old('rank') == $rank->abbreviate ? 'selected' : '' }} title="{{ $rank->abbreviate }}" >{{ $rank->name }}</option>
@@ -148,7 +148,7 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="military_registration_number" name="military_registration_number" type="text" :value="old('military_registration_number')" placeholder="Entrer numéro matricule militaire" class="{{ $errors->has('military_registration_number') ? 'is-invalid' : '' }}" />
+            <x-text-input id="military_registration_number" name="military_registration_number" type="text" :value="old('military_registration_number')" placeholder="Entrer numéro matricule militaire" />
             <x-input-error class="mt-2" :messages="$errors->get('military_registration_number')" />
         </div>
 
@@ -160,7 +160,7 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Numéro matricule finance" role="img" aria-label="Numéro matricule finance"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="finance_registration_number" name="finance_registration_number" type="text" :value="old('finance_registration_number')" placeholder="Entrer numéro matricule finance" class="{{ $errors->has('national_id') ? 'is-invalid' : '' }}" />
+            <x-text-input id="finance_registration_number" name="finance_registration_number" type="text" :value="old('finance_registration_number')" placeholder="Entrer numéro matricule finance"  />
             <x-input-error class="mt-2" :messages="$errors->get('finance_registration_number')" />
         </div>
 
@@ -184,7 +184,7 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Fonction ou emploi actuel" role="img" aria-label="Fonction ou emploi actuel"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="current_function" name="current_function" type="text" :value="old('current_function')" placeholder="Entrer fonction ou emploi actuel" class="{{ $errors->has('national_id') ? 'is-invalid' : '' }}" />
+            <x-text-input id="current_function" name="current_function" type="text" :value="old('current_function')" placeholder="Entrer fonction ou emploi actuel" />
             <x-input-error class="mt-2" :messages="$errors->get('current_function')" />
         </div>
 
@@ -197,7 +197,7 @@
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-text-input id="service_entry_date" name="service_entry_date" type="date" :value="old('service_entry_date')" class="{{ $errors->has('service_entry_date') ? 'is-invalid' : '' }}" />
+            <x-text-input id="service_entry_date" name="service_entry_date" type="date" :value="old('service_entry_date')"/>
             <x-input-error class="mt-2" :messages="$errors->get('service_entry_date')" />
         </div>
 
