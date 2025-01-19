@@ -86,13 +86,14 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
     Route::prefix('personnel')->group(function () {
         // Gestion des profils
         Route::get('/', [PersonnelController::class, 'index'])->name('personnel.index');
-        Route::get('/profile/verify', [PersonnelController::class, 'verify'])->name('personnel.verify');
+        Route::get('/profile/list', [PersonnelController::class, 'list'])->name('personnel.list');
         Route::get('/profile/create', [PersonnelController::class, 'create'])->name('personnel.create');
         Route::post('/profile', [PersonnelController::class, 'store'])->name('personnel.store');
         Route::get('/profile/{id}', [PersonnelController::class, 'show'])->name('personnel.show');
         Route::get('/profile/{id}/edit', [PersonnelController::class, 'edit'])->name('personnel.edit');
         Route::put('/profile/{id}', [PersonnelController::class, 'update'])->name('personnel.update');
         Route::delete('/profile/{id}', [PersonnelController::class, 'destroy'])->name('personnel.destroy');
+        Route::post('/profile/{id}/update-calculations', [PersonnelController::class, 'updateCalculations'])->name('personnel.update.calculations');
 
         // Routes pour les parcours scolaires liés à un profil
         Route::prefix('profile/{profile}/academic_paths')->group(function () {

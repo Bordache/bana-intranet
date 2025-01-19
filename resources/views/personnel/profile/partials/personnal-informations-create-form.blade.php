@@ -9,8 +9,8 @@
     <div class="col-md-7">
         <x-select-input id="gender" name="gender">
             <option value="" {{ old('gender') == null ? 'selected' : '' }} disabled>{{ __('Choisir à la selection') }}</option>
-            <option value="M" {{ old('gender') == 'M' ? 'selected' : '' }}>{{ __('Masculin') }}</option>
-            <option value="F" {{ old('gender') == 'F' ? 'selected' : '' }}>{{ __('Féminin') }}</option>
+            <option value="Masculin" {{ old('gender') == 'Masculin' ? 'selected' : '' }}>{{ __('Masculin') }}</option>
+            <option value="Féminin" {{ old('gender') == 'Féminin' ? 'selected' : '' }}>{{ __('Féminin') }}</option>
         </x-select-input>
         <x-input-error class="mt-2" :messages="$errors->get('gender')" />
     </div>
@@ -219,10 +219,10 @@
     <div class="col-md-7">
         <x-select-input id="marital_status" name="marital_status" >
             <option value="" {{ old('marital_status') == null ? 'selected' : '' }} disabled>{{ __('Choisir à la selection') }}</option>
-            <option value="single" {{ old('marital_status') == 'single' ? 'selected' : '' }}>{{ __('Célibataire') }}</option>
-            <option value="married" {{ old('marital_status') == 'married' ? 'selected' : '' }}>{{ __('Marié(e)') }}</option>
-            <option value="divorced" {{ old('marital_status') == 'divorced' ? 'selected' : '' }}>{{ __('Divorcé(e)') }}</option>
-            <option value="widowed" {{ old('marital_status') == 'widowed' ? 'selected' : '' }}>{{ __('Veuf/Veuve') }}</option>
+            <option value="Célibataire" {{ old('marital_status') == 'Célibataire' ? 'selected' : '' }}>{{ __('Célibataire') }}</option>
+            <option value="Marié(e)" {{ old('marital_status') == 'Marié(e)' ? 'selected' : '' }}>{{ __('Marié(e)') }}</option>
+            <option value="Divorcé(e)" {{ old('marital_status') == 'Divorcé(e)' ? 'selected' : '' }}>{{ __('Divorcé(e)') }}</option>
+            <option value="Veuf/Veuve" {{ old('marital_status') == 'Veuf/Veuve' ? 'selected' : '' }}>{{ __('Veuf/Veuve') }}</option>
         </x-select-input>
         <x-input-error class="mt-2" :messages="$errors->get('marital_status')" />
     </div>

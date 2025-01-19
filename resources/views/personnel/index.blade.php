@@ -5,8 +5,13 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="d-flex justify-content-between align-items-center text-sm">
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item">Dashboard</li>
+                </ol>
+            </nav>
             <main class="mt-6">
                 <div class="grid gap-6 lg:grid-cols-2 lg:gap-8">
                     <div
@@ -17,7 +22,7 @@
                         </div>
 
                         <div class="pt-3 sm:pt-5">
-                            <h2 class="text-xl font-semibold text-black dark:text-white">Gestion du personnel</h2>
+                            <h2 class="text-xl font-semibold text-black dark:text-white">{{ __('Base de données')}}</h2>
 
                             <div class="mt-4 text-sm/relaxed">
                                 <ul>
@@ -25,7 +30,7 @@
                                         <a href="{{ route('personnel.create') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Ajouter nouveau personnel</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.create') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Trouver un personnel</a>
+                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Liste du personnel</a>
                                     </li>
                                 </ul>
                             </div>

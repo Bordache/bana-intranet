@@ -33,7 +33,7 @@ class ProfileObserver
 
          $domain = '@emmn.mg';
 
-         User::create([
+         $user = User::create([
             'profile_id' => $profile->id,
             'name' => $profile->name,
             'firstname' => $profile->firstname,

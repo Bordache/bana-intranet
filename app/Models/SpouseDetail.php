@@ -33,8 +33,12 @@ class SpouseDetail extends Model
         'marriage_authorization',
     ];
 
+    protected $casts = [
+        'spouse_birth_date' => 'date',
+    ];
+
     public function profile()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
 }

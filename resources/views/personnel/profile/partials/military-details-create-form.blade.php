@@ -10,10 +10,10 @@
         <div class="col-md-7">
             <x-select-input id="position" name="position">
                 <option value="" {{ old('position') == null ? 'selected' : '' }} disabled >{{ __('Choisir à la selection') }}</option>
-                <option value="active" {{ old('position') == 'active' ? 'selected' : '' }}>{{ __('En activité') }}</option>
-                <option value="detache" {{ old('position') == 'detache' ? 'selected' : '' }}>{{ __('En service détaché') }}</option>
-                <option value="reserve" {{ old('position') == 'reserve' ? 'selected' : '' }}>{{ __('En réserve') }}</option>
-                <option value="retired" {{ old('position') == 'retired' ? 'selected' : '' }}>{{ __('A la retraite') }}</option>
+                <option value="En activité" {{ old('position') == 'En activité' ? 'selected' : '' }}>{{ __('En activité') }}</option>
+                <option value="En service détaché" {{ old('position') == 'En service détaché' ? 'selected' : '' }}>{{ __('En service détaché') }}</option>
+                <option value="En réserve" {{ old('position') == 'En réserve' ? 'selected' : '' }}>{{ __('En réserve') }}</option>
+                <option value="A la retraite" {{ old('position') == 'A la retraite' ? 'selected' : '' }}>{{ __('A la retraite') }}</option>
             </x-select-input>
             <x-input-error class="mt-2" :messages="$errors->get('position')" />
         </div>
@@ -53,10 +53,11 @@
         <div class="col-md-7">
             <x-select-input id="army" name="army" >
                 <option value="" {{ old('army') == null ? 'selected' : '' }} disabled>{{ __('Choisir à la selection') }}</option>
-                <option value="land" {{ old('army') == 'land' ? 'selected' : '' }}>{{ __('Terre') }}</option>
-                <option value="air" {{ old('army') == 'air' ? 'selected' : '' }}>{{ __('Air') }}</option>
-                <option value="navy" {{ old('army') == 'navy' ? 'selected' : '' }}>{{ __('Mer') }}</option>
-                <option value="gendarme" {{ old('gendarme') == 'gendarme' ? 'selected' : '' }}>{{ __('Gendarmerie') }}</option>
+                <option value="Terre" {{ old('army') == 'Terre' ? 'selected' : '' }}>{{ __('Terre') }}</option>
+                <option value="Air" {{ old('army') == 'Air' ? 'selected' : '' }}>{{ __('Air') }}</option>
+                <option value="Mer" {{ old('army') == 'Mer' ? 'selected' : '' }}>{{ __('Mer') }}</option>
+                <option value="Gendarmerie" {{ old('army') == 'Gendarmerie' ? 'selected' : '' }}>{{ __('Gendarmerie') }}</option>
+                <option value="Autre" {{ old('army') == 'Autre' ? 'selected' : '' }}>{{ __('Autre') }}</option>
             </x-select-input>
             <x-input-error class="mt-2" :messages="$errors->get('army')" />
         </div>
@@ -74,6 +75,7 @@
                 <option value="" {{ old('corps_assignment') == null ? 'selected' : '' }} disabled>{{ __('Choisir à la selection') }}</option>
                 <option value="BANA" {{ old('corps_assignment') == 'BANA' ? 'selected' : '' }}>{{ __('BANA') }}</option>
                 <option value="BIMA" {{ old('corps_assignment') == 'BIMA' ? 'selected' : '' }}>{{ __('BIMA') }}</option>
+                <option value="CORMAR" {{ old('corps_assignment') == 'CORMAR' ? 'selected' : '' }}>{{ __('CORMAR') }}</option>
                 <option value="BATINF" {{ old('corps_assignment') == 'BATINF' ? 'selected' : '' }}>{{ __('BATINF') }}</option>
             </x-select-input>
             <x-input-error class="mt-2" :messages="$errors->get('corps_assignment')" />
@@ -81,20 +83,20 @@
 
         <!-- Unit Assignment -->
         <div class="col-md-4 d-flex pt-2">
-            <x-input-label for="unit_assignment" :value="__('Unité d\'affectation')" />
+            <x-input-label for="unit_id" :value="__('Unité d\'affectation')" />
         </div>
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Unité support d\'affectation" role="img" aria-label="Unité support d\'affectation"></i>
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-select-input id="unit_assignment" name="unit_assignment" >
-                <option value="" disabled {{ old('unit_assignment') == null ? 'selected' : '' }} >{{ __('Choisir à la selection') }}</option>
+            <x-select-input id="unit_id" name="unit_id" >
+                <option value="" disabled {{ old('unit_id') == null ? 'selected' : '' }} >{{ __('Choisir à la selection') }}</option>
                 @foreach($units as $unit)
-                    <option value="{{ $unit->abbreviate }}" {{ old('unit_assignment') == $unit->abbreviate ? 'selected' : '' }} title="{{ $unit->abbreviate }}" >{{ $unit->name }}</option>
+                    <option value="{{ $unit->id }}" {{ old('unit_id') == $unit->id ? 'selected' : '' }} title="{{ $unit->unit_abbreviate }}" >{{ $unit->unit_name }}</option>
                 @endforeach
             </x-select-input>
-            <x-input-error class="mt-2" :messages="$errors->get('unit_assignment')" />
+            <x-input-error class="mt-2" :messages="$errors->get('unit_id')" />
         </div>
 
         <!-- Exact assignment -->
@@ -111,20 +113,20 @@
 
          <!-- Rank -->
          <div class="col-md-4 d-flex pt-2">
-            <x-input-label for="rank" :value="__('Grade')" />
+            <x-input-label for="rank_id" :value="__('Grade')" />
         </div>
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Rang militaire" role="img" aria-label="Rang militaire"></i>
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
-            <x-select-input id="rank" name="rank" >
-                <option value="" disabled {{ old('rank') == null ? 'selected' : '' }} >Choisir à la selection</option>
+            <x-select-input id="rank_id" name="rank_id" >
+                <option value="" disabled {{ old('rank_id') == null ? 'selected' : '' }} >Choisir à la selection</option>
                 @foreach($ranks as $rank)
-                    <option value="{{ $rank->abbreviate }}" {{ old('rank') == $rank->abbreviate ? 'selected' : '' }} title="{{ $rank->abbreviate }}" >{{ $rank->name }}</option>
+                    <option value="{{ $rank->id }}" {{ old('rank_id') == $rank->id ? 'selected' : '' }} title="{{ $rank->rank_abbreviate }}" >{{ $rank->rank_name }}</option>
                 @endforeach
             </x-select-input>
-            <x-input-error class="mt-2" :messages="$errors->get('rank')" />
+            <x-input-error class="mt-2" :messages="$errors->get('rank_id')" />
         </div>
 
         <!-- Rank Date -->
@@ -259,10 +261,10 @@
         <div class="col-md-7">
             <x-select-input id="military_status" name="military_status">
                 <option value="" {{ old('military_status') == null ? 'selected' : '' }} disabled>{{ __('Choisir à la selection') }}</option>
-                <option value="OA" {{ old('military_status') == 'OA' ? 'selected' : '' }}>{{ __('Officier de carrière') }}</option>
+                <option value="Officier de carrière" {{ old('military_status') == 'Officier de carrière' ? 'selected' : '' }}>{{ __('Officier de carrière') }}</option>
                 <option value="SOC" title="Sous-officier de carrière" {{ old('military_status') == 'SOC' ? 'selected' : '' }}>{{ __('SOC') }}</option>
                 <option value="HDRC" title="Homme du rang de carrière" {{ old('military_status') == 'HDRC' ? 'selected' : '' }}>{{ __('HDRC') }}</option>
-                <option value="SC" title="Sous-contrat" {{ old('military_status') == 'SC' ? 'selected' : '' }}>{{ __('Sous-contrat') }}</option>
+                <option value="Sous-contrat" title="Sous-contrat" {{ old('military_status') == 'Sous-contrat' ? 'selected' : '' }}>{{ __('Sous-contrat') }}</option>
             </x-select-input>
             <x-input-error class="mt-2" :messages="$errors->get('military_status')" />
         </div>

@@ -29,8 +29,19 @@ class RankHistory extends Model
         'history_rank_reference',
     ];
 
+    /**
+     * Les attributs qui doivent être convertis en types natifs.
+     *
+     * @var array
+     */
+
+    protected $casts = [
+        'history_promotion_date' => 'date',
+    ];
+
+
     public function profile()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
 }

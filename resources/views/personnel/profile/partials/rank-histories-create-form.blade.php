@@ -19,9 +19,9 @@
                             Choisir à la sélection
                         </option>
                         @foreach($ranks as $rank)
-                            <option value="{{ $rank->abbreviate }}"
-                                    {{ old('history_rank.' . $index) == $rank->abbreviate ? 'selected' : '' }}
-                                    title="{{ $rank->abbreviate }}">{{ $rank->name }}</option>
+                            <option value="{{ $rank->rank_abbreviate }}"
+                                    {{ old('history_rank.' . $index) == $rank->rank_abbreviate ? 'selected' : '' }}
+                                    title="{{ $rank->rank_abbreviate }}">{{ $rank->rank_name }}</option>
                         @endforeach
                     </x-select-input>
                     <x-input-error class="mt-2" :messages="$errors->get('history_rank.' . $index)" />
@@ -86,7 +86,7 @@
             <x-select-input id="history_rank" name="history_rank[]">
                 <option value="">Choisir à la sélection</option>
                 @foreach($ranks as $rank)
-                    <option value="{{ $rank->abbreviate }}" title="{{ $rank->abbreviate }}">{{ $rank->name }}</option>
+                    <option value="{{ $rank->rank_abbreviate }}" title="{{ $rank->rank_abbreviate }}">{{ $rank->rank_name }}</option>
                 @endforeach
             </x-select-input>
         </div>

@@ -31,8 +31,19 @@ class ProfessionalCareer extends Model
         'description',
     ];
 
+    /**
+     * Les attributs qui doivent être convertis en types natifs.
+     *
+     * @var array
+     */
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
+
     public function profile()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
 }

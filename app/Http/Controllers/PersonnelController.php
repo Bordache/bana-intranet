@@ -2,36 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+
 use App\Services\UsernameGeneratorService;
 use App\Services\PasswordGeneratorService;
 
 use App\Models\User;
 use App\Models\PasswordInit;
-use App\Models\Profile;
+
 use App\Models\Rank;
 use App\Models\Unit;
+
 use App\Models\AcademicPath;
+use App\Models\MilitaryCampaign;
+use App\Models\ProfessionalCareer;
 use App\Models\ChildrenDetail;
 use App\Models\HonoraryDistinction;
-use App\Models\MilitaryCampaign;
 use App\Models\MilitaryDetail;
 use App\Models\MilitaryPath;
-use App\Models\ProfessionalCareer;
+use App\Models\Profile;
 use App\Models\RankHistory;
 use App\Models\SpouseDetail;
+
+use App\Support\AcademyFields;
+use App\Support\CampaignFields;
+use App\Support\CareerFields;
+use App\Support\ChildrenFields;
+use App\Support\HonoraryFields;
+use App\Support\MilitaryFields;
+use App\Support\ProfileFields;
+use App\Support\RankFields;
+use App\Support\SchoolFields;
+use App\Support\SpouseFields;
 
 
 class PersonnelController extends Controller
@@ -49,7 +63,7 @@ class PersonnelController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Home.
      */
     public function index()
     {
@@ -58,18 +72,25 @@ class PersonnelController extends Controller
         return view('personnel.index', compact('profiles'));
     }
 
-    public function verify(Request $request)
+    /**
+     * Display a listing of the resource.
+     */
+    public function list()
     {
-        $validated = $request->validate([
-            'unit_assignment'  => 'required|string|max:255',
-            'national_id' => 'required|numeric|digits:12',
-            'name' => 'required|string|max:255',
-            'firstname' => 'nullable|string|max:255',
-            'national_id' => 'required|numeric|digits:12|unique:profiles,national_id',
-        ]);
+        $militaryDetails = MilitaryDetail::with(['profile', 'rank'])
+            ->join('profiles', 'military_details.profile_id', '=', 'profiles.id')
+            ->join('ranks', 'military_details.rank_id', '=', 'ranks.id')
+            ->join('units', 'military_details.unit_id', '=', 'units.id')
+            ->orderBy('military_details.unit_id')
+            ->orderBy('military_details.rank_id')
+            ->orderBy('military_details.rank_date')
+            ->orderBy('military_details.service_entry_date')
+            ->orderBy('profiles.birth_date')
+            ->get();
 
-        $exists = Profile::where('national_id', $validated['national_id'])->exists();
-        return response()->json(['exists' => $exists]);
+        $groupedMilitaryDetails = $militaryDetails->groupBy('unit_name');
+
+        return view("personnel.profile.list", compact('groupedMilitaryDetails'));
     }
 
     /**
@@ -89,381 +110,139 @@ class PersonnelController extends Controller
      */
 
     public function store(Request $request){
-
-    // Définition des règles de validation
-     $ProfileFillable = [
-            'name' => [
-                'required',
-                'string',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/',
-                'max:255'
-            ],
-            'firstname' => [
-                'nullable',
-                'string',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/',
-                'max:255'
-            ],
-            'gender' => 'nullable|string|max:255',
-            'birth_date' => 'nullable|date',
-            'birth_place' => 'nullable|string|max:255',
-            'national_id' => 'required|numeric|digits:12|unique:profiles,national_id',
-            'issue_date' => 'nullable|date',
-            'issue_place' => 'nullable|string|max:255',
-            'duplicate_date' => 'nullable|date',
-            'duplicate_place' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'blood_group' => 'nullable|string|max:255',
-            'size' => 'nullable|integer|min:150',
-            'father_name' => 'nullable|string|max:255',
-            'mother_name' => 'nullable|string|max:255',
-            'marital_status' => 'nullable|string|max:255',
-            'fallback_address' => 'nullable|string|max:255',
-            'driver_license' => 'nullable|string|max:255',
-            'practiced_sport' => 'nullable|string',
-            'hobbies' => 'nullable|string',
-        ];
-
-        $MilitaryFillable = [
-            'army' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
-            'position_date' => 'nullable|date',
-            'position_reference' => 'nullable|string|max:255',
-            'military_registration_number' => 'required|string|size:6',
-            'military_id_card_number' => 'nullable|string|size:6',
-            'finance_registration_number' => 'nullable|string|max:255',
-            'recruitment_origin' => 'nullable|string|max:255',
-            'recruitment_promotion' => 'nullable|string|max:255',
-            'service_entry_date' => 'required|date',
-            'corps_assignment' => 'required|string|max:255',
-            'unit_assignment' => 'required|string|max:255',
-            'rank' => 'required|string|max:255',
-            'rank_date' => 'nullable|date',
-            'current_function' => 'nullable|string|max:255',
-            'specialty' => 'nullable|string|max:255',
-            'exact_assignment' => 'nullable|string|max:255',
-            'interruption_start_date' => 'nullable|date',
-            'interruption_end_date' => 'nullable|date',
-            'military_status' => 'nullable|string|max:255',
-            'military_status_reference' => 'nullable|string|max:255',
-            'military_driver_license' => 'nullable|string|max:255',
-            'other_information' => 'nullable|string',
-        ];
-
-        $SpouseFillable = [
-            'spouse_name' => 'required|array',
-            'spouse_maiden_name' => 'nullable|array',
-            'spouse_firstname' => 'nullable|array',
-            'spouse_birth_date' => 'nullable|array',
-            'spouse_birth_place' => 'nullable|array',
-            'spouse_profession' => 'nullable|array',
-            'marriage_authorization' => 'nullable|array',
-            'spouse_name.*' => [
-                'required',
-                'string',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/',
-                'max:255'
-            ],
-            'spouse_maiden_name.*' => [
-                'nullable',
-                'string',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/',
-                'max:255'
-            ],
-            'spouse_firstname.*' => [
-                'nullable',
-                'string',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/',
-                'max:255'
-            ],
-            'spouse_birth_date.*' => 'nullable|date',
-            'spouse_birth_place.*' => 'nullable|string|max:255',
-            'spouse_profession.*' => 'nullable|string|max:255',
-            'marriage_authorization.*' => 'nullable|string|max:255',
-        ];
-
-        $ChildFillable = [
-            'child_full_name' => 'required|array',
-            'child_full_name.*' => [
-                'required',
-                'string',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/',
-                'max:255'
-            ],
-            'child_birth_date' => 'required|array',
-            'child_birth_date.*' => 'required|date',
-            'child_birth_place' => 'nullable|array',
-            'child_birth_place.*' => 'nullable|string|max:255',
-            'child_gender' => 'required|array',
-            'child_gender.*' => 'required|in:M,F',
-            'child_status' => 'nullable|array',
-            'child_status.*' => 'nullable|in:LG,RE,AD,NL',
-        ];
-
-
-        $SchoolFillable = [
-            'school_name' => 'required|array',
-            'school_name.*' => 'required|string|max:255',
-            'duration' => 'required|array',
-            'duration.*' => 'required|string|max:255',
-            'diploma' => 'nullable|array',
-            'diploma.*' => 'nullable|string',
-        ];
-
-        $AcademyFillable = [
-            'academy_name' => 'required|array',
-            'academy_name.*' => 'required|string|max:255',
-            'academy_duration' => 'required|array',
-            'academy_duration.*' => 'required|string|max:255',
-            'academy_diploma' => 'nullable|array',
-            'academy_diploma.*' => 'nullable|string',
-        ];
-
-        $CareerFillable = [
-            'company_name' => 'required|array',
-            'job_title' => 'required|array',
-            'start_date' => 'required|array',
-            'end_date' => 'nullable|array',
-            'description' => 'nullable|array',
-            'company_name.*' => 'required|string|max:255',
-            'job_title.*' => 'required|string|max:255',
-            'start_date.*' => 'required|date',
-            'end_date.*' => 'nullable|date',
-            'description.*' => 'nullable|string',
-        ];
-
-        $RankFillable = [
-            'history_rank' => 'required|array',
-            'history_promotion_date' => 'required|array',
-            'history_rank_reference' => 'nullable|array',
-            'history_rank.*' => 'required|string|max:255',
-            'history_promotion_date.*' => 'required|date',
-            'history_rank_reference.*' => 'nullable|string|max:255',
-        ];
-
-        $DistinctionFillable = [
-            'honorary_title' => 'required|array',
-            'honorary_promotion' => 'required|array',
-            'honorary_reference' => 'nullable|array',
-            'honorary_title.*' => 'required|string|max:255',
-            'honorary_promotion.*' => 'required|string|max:255',
-            'honorary_reference.*' => 'nullable|string|max:255',
-        ];
-
-        $CampaignFillable = [
-            'campaign_title' => 'required|array',
-            'campaign_period' => 'required|array',
-            'campaign_locations' => 'required|array',
-            'campaign_title.*' => 'required|string|max:255',
-            'campaign_period.*' => 'required|string|max:255',
-            'campaign_locations.*' => 'required|string|max:255',
-        ];
-
-       /*      // Valider les règles de validation de base
-            $ValidateFields = $request->validate(
-                array_merge($ProfileFillable, $MilitaryFillable)
-            ); */
-
-        // Valider les règles de validation de base
-       $request->validate(
-                array_merge(
-                    $ProfileFillable,
-                    $MilitaryFillable,
-                    $request->has('spouse_name') ? $SpouseFillable : [],
-                    $request->has('child_full_name') ? $ChildFillable : [],
-                    $request->has('school_name') ? $SchoolFillable : [],
-                    $request->has('academy_name') ? $AcademyFillable : [],
-                    $request->has('company_name') ? $CareerFillable : [],
-                    $request->has('history_rank') ? $RankFillable : [],
-                    $request->has('honorary_title') ? $DistinctionFillable : [],
-                    $request->has('campaign_title') ? $CampaignFillable : []
-                )
-            );
-            return redirect()->route('personnel.index')->with('success', 'Profil créé avec succès.');
-
-        // Traitez les données validées
-        // $ValidateFields contient maintenant toutes les données validées
-
-                /* $militaryDetail = MilitaryDetail::create($validatedMilitaryDetail); */
-
-            /* // **Étape 3 : Validation et création du conjoint**
-            if ($request->has('spouse_detail')) {
-                $validatedSpouseDetail = $request->validate([
-                    'spouse_name' => 'required|string|max:255',
-                    'spouse_maiden_name' => 'nullable|string|max:255',
-                    'spouse_firstname' => 'nullable|string|max:255',
-                    'spouse_birth_date' => 'nullable|date',
-                    'spouse_birth_place' => 'nullable|string|max:255',
-                    'spouse_profession' => 'nullable|string|max:255',
-                    'marriage_authorization' => 'nullable|string|max:255',
-                ]);
-
-               /* $spouseDetail = SpouseDetail::create($validatedSpouseDetail); */
-           /*  } */
-
-            // **Étape 4 : Validation et création des enfants**
-           /*  if ($request->has('children_details')) {
-                foreach ($request->children_details as $child) {
-                    $validatedChild = $request->validate([
-                        'child_full_name' => 'required|string|max:255',
-                        'child_birth_date' => 'required|date',
-                        'child_birth_place' => 'nullable|string|max:255',
-                        'child_gender' => 'required|string|max:255',
-                        'child_status' => 'nullable|string|max:255',
-                    ]);
-
-                    /* $profile->childrenDetails()->create($validatedChild); */
-            /*     }
-            } */
-
-            // **Étape 5 : Validation et création des parcours académiques**
-            /* if ($request->has('academic_paths')) {
-                foreach ($request->academic_paths as $path) {
-                    $validatedPath = $request->validate([
-                        'school_name' => 'required|string|max:255',
-                        'duration' => 'required|string|max:255',
-                        'diploma' => 'nullable|string',
-                    ]);
-
-                    /* $profile->academicPaths()->create($validatedPath); */
-            /*     }
-            } */
-
-             // **Étape 5 : Validation et création des parcours militaire**
-            /*  if ($request->has('military_paths')) {
-                foreach ($request->military_paths as $path) {
-                    $validatedPath = $request->validate([
-                        'academy_school_name' => 'required|string|max:255',
-                        'academy_duration' => 'required|string|max:255',
-                        'academy_diploma' => 'nullable|string',
-                    ]);
-
-                   /*  $profile->militaryPaths()->create($validatedPath); */
-              /*   }
-            } */
-
-            // **Étape 6 : Parcours professionnels**
-           /*  if ($request->has('professional_careers')) {
-                foreach ($request->professional_careers as $career) {
-                    $validatedCareer = $request->validate([
-                        'company_name' => 'required|string|max:255',
-                        'job_title' => 'required|string|max:255',
-                        'start_date' => 'required|date',
-                        'end_date' => 'nullable|date',
-                        'description' => 'nullable|string',
-                    ]);
-
-                    /* $profile->professionalCareers()->create($validatedCareer); */
-               /*  }
-            } */
-
-            // **Étape 7 : Grades**
-            /* if ($request->has('rank_histories')) {
-                foreach ($request->rank_histories as $rank) {
-                    $validatedRank = $request->validate([
-                        'history_rank' => 'required|string|max:255',
-                        'history_promotion_date' => 'required|date',
-                        'history_rank_reference' => 'nullable|string|max:255',
-                    ]);
-
-                    /* $profile->rankHistories()->create($validatedRank); */
-                /* }
-            } */
-
-            // **Étape 8 : Distinctions honorifiques**
-            /* if ($request->has('honorary_distinctions')) {
-                foreach ($request->honorary_distinctions as $distinction) {
-                    $validatedDistinction = $request->validate([
-                        'honorary_title' => 'required|string|max:255',
-                        'honorary_promotion' => 'required|string|max:255',
-                        'honorary_reference' => 'nullable|string|max:255',
-                    ]);
-
-                    /* $profile->honoraryDistinctions()->create($validatedDistinction); */
-               /*  }
-            } */
-
-            // **Étape 9 : Campagnes militaires**
-            /* if ($request->has('military_campaigns')) {
-                foreach ($request->military_campaigns as $campaign) {
-                    $validatedCampaign = $request->validate([
-                        'campaign_title' => 'required|string|max:255',
-                        'campaign_period' => 'required|string|max:255',
-                        'campaign_locations' => 'required|string|max:255',
-                    ]);
-
-                    /* $profile->militaryCampaigns()->create($validatedCampaign); */
-                /* }
-            } */
-
-        /*     return redirect()->route('personnel.index')->with('success', 'Profil créé avec succès.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Une erreur s\'est produite : ' . $e->getMessage()]);
-        /* /* } */
-     /* }   */
-    }
-
-
-
-    public function storeOld(Request $request)
-    {
         $this->authorize("create {$this->entity}");
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|regex:/^[A-ZÀ-ÖØ-öø-ÿa-z\s\'\-]+$/u',
-            'firstname' => 'nullable|string|max:255',
-            'gender' => 'nullable|string|max:255',
-            'birth_date' => 'nullable|date',
-            'birth_place' => 'nullable|string|max:255',
-            'national_id' => 'required|numeric|digits:12|unique:profiles,national_id',
-            'issue_date' => 'nullable|date',
-            'issue_place' => 'nullable|string|max:255',
-            'duplicate_date' => 'nullable|date',
-            'duplicate_place' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:15|regex:/^\+?\d{9,15}$/',
-            'email' => 'nullable|email|max:255',
-            'blood_group' => 'nullable|string|max:10',
-            'size' => 'nullable|integer|min:1',
-            'father_name' => 'nullable|string|max:255',
-            'mother_name' => 'nullable|string|max:255',
-            'marital_status' => 'nullable|string|max:255',
-            'fallback_address' => 'nullable|string|max:255',
-        ]);
+        $request->validate(
+                array_merge(
+                    ProfileFields::getFields(),
+                    MilitaryFields::getFields(),
+                    $request->has('spouse_name') ? SpouseFields::getFields() : [],
+                    $request->has('child_full_name') ? ChildrenFields::getFields() : [],
+                    $request->has('school_name') ? SchoolFields::getFields() : [],
+                    $request->has('academy_name') ? AcademyFields::getFields() : [],
+                    $request->has('company_name') ? CareerFields::getFields() : [],
+                    $request->has('history_rank') ? RankFields::getFields() : [],
+                    $request->has('honorary_title') ? HonoraryFields::getFields() : [],
+                    $request->has('campaign_title') ? CampaignFields::getFields() : []
+                )
+        );
 
-        // Génération d'un username unique
-        $username = $this->usernameGenerator->generateUniqueUsername($validated['name'], $validated['firstname']);
+        // **Étape 1 : Création du profil**
+        $Profile = Profile::create($request->only(ProfileFields::getFieldNames()));
 
-        // Génération d'un mot de passe aléatoire
-        $passwordRandom = $this->passwordGenerator->passwordGenerator(8);
+        // **Étape 2 : Création des détails militaires**
+        $Profile->militaryDetail()->create(
+            array_merge(
+                $request->only(MilitaryFields::getFieldNames()),
+                ['profile_id' => $Profile->id]
+            )
+        );
 
-        // Domain email
-        $domain = '@emmn.mg';
+        // **Étape 3 : Création du conjoint**
+        if ($request->has('spouse_name')) {
+            foreach ($request->spouse_name as $key => $spouse) {
+                $Profile->spouseDetails()->create([
+                    'profile_id' => $Profile->id,
+                    'spouse_name' => $spouse,
+                    'spouse_maiden_name' => $request->spouse_maiden_name[$key],
+                    'spouse_firstname' => $request->spouse_firstname[$key],
+                    'spouse_birth_date' => $request->spouse_birth_date[$key],
+                    'spouse_birth_place' => $request->spouse_birth_place[$key],
+                    'spouse_profession' => $request->spouse_profession[$key],
+                    'marriage_authorization' => $request->marriage_authorization[$key],
+                ]);
+            }
+        }
 
-        // Ajout du profil
-        Profile::create($validated);
+        // **Étape 4 : Création des enfants**
+        if ($request->has('child_full_name')) {
+            foreach ($request->child_full_name as $key => $child) {
+                $Profile->childrenDetails()->create([
+                    'profile_id' => $Profile->id,
+                    'child_full_name' => $child,
+                    'child_birth_date' => $request->child_birth_date[$key],
+                    'child_birth_place' => $request->child_birth_place[$key],
+                    'child_gender' => $request->child_gender[$key],
+                    'child_status' => $request->child_status[$key],
+                ]);
+            }
+        }
 
-        // Création de l'utilisateur
-        $user = User::create([
-            'name' => $validated['name'],
-            'firstname' => $validated['firstname'],
-            'email' => $username . $domain,
-            'username' => $username,
-            'password' => Hash::make($passwordRandom),
-        ]);
+        // **Étape 5 : Création des parcours académiques**
+        if ($request->has('school_name')) {
+            foreach ($request->school_name as $key => $school) {
+                $Profile->academicPaths()->create([
+                    'profile_id' => $Profile->id,
+                    'school_name' => $school,
+                    'duration' => $request->duration[$key],
+                    'diploma' => $request->diploma[$key],
+                ]);
+            }
+        }
 
-        // Stockage du mot de passe généré dans PasswordInit
-        PasswordInit::create([
-            'user_id' => $user->id,
-            'password' => $passwordRandom,
-        ]);
+        // **Étape 6 : Création des parcours militaire**
+        if ($request->has('academy_name')) {
+            foreach ($request->academy_name as $key => $academy) {
+                $Profile->militaryPaths()->create([
+                    'profile_id' => $Profile->id,
+                    'academy_name' => $academy,
+                    'academy_duration' => $request->academy_duration[$key],
+                    'academy_diploma' => $request->academy_diploma[$key],
+                ]);
+            }
+        }
 
-        // Création de l'événement Registered pour envoyer un email de bienvenue, etc.
-        event(new Registered($user));
+        // **Étape 7 : Parcours professionnels**
+        if ($request->has('company_name')) {
+            foreach ($request->company_name as $key => $company) {
+                $Profile->professionalCareers()->create([
+                    'profile_id' => $Profile->id,
+                    'company_name' => $company,
+                    'job_title' => $request->job_title[$key],
+                    'start_date' => $request->start_date[$key],
+                    'end_date' => $request->end_date[$key],
+                    'description' => $request->description[$key],
+                ]);
+            }
+        }
 
+        // **Étape 8 : Grades**
+        if ($request->has('history_rank')) {
+            foreach ($request->history_rank as $key => $rank) {
+                $Profile->rankHistories()->create([
+                    'profile_id' => $Profile->id,
+                    'history_rank' => $rank,
+                    'history_promotion_date' => $request->history_promotion_date[$key],
+                    'history_rank_reference' => $request->history_rank_reference[$key],
+                ]);
+            }
+        }
+
+        // **Étape 9 : Distinctions honorifiques**
+        if ($request->has('honorary_title')) {
+            foreach ($request->honorary_title as $key => $title) {
+                $Profile->honoraryDistinctions()->create([
+                    'profile_id' => $Profile->id,
+                    'honorary_title' => $title,
+                    'honorary_promotion' => $request->honorary_promotion[$key],
+                    'honorary_reference' => $request->honorary_reference[$key],
+                ]);
+            }
+        }
+
+        // **Étape 10 : Campagnes militaires**
+        if ($request->has('campaign_title')) {
+            foreach ($request->campaign_title as $key => $title) {
+                $Profile->militaryCampaigns()->create([
+                    'profile_id' => $Profile->id,
+                    'campaign_title' => $title,
+                    'campaign_period' => $request->campaign_period[$key],
+                    'campaign_locations' => $request->campaign_locations[$key],
+                ]);
+            }
+        }
+
+        return redirect()->route('personnel.index');
     }
 
     /**
@@ -471,9 +250,93 @@ class PersonnelController extends Controller
      */
     public function show(string $id)
     {
-        $profile = Profile::findOrFail($id);
-        return view('personnel.show', compact('profile'));
+        $this->authorize("view {$this->entity}");
+
+        // Chargement du profil avec toutes les relations nécessaires, y compris 'rank'
+        $profile = Profile::with([
+            'militaryDetail',
+            'academicPaths',
+            'militaryPaths',
+            'professionalCareers',
+            'childrenDetails',
+            'spouseDetails',
+            'rankHistories',
+            'honoraryDistinctions',
+            'militaryCampaigns',
+        ])->findOrFail($id);
+
+        $profileRank = Rank::findOrFail($profile->militaryDetail->rank_id);
+        $profileUnit = Unit::findOrFail($profile->militaryDetail->unit_id);
+
+        // Calculs pour l'état des services
+        $referenceDate = now();
+
+        // Calcul de l'âge
+        $age = $profile->birth_date ? $profile->birth_date->diffInYears($referenceDate) : null;
+
+        // Calcul de l'ancienneté
+        $serviceStartDate = $profile->militaryDetail->service_entry_date;
+        $interruptionDuration = 0;
+
+        if ($profile->militaryDetail->interruption_start_date && $profile->militaryDetail->interruption_end_date) {
+            $interruptionDuration = $profile->militaryDetail->interruption_start_date->diffInDays($profile->militaryDetail->interruption_end_date);
+        }
+
+        $serviceSeniority = $serviceStartDate ? $serviceStartDate->diffInDays($referenceDate) - $interruptionDuration : null;
+
+         // Calcul de l'ancienneté de port de grade
+        $rankSeniority = $profile->militaryDetail->rank_date ? $profile->militaryDetail->rank_date->diffInDays($referenceDate) : null;
+
+        // Calcul de la date de fin de carrière
+        $careerEndDate = null;
+        if ($profile->birth_date && $profile->militaryDetail->rank_id && $profileRank->rank_age_limit) {
+            $careerEndDate = $profile->birth_date->addYears($profileRank->rank_age_limit);
+        }
+
+        return view('personnel.profile.show', compact('profile', 'profileRank', 'profileUnit', 'referenceDate', 'age', 'serviceSeniority', 'rankSeniority', 'careerEndDate'));
     }
+
+    /**
+     * Update calculation
+     */
+    public function updateCalculations(Request $request, string $id)
+    {
+        $profile = Profile::with('militaryDetail')->findOrFail($id);
+        $profileRank = Rank::findOrFail($profile->militaryDetail->rank_id);
+
+        $referenceDate = $request->input('reference_date', now());
+
+        // Calcul de l'âge
+        $age = $profile->birth_date ? $profile->birth_date->diffInYears($referenceDate) : null;
+
+        // Calcul de l'ancienneté
+        $serviceStartDate = $profile->militaryDetail->service_entry_date;
+        $interruptionDuration = 0;
+
+        if ($profile->militaryDetail->interruption_start_date && $profile->militaryDetail->interruption_end_date) {
+            $interruptionDuration = $profile->militaryDetail->interruption_start_date->diffInDays($profile->militaryDetail->interruption_end_date);
+        }
+
+        $serviceSeniority = $serviceStartDate ? $serviceStartDate->diffInDays($referenceDate) - $interruptionDuration : null;
+
+        // Calcul de l'ancienneté de port de grade
+        $rankSeniority = $profile->militaryDetail->rank_date ? $profile->militaryDetail->rank_date->diffInDays($referenceDate) : null;
+
+        // Calcul de la date de fin de carrière
+        $careerEndDate = null;
+        if ($profile->birth_date && $profile->militaryDetail->rank_id && $profileRank->rank_age_limit) {
+            $careerEndDate = $profile->birth_date->addYears($profileRank->rank_age_limit);
+        }
+
+        return response()->json([
+            'age' => $age,
+            'serviceSeniority' => $serviceSeniority,
+            'rankSeniority' => $rankSeniority,
+            'careerEndDate' => $careerEndDate ? $careerEndDate->format('d/m/Y') : null,
+        ]);
+    }
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -497,5 +360,23 @@ class PersonnelController extends Controller
     public function destroy(string $id)
     {
         $this->authorize("destroy {$this->entity}");
+
+        // Trouver le profil avec l'ID donné
+        $Profile = Profile::findOrFail($id);
+
+        try {
+            // Supprimer le profil
+            $Profile->delete();
+
+            // Retourne une réponse ou redirection avec un message de succès
+            return redirect()
+                ->route('personnel.index')
+                ->with('success', __('Le profil a été supprimé avec succès.'));
+        } catch (\Exception $e) {
+            // Gérer les exceptions et retourner un message d'erreur
+            return redirect()
+                ->route('personnel.index')
+                ->with('error', __('Une erreur s\'est produite lors de la suppression du profil.'));
+        }
     }
 }

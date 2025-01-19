@@ -62,8 +62,8 @@
                     <x-select-input id="child_gender_{{ $index }}" name="child_gender[]"
                                     class="{{ $errors->has('child_gender.' . $index) ? 'is-invalid' : '' }}">
                         <option value="">{{ __('Choisir à la sélection') }}</option>
-                        <option value="M" {{ old('child_gender.' . $index) == 'M' ? 'selected' : '' }}>{{ __('Masculin') }}</option>
-                        <option value="F" {{ old('child_gender.' . $index) == 'F' ? 'selected' : '' }}>{{ __('Féminin') }}</option>
+                        <option value="Masculin" {{ old('child_gender.' . $index) == 'Masculin' ? 'selected' : '' }}>{{ __('Masculin') }}</option>
+                        <option value="Féminin" {{ old('child_gender.' . $index) == 'Féminin' ? 'selected' : '' }}>{{ __('Féminin') }}</option>
                     </x-select-input>
                     <x-input-error class="mt-2" :messages="$errors->get('child_gender.' . $index)" />
                 </div>
@@ -79,10 +79,10 @@
                     <x-select-input id="child_status_{{ $index }}" name="child_status[]"
                                     class="{{ $errors->has('child_status.' . $index) ? 'is-invalid' : '' }}">
                         <option value="">{{ __('Choisir à la sélection') }}</option>
-                        <option value="LG" {{ old('child_status.' . $index) == 'LG' ? 'selected' : '' }}>{{ __('Légitime') }}</option>
-                        <option value="RE" {{ old('child_status.' . $index) == 'RE' ? 'selected' : '' }}>{{ __('Reconnu') }}</option>
-                        <option value="AD" {{ old('child_status.' . $index) == 'AD' ? 'selected' : '' }}>{{ __('Adopté') }}</option>
-                        <option value="NL" {{ old('child_status.' . $index) == 'NL' ? 'selected' : '' }}>{{ __('Non légitime') }}</option>
+                        <option value="Légitime" {{ old('child_status.' . $index) == 'Légitime' ? 'selected' : '' }}>{{ __('Légitime') }}</option>
+                        <option value="Reconnu" {{ old('child_status.' . $index) == 'Reconnu' ? 'selected' : '' }}>{{ __('Reconnu') }}</option>
+                        <option value="Adopté" {{ old('child_status.' . $index) == 'Adopté' ? 'selected' : '' }}>{{ __('Adopté') }}</option>
+                        <option value="Non légitime" {{ old('child_status.' . $index) == 'Non légitime' ? 'selected' : '' }}>{{ __('Non légitime') }}</option>
                     </x-select-input>
                     <x-input-error class="mt-2" :messages="$errors->get('child_status.' . $index)" />
                 </div>
@@ -152,8 +152,8 @@
         <div class="col-md-7">
             <x-select-input id="child_gender" name="child_gender[]">
                 <option value="">{{ __('Choisir à la sélection') }}</option>
-                <option value="M">{{ __('Masculin') }}</option>
-                <option value="F">{{ __('Féminin') }}</option>
+                <option value="Masculin">{{ __('Masculin') }}</option>
+                <option value="Féminin">{{ __('Féminin') }}</option>
             </x-select-input>
         </div>
 
@@ -167,10 +167,10 @@
         <div class="col-md-7">
             <x-select-input id="child_status" name="child_status[]">
                 <option value="">{{ __('Choisir à la sélection') }}</option>
-                <option value="LG">{{ __('Légitime') }}</option>
-                <option value="RE">{{ __('Reconnu') }}</option>
-                <option value="AD">{{ __('Adopté') }}</option>
-                <option value="NL">{{ __('Non légitime') }}</option>
+                <option value="Légitime">{{ __('Légitime') }}</option>
+                <option value="Reconnu">{{ __('Reconnu') }}</option>
+                <option value="Adopté">{{ __('Adopté') }}</option>
+                <option value="Non légitime">{{ __('Non légitime') }}</option>
             </x-select-input>
         </div>
 

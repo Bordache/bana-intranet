@@ -12,7 +12,13 @@ class Rank extends Model
     protected $table = 'ranks';
 
     protected $fillable = [
-        'name',
-        'abbreviate'
+        'rank_name',
+        'rank_abbreviate'
     ];
+
+   public function militaryDetails()
+    {
+        return $this->hasMany(MilitaryDetail::class, 'rank_id', 'id');
+    }
+
 }

@@ -31,9 +31,23 @@ class ChildrenDetail extends Model
         'child_status',
     ];
 
+    /**
+     * Les attributs qui doivent être convertis en types natifs.
+     *
+     * @var array
+     */
+
+    protected $casts = [
+        'child_birth_date' => 'date',
+    ];
+
+    /**
+     * Récupère le profil associé à l'enfant.
+     */
+
     public function profile()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
 }
 

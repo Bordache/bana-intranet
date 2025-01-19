@@ -36,8 +36,8 @@ class MilitaryDetail extends Model
         'recruitment_promotion',
         'service_entry_date',
         'corps_assignment',
-        'unit_assignment',
-        'rank',
+        'unit_id',
+        'rank_id',
         'rank_date',
         'current_function',
         'specialty',
@@ -56,6 +56,13 @@ class MilitaryDetail extends Model
      * @var array
      */
 
+     protected $casts = [
+        'position_date' => 'date',
+        'service_entry_date' => 'date',
+        'rank_date' => 'date',
+        'interruption_start_date' => 'date',
+        'interruption_end_date' => 'date',
+    ];
 
     /**
      * Relation : Un profil a un utilisateur associé.
@@ -64,7 +71,13 @@ class MilitaryDetail extends Model
      */
     public function profile()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
+
+    public function rank()
+    {
+        return $this->belongsTo(Rank::class, 'rank_id', 'id'); // 'rank_id' est la clé étrangère dans military_details
+    }
+
 }
 

@@ -5,16 +5,16 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="d-flex">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="{{ route('personnel.index') }}">Home</a></li>
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="d-flex justify-content-between align-items-center">
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item"><a href="{{ route('personnel.index') }}">Base de données</a></li>
                   <li class="breadcrumb-item active" aria-current="page">Nouveau profil</li>
                 </ol>
                 <div class="text-end">
-                    <button class="btn btn-secondary" id="expandAllBtn">Tout déplier</button>
-                    <button class="btn btn-secondary d-none" id="drapeAllBtn">Tout replier</button>
+                    <button class="btn btn-secondary btn-sm" id="expandAllBtn">Tout déplier</button>
+                    <button class="btn btn-secondary btn-sm d-none" id="drapeAllBtn">Tout replier</button>
                 </div>
             </nav>
             <!-- Étape 1 : Etat civil -->
