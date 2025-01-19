@@ -135,10 +135,11 @@
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
-                                                        {{ __('Informations générales') }}</h3>
+                                                        {{ __('Etat civil') }}</h3>
                                                     <a href="{{ route('personnel.edit', $profile->id) }}"
                                                         class="btn btn-sm btn-warning">Modifier</a>
                                                 </div>
+                                                <hr class="my-3">
                                                 <div class="row g-3">
                                                     <div class="col-md-6">
                                                         <div class="my-2">
@@ -290,6 +291,7 @@
                                                     <a href="{{ route('personnel.edit', $profile->id) }}"
                                                         class="btn btn-sm btn-warning">Modifier</a>
                                                 </div>
+                                                <hr class="my-3">
                                                 <div class="row g-3">
                                                     <div class="col-md-6">
                                                         <div class="my-2">
@@ -457,6 +459,7 @@
                                                         {{ $profile->spouseDetails->isEmpty() ? 'Ajouter' : 'Modifier' }}
                                                     </a>
                                                 </div>
+                                                <hr class="my-3">
                                                 @forelse ($profile->spouseDetails as $spouse)
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm font-medium text-gray-900">
@@ -522,6 +525,7 @@
                                                         {{ $profile->childrenDetails->isEmpty() ? 'Ajouter' : 'Modifier' }}
                                                     </a>
                                                 </div>
+                                                <hr class="my-3">
                                                 @forelse ($profile->childrenDetails as $child)
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm font-medium text-gray-900">
@@ -576,6 +580,7 @@
                                                         {{ $profile->academicPaths->isEmpty() ? 'Ajouter' : 'Modifier' }}
                                                     </a>
                                                 </div>
+                                                <hr class="my-3">
                                                 @forelse ($profile->academicPaths as $education)
                                                     <div class="row g-3">
                                                         <div class="col-md-3">
@@ -625,6 +630,7 @@
                                                         {{ $profile->militaryPaths->isEmpty() ? 'Ajouter' : 'Modifier' }}
                                                     </a>
                                                 </div>
+                                                <hr class="my-3">
                                                 @forelse ($profile->militaryPaths as $military)
                                                     <div class="row g-3">
                                                         <div class="col-md-3">
@@ -674,6 +680,7 @@
                                                         {{ $profile->professionalCareers->isEmpty() ? 'Ajouter' : 'Modifier' }}
                                                     </a>
                                                 </div>
+                                                <hr class="my-3">
                                                 @forelse ($profile->professionalCareers as $professional)
                                                     <div class="row g-3">
                                                         <div class="col-md-2">
@@ -739,6 +746,7 @@
                                                         {{ $profile->rankHistories->isEmpty() ? 'Ajouter' : 'Modifier' }}
                                                     </a>
                                                 </div>
+                                                <hr class="my-3">
                                                 @forelse ($profile->rankHistories as $rank)
                                                     <div class="row g-3">
                                                         <div class="col-md-2">
@@ -788,6 +796,7 @@
                                                         {{ $profile->honoraryDistinctions->isEmpty() ? 'Ajouter' : 'Modifier' }}
                                                     </a>
                                                 </div>
+                                                <hr class="my-3">
                                                 @forelse ($profile->honoraryDistinctions as $award)
                                                     <div class="row g-3">
                                                         <div class="col-md-3">
@@ -836,6 +845,7 @@
                                                         {{ $profile->militaryCampaigns->isEmpty() ? 'Ajouter' : 'Modifier' }}
                                                     </a>
                                                 </div>
+                                                <hr class="my-3">
                                                 @forelse ($profile->militaryCampaigns as $campaign)
                                                     <div class="row g-3">
                                                         <div class="col-md-3">
@@ -887,14 +897,98 @@
                             <!-- Décompte -->
                             <div class="tab-pane fade" id="nav-service-status" role="tabpanel"
                                 aria-labelledby="nav-service-status-tab">
-                                <!-- Formulaire pour la date de référence -->
-                                <form id="referenceDateForm">
-                                    <div class="mb-3 d-flex flex-column align-items-end">
-                                        <x-input-label for="reference_date" :value="__('Date de référence')" />
-                                        <x-text-input id="reference_date" name="reference_date" type="date" :value="now()->format('Y-m-d')" />
+                                <div class="row g-3">
+                                    <div class="col-md-10">
+                                        <div class="d-flex align-items-start">
+                                            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                              <button class="nav-link active text-start" id="v-pills-serv-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-serv-stat" type="button" role="tab" aria-controls="v-pills-serv-stat" aria-selected="true">Etat de service</button>
+                                              <button class="nav-link text-start" id="v-pills-perm-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-perm-stat" type="button" role="tab" aria-controls="v-pills-perm-stat" aria-selected="false">Congés et permissions</button>
+                                              <button class="nav-link text-start" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
+                                              <button class="nav-link text-start" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
+                                            </div>
+                                            <div class="tab-content w-100" id="v-pills-tabContent">
+                                                <!-- Etat de service -->
+                                                <div class="tab-pane fade show active" id="v-pills-serv-stat" role="tabpanel" aria-labelledby="v-pills-serv-stat-tab">
+                                                    <div id="etatService" class="border border-gray-200 p-3 mb-4">
+                                                        <h3 class="text-lg font-medium text-gray-900">
+                                                            {{ __('Etat de service') }}</h3>
+                                                        <hr class="my-3">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-3">
+                                                                <div class="my-2">
+                                                                    <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                        {{ __('Age') }}</p>
+                                                                    <p id="age" class="mt-1 text-sm text-gray-600">
+                                                                        {{ $age ? floor($age) . ' ans' : '-' }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="my-2">
+                                                                    <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                        {{ __('Ancienneté de service') }}</p>
+                                                                    <p id="serviceSeniority" class="mt-1 text-sm text-gray-600">
+                                                                        @if ($serviceSeniority)
+                                                                            {{ floor($serviceSeniority / 365) }} {{ __('an' . (floor($serviceSeniority / 365) > 1 ? 's' : '')) }},
+                                                                            {{ floor(($serviceSeniority % 365) / 30) }} {{ __('mois' . (floor(($serviceSeniority % 365) / 30) > 1 ? '' : '')) }},
+                                                                            {{ ($serviceSeniority % 365) % 30 }} {{ __('jour' . (($serviceSeniority % 365) % 30 > 1 ? 's' : '')) }}
+                                                                        @else
+                                                                            -
+                                                                        @endif
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="my-2">
+                                                                    <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                        {{ __('Ancienneté de port de grade') }}</p>
+                                                                    <p id="rankSeniority" class="mt-1 text-sm text-gray-600">
+                                                                        @if ($rankSeniority)
+                                                                            {{ floor($rankSeniority / 365) }} {{ __('an' . (floor($rankSeniority / 365) > 1 ? 's' : '')) }},
+                                                                            {{ floor(($rankSeniority % 365) / 30) }} {{ __('mois' . (floor(($rankSeniority % 365) / 30) > 1 ? '' : '')) }},
+                                                                            {{ ($rankSeniority % 365) % 30 }} {{ __('jour' . (($rankSeniority % 365) % 30 > 1 ? 's' : '')) }}
+                                                                        @else
+                                                                            -
+                                                                        @endif
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="my-2">
+                                                                    <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                        {{ __('Date de fin de carrière') }}</p>
+                                                                    <p id="careerEndDate" class="mt-1 text-sm text-gray-600">
+                                                                        {{ $careerEndDate ? $careerEndDate->format('d/m/Y') : '-' }}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Congés et permissions -->
+                                                <div class="tab-pane fade" id="v-pills-perm-stat" role="tabpanel" aria-labelledby="v-pills-perm-stat-tab">...</div>
+
+                                                <!-- Messages -->
+                                                <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
+
+                                                <!-- Settings -->
+                                                <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </form>
-                                <div class="d-flex align-items-start">
+                                    <div class="col-md-2">
+                                        <form id="referenceDateForm">
+                                            <div class="mb-3">
+                                                <x-input-label for="reference_date" :value="__('Date de référence')" />
+                                                <x-text-input id="reference_date" name="reference_date" type="date" :value="now()->format('Y-m-d')" />
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+
+
+                                {{-- <div class="d-flex align-items-start">
                                     <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                         <button class="nav-link active text-start" id="v-pills-service-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-service-stat" type="button" role="tab" aria-controls="v-pills-service-stat" aria-selected="true">Etat de service</button>
                                         <button class="nav-link text-start" id="v-pills-perm-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-perm-stat" type="button" role="tab" aria-controls="v-pills-perm-stat" aria-selected="false">Congés et permissions</button>
@@ -906,140 +1000,68 @@
                                         <div class="tab-pane fade show active" id="v-pills-service-stat" role="tabpanel" aria-labelledby="v-pills-service-stat-tab">
                                             <div id="etatService" class="border border-gray-200 p-3 mb-4">
                                                 <h3 class="text-lg font-medium text-gray-900">
-                                                    {{ __('Informations générales') }}</h3>
-
-                                                <div class="my-2">
-                                                    <p class="mt-1 text-sm font-medium text-gray-900">
-                                                        {{ __('Âge') }}</p>
-                                                    <p id="age" class="mt-1 text-sm text-gray-600">
-                                                        {{ floor($age) ?? '-' }} ans</p>
-                                                </div>
-                                                <div class="my-2">
-                                                    <p class="mt-1 text-sm font-medium text-gray-900">
-                                                        {{ __('Ancienneté de service') }}</p>
-                                                    <p id="serviceSeniority" class="mt-1 text-sm text-gray-600">
-                                                        @if ($serviceSeniority)
-                                                            {{ floor($serviceSeniority / 365) }} {{ __('an' . (floor($serviceSeniority / 365) > 1 ? 's' : '')) }},
-                                                            {{ floor(($serviceSeniority % 365) / 30) }} {{ __('mois' . (floor(($serviceSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                            {{ ($serviceSeniority % 365) % 30 }} {{ __('jour' . (($serviceSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                        @else
-                                                            -
-                                                        @endif
-                                                    </p>
-                                                </div>
-                                                <div class="my-2">
-                                                    <p class="mt-1 text-sm font-medium text-gray-900">
-                                                        {{ __('Ancienneté de port de grade') }}</p>
-                                                    <p id="rankSeniority" class="mt-1 text-sm text-gray-600">
-                                                        @if ($rankSeniority)
-                                                            {{ floor($rankSeniority / 365) }} {{ __('an' . (floor($rankSeniority / 365) > 1 ? 's' : '')) }},
-                                                            {{ floor(($rankSeniority % 365) / 30) }} {{ __('mois' . (floor(($rankSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                            {{ ($rankSeniority % 365) % 30 }} {{ __('jour' . (($rankSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                        @else
-                                                            -
-                                                        @endif
-                                                    </p>
-                                                </div>
-                                                <div class="my-2">
-                                                    <p class="mt-1 text-sm font-medium text-gray-900">
-                                                        {{ __('Date de fin de carrière') }}</p>
-                                                    <p id="careerEndDate" class="mt-1 text-sm text-gray-600">
-                                                        {{ $careerEndDate ? $careerEndDate->format('d/m/Y') : '-' }}
-                                                    </p>
+                                                    {{ __('Etat de service') }}</h3>
+                                                <hr class="my-3">
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                {{ __('Age') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                {{ floor($age) ?? '-' }} ans</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                {{ __('Ancienneté de service') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                @if ($serviceSeniority)
+                                                                    {{ floor($serviceSeniority / 365) }} {{ __('an' . (floor($serviceSeniority / 365) > 1 ? 's' : '')) }},
+                                                                    {{ floor(($serviceSeniority % 365) / 30) }} {{ __('mois' . (floor(($serviceSeniority % 365) / 30) > 1 ? '' : '')) }},
+                                                                    {{ ($serviceSeniority % 365) % 30 }} {{ __('jour' . (($serviceSeniority % 365) % 30 > 1 ? 's' : '')) }}
+                                                                @else
+                                                                    -
+                                                                @endif
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                {{ __('Ancienneté de port de grade') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                @if ($rankSeniority)
+                                                                    {{ floor($rankSeniority / 365) }} {{ __('an' . (floor($rankSeniority / 365) > 1 ? 's' : '')) }},
+                                                                    {{ floor(($rankSeniority % 365) / 30) }} {{ __('mois' . (floor(($rankSeniority % 365) / 30) > 1 ? '' : '')) }},
+                                                                    {{ ($rankSeniority % 365) % 30 }} {{ __('jour' . (($rankSeniority % 365) % 30 > 1 ? 's' : '')) }}
+                                                                @else
+                                                                    -
+                                                                @endif
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                {{ __('Date de fin de carrière') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                {{ $careerEndDate ? $careerEndDate->format('d/m/Y') : '-' }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            {{-- <div id="etatService">
-                                                <h2>{{ __('État des services') }}</h2>
-
-                                                <p><strong>{{ __('Âge :') }}</strong> <span id="age">{{ floor($age) ?? '-' }}</span> ans</p>
-
-                                                <p><strong>{{ __('Ancienneté de service :') }}</strong>
-                                                    <span id="serviceSeniority">
-                                                        @if ($serviceSeniority)
-                                                            {{ floor($serviceSeniority / 365) }} {{ __('an' . (floor($serviceSeniority / 365) > 1 ? 's' : '')) }},
-                                                            {{ floor(($serviceSeniority % 365) / 30) }} {{ __('mois' . (floor(($serviceSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                            {{ ($serviceSeniority % 365) % 30 }} {{ __('jour' . (($serviceSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                        @else
-                                                            -
-                                                        @endif
-                                                    </span>
-                                                </p>
-
-                                                <p><strong>{{ __('Ancienneté de port de grade :') }}</strong>
-                                                    <span id="rankSeniority">
-                                                        @if ($rankSeniority)
-                                                            {{ floor($rankSeniority / 365) }} {{ __('an' . (floor($rankSeniority / 365) > 1 ? 's' : '')) }},
-                                                            {{ floor(($rankSeniority % 365) / 30) }} {{ __('mois' . (floor(($rankSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                            {{ ($rankSeniority % 365) % 30 }} {{ __('jour' . (($rankSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                        @else
-                                                            -
-                                                        @endif
-                                                    </span>
-                                                </p>
-
-                                                <p><strong>{{ __('Date de fin de carrière :') }}</strong>
-                                                    <span id="careerEndDate">{{ $careerEndDate ? $careerEndDate->format('d/m/Y') : '-' }}</span>
-                                                </p>
-                                            </div> --}}
                                         </div>
 
                                         <!-- Congés et permissions -->
-                                        <div class="tab-pane fade" id="v-pills-perm-stat" role="tabpanel" aria-labelledby="v-pills-perm-stat-tab">...</div>
+                                        <div class="tab-pane fade" id="v-pills-perm-stat" role="tabpanel" aria-labelledby="v-pills-perm-stat-tab">Congés et permissions</div>
 
                                         <!-- Messages -->
-                                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
+                                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">Messages</div>
 
                                         <!-- Settings -->
-                                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
-                                    </div>
-                                  </div>
-
-                                {{-- <div class="container">
-                                    <h1>{{ __('État des services') }}</h1>
-
-                                    <!-- Formulaire pour la date de référence -->
-                                    <form id="referenceDateForm">
-                                        <div class="mb-3">
-                                            <label for="reference_date" class="form-label">{{ __('Date de Référence') }}</label>
-                                            <input type="date" id="reference_date" name="reference_date" class="form-control" value="{{ now()->format('Y-m-d') }}">
-                                        </div>
-                                    </form>
-
-                                    <hr>
-
-                                    <!-- Détails calculés -->
-                                    <div id="etatService">
-                                        <h2>{{ __('État des services') }}</h2>
-
-                                        <p><strong>{{ __('Âge :') }}</strong> <span id="age">{{ floor($age) ?? '-' }}</span> ans</p>
-
-                                        <p><strong>{{ __('Ancienneté de service :') }}</strong>
-                                            <span id="serviceSeniority">
-                                                @if ($serviceSeniority)
-                                                    {{ floor($serviceSeniority / 365) }} {{ __('an' . (floor($serviceSeniority / 365) > 1 ? 's' : '')) }},
-                                                    {{ floor(($serviceSeniority % 365) / 30) }} {{ __('mois' . (floor(($serviceSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                    {{ ($serviceSeniority % 365) % 30 }} {{ __('jour' . (($serviceSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                @else
-                                                    -
-                                                @endif
-                                            </span>
-                                        </p>
-
-                                        <p><strong>{{ __('Ancienneté de port de grade :') }}</strong>
-                                            <span id="rankSeniority">
-                                                @if ($rankSeniority)
-                                                    {{ floor($rankSeniority / 365) }} {{ __('an' . (floor($rankSeniority / 365) > 1 ? 's' : '')) }},
-                                                    {{ floor(($rankSeniority % 365) / 30) }} {{ __('mois' . (floor(($rankSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                    {{ ($rankSeniority % 365) % 30 }} {{ __('jour' . (($rankSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                @else
-                                                    -
-                                                @endif
-                                            </span>
-                                        </p>
-
-                                        <p><strong>{{ __('Date de fin de carrière :') }}</strong>
-                                            <span id="careerEndDate">{{ $careerEndDate ? $careerEndDate->format('d/m/Y') : '-' }}</span>
-                                        </p>
+                                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Settings</div>
                                     </div>
                                 </div> --}}
                             </div>
@@ -1079,15 +1101,15 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById('age').textContent = data.age
-                    ? `${Math.floor(data.age)} ans`
-                    : null;
+                    ? `${Math.floor(data.age)} an${Math.floor(data.age) > 1 ? 's' : '-'}`
+                    : '-';
                 document.getElementById('serviceSeniority').textContent = data.serviceSeniority
-                    ? `${Math.floor(data.serviceSeniority / 365)} ans, ${Math.floor((data.serviceSeniority % 365) / 30)} mois, ${data.serviceSeniority % 365 % 30} jours`
-                    : null;
+                    ? `${Math.floor(data.serviceSeniority / 365)} an${Math.floor(data.serviceSeniority / 365) > 1 ? 's' : ''}, ${Math.floor((data.serviceSeniority % 365) / 30)} mois, ${data.serviceSeniority % 365 % 30} jour${data.serviceSeniority % 365 % 30 > 1 ? 's' : ''}`
+                    : '-';
                 document.getElementById('rankSeniority').textContent = data.rankSeniority
-                    ? `${Math.floor(data.rankSeniority / 365)} ans, ${Math.floor((data.rankSeniority % 365) / 30)} mois, ${data.rankSeniority % 365 % 30} jours`
-                    : null;
-                document.getElementById('careerEndDate').textContent = data.careerEndDate ?? null;
+                    ? `${Math.floor(data.rankSeniority / 365)} an${Math.floor(data.rankSeniority / 365) > 1 ? 's' : ''}, ${Math.floor((data.rankSeniority % 365) / 30)} mois, ${data.rankSeniority % 365 % 30} jour${data.rankSeniority % 365 % 30 > 1 ? 's' : ''}`
+                    : '-';
+                document.getElementById('careerEndDate').textContent = data.careerEndDate ?? '-';
             })
             .catch(error => console.error('Erreur lors de la mise à jour :', error));
         }

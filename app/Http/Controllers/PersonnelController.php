@@ -344,6 +344,28 @@ class PersonnelController extends Controller
     public function edit(string $id)
     {
         $this->authorize("edit {$this->entity}");
+
+        $profile = Profile::with([
+            'militaryDetail',
+            'academicPaths',
+            'militaryPaths',
+            'professionalCareers',
+            'childrenDetails',
+            'spouseDetails',
+            'rankHistories',
+            'honoraryDistinctions',
+            'militaryCampaigns',
+        ])->findOrFail($id);
+
+        $profileRank = Rank::findOrFail($profile->militaryDetail->rank_id);
+        $profileUnit = Unit::findOrFail($profile->militaryDetail->unit_id);
+
+        $ranks = Rank::all();
+        $units = Unit::all();
+
+        /* $section = $request->query('section', 'profile'); */
+
+        return view('personnel.profile.edit', compact('profile', 'profileRank', 'profileUnit', 'ranks', 'units'/* , 'section' */));
     }
 
     /**
@@ -352,6 +374,8 @@ class PersonnelController extends Controller
     public function update(Request $request, string $id)
     {
         $this->authorize("edit {$this->entity}");
+
+
     }
 
     /**
