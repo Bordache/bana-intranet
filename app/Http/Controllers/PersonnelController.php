@@ -72,6 +72,24 @@ class PersonnelController extends Controller
         return view('personnel.index', compact('profiles'));
     }
 
+     /**
+     * Vérifie l'unicité de `national_id`.
+     *
+     * @param string $national_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkNationalId($national_id)
+    {
+        // Validation pour s'assurer que le paramètre est bien numérique et de longueur correcte
+        if (!is_numeric($national_id) || strlen($national_id) !== 12) {
+            return response()->json(['error' => 'Identifiant national invalide.'], 400);
+        }
+
+        $exists = Profile::where('national_id', $national_id)->exists();
+
+        return response()->json(['isUnique' => !$exists]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -267,6 +285,8 @@ class PersonnelController extends Controller
 
         $profileRank = Rank::findOrFail($profile->militaryDetail->rank_id);
         $profileUnit = Unit::findOrFail($profile->militaryDetail->unit_id);
+        $selectRanks = Rank::all();
+        $selectUnits = Unit::all();
 
         // Calculs pour l'état des services
         $referenceDate = now();
@@ -293,7 +313,10 @@ class PersonnelController extends Controller
             $careerEndDate = $profile->birth_date->addYears($profileRank->rank_age_limit);
         }
 
-        return view('personnel.profile.show', compact('profile', 'profileRank', 'profileUnit', 'referenceDate', 'age', 'serviceSeniority', 'rankSeniority', 'careerEndDate'));
+        // Gestion des sections
+        $tab = request('tab', 'personnal_information');
+
+        return view('personnel.profile.show', compact('profile', 'profileRank', 'profileUnit', 'selectRanks', 'selectUnits', 'referenceDate', 'age', 'serviceSeniority', 'rankSeniority', 'careerEndDate', 'tab'));
     }
 
     /**
@@ -375,6 +398,41 @@ class PersonnelController extends Controller
     {
         $this->authorize("edit {$this->entity}");
 
+        $profile = Profile::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'firstname' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|max:255',
+            'birth_date' => 'nullable|date',
+            'birth_place' => 'nullable|string|max:255',
+            'national_id' => 'required|numeric|digits:12',
+            'issue_date' => 'nullable|date',
+            'issue_place' => 'nullable|string|max:255',
+            'duplicate_date' => 'nullable|date',
+            'duplicate_place' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'blood_group' => 'nullable|string|max:255',
+            'size' => 'nullable|integer|min:150',
+            'father_name' => 'nullable|string|max:255',
+            'mother_name' => 'nullable|string|max:255',
+            'marital_status' => 'nullable|string|max:255',
+            'fallback_address' => 'nullable|string|max:255',
+            'driver_license' => 'nullable|string|max:255',
+            'practiced_sport' => 'nullable|string',
+            'hobbies' => 'nullable|string',
+        ]);
+
+        $profile->update($validated);
+
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'personnal_information',
+        ])->with('success', 'Etat civil mis à jour avec succès.');
+
+
 
     }
 
@@ -386,11 +444,11 @@ class PersonnelController extends Controller
         $this->authorize("destroy {$this->entity}");
 
         // Trouver le profil avec l'ID donné
-        $Profile = Profile::findOrFail($id);
+        $profile = Profile::findOrFail($id);
 
         try {
             // Supprimer le profil
-            $Profile->delete();
+            $profile->delete();
 
             // Retourne une réponse ou redirection avec un message de succès
             return redirect()

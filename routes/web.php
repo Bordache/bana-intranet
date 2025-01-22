@@ -11,6 +11,8 @@ use App\Http\Controllers\Auth\PasswordChangeController;
 
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\AcademicPathController;
+use App\Http\Controllers\MilitaryPathController;
+use App\Http\Controllers\ProfessionalCareerController;
 use App\Http\Controllers\MilitaryDetailController;
 use App\Http\Controllers\RankHistoryController;
 use App\Http\Controllers\MilitaryCampaignController;
@@ -19,9 +21,17 @@ use App\Http\Controllers\HonoraryDistinctionController;
 use App\Http\Controllers\SpouseDetailController;
 use Illuminate\Support\Facades\Route;
 
+use App\Models\Profile;
+
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/api/check-national-id/{national_id}', function ($national_id) {
+    $exists = Profile::where('national_id', $national_id)->exists();
+    return response()->json(['isUnique' => !$exists]);
+});
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -33,7 +43,6 @@ Route::get('/dashboard', function () {
 Route::get('/admin', function () {
     return view('administration');
 })->middleware(['auth', 'password.changed'])->name('admin');
-
 
 /*
 * Profile
@@ -94,9 +103,43 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         Route::put('/profile/{id}', [PersonnelController::class, 'update'])->name('personnel.update');
         Route::delete('/profile/{id}', [PersonnelController::class, 'destroy'])->name('personnel.destroy');
         Route::post('/profile/{id}/update-calculations', [PersonnelController::class, 'updateCalculations'])->name('personnel.update.calculations');
+/*         Route::get('/check-national-id/{national_id}', [PersonnelController::class, 'checkNationalId']); */
+
+        // Routes pour les renseignements militaires
+        Route::prefix('/profile/{profile}/military_details')->group(function () {
+            Route::get('/', [MilitaryDetailController::class, 'index'])->name('military_details.index');
+            Route::get('/create', [MilitaryDetailController::class, 'create'])->name('military_details.create');
+            Route::post('/', [MilitaryDetailController::class, 'store'])->name('military_details.store');
+            Route::get('/{id}', [MilitaryDetailController::class, 'show'])->name('military_details.show');
+            Route::get('/{id}/edit', [MilitaryDetailController::class, 'edit'])->name('military_details.edit');
+            Route::put('/{id}', [MilitaryDetailController::class, 'update'])->name('military_details.update');
+            Route::delete('/{id}', [MilitaryDetailController::class, 'destroy'])->name('military_details.destroy');
+        });
+
+        // Routes pour le conjoint
+        Route::prefix('/profile/{profile}/spouse_detail')->group(function () {
+            Route::get('/', [SpouseDetailController::class, 'index'])->name('spouse_detail.index');
+            Route::get('/create', [SpouseDetailController::class, 'create'])->name('spouse_detail.create');
+            Route::post('/', [SpouseDetailController::class, 'store'])->name('spouse_detail.store');
+            Route::get('/{id}', [SpouseDetailController::class, 'show'])->name('spouse_detail.show');
+            Route::get('/{id}/edit', [SpouseDetailController::class, 'edit'])->name('spouse_detail.edit');
+            Route::put('/{id}', [SpouseDetailController::class, 'update'])->name('spouse_detail.update');
+            Route::delete('/{id}', [SpouseDetailController::class, 'destroy'])->name('spouse_detail.destroy');
+        });
+
+        // Routes pour les renseignements des enfants
+        Route::prefix('/profile/{profile}/children_details')->group(function () {
+            Route::get('/', [ChildrenDetailController::class, 'index'])->name('children_details.index');
+            Route::get('/create', [ChildrenDetailController::class, 'create'])->name('children_details.create');
+            Route::post('/', [ChildrenDetailController::class, 'store'])->name('children_details.store');
+            Route::get('/{id}', [ChildrenDetailController::class, 'show'])->name('children_details.show');
+            Route::get('/{id}/edit', [ChildrenDetailController::class, 'edit'])->name('children_details.edit');
+            Route::put('/{id}', [ChildrenDetailController::class, 'update'])->name('children_details.update');
+            Route::delete('/{id}', [ChildrenDetailController::class, 'destroy'])->name('children_details.destroy');
+        });
 
         // Routes pour les parcours scolaires liés à un profil
-        Route::prefix('profile/{profile}/academic_paths')->group(function () {
+        Route::prefix('/profile/{profile}/academic_paths')->group(function () {
             Route::get('/', [AcademicPathController::class, 'index'])->name('academic_paths.index');
             Route::get('/create', [AcademicPathController::class, 'create'])->name('academic_paths.create');
             Route::post('/', [AcademicPathController::class, 'store'])->name('academic_paths.store');
@@ -106,44 +149,59 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::delete('/{id}', [AcademicPathController::class, 'destroy'])->name('academic_paths.destroy');
         });
 
-        // Routes pour les renseignements militaires
-        Route::prefix('profile/{profile}/military_details')->group(function () {
-            Route::get('/', [MilitaryDetailController::class, 'index'])->name('military_details.index');
-            Route::put('/', [MilitaryDetailController::class, 'update'])->name('military_details.update');
+        // Routes pour les parcours militaire liés à un profil
+        Route::prefix('/profile/{profile}/military_paths')->group(function () {
+            Route::get('/', [MilitaryPathController::class, 'index'])->name('military_paths.index');
+            Route::get('/create', [MilitaryPathController::class, 'create'])->name('military_paths.create');
+            Route::post('/', [MilitaryPathController::class, 'store'])->name('military_paths.store');
+            Route::get('/{id}', [MilitaryPathController::class, 'show'])->name('military_paths.show');
+            Route::get('/{id}/edit', [MilitaryPathController::class, 'edit'])->name('military_paths.edit');
+            Route::put('/{id}', [MilitaryPathController::class, 'update'])->name('military_paths.update');
+            Route::delete('/{id}', [MilitaryPathController::class, 'destroy'])->name('military_paths.destroy');
+        });
+
+         // Routes pour les parcours professionnel liés à un profil
+         Route::prefix('/profile/{profile}/professional_careers')->group(function () {
+            Route::get('/', [ProfessionalCareerController::class, 'index'])->name('professional_careers.index');
+            Route::get('/create', [ProfessionalCareerController::class, 'create'])->name('professional_careers.create');
+            Route::post('/', [ProfessionalCareerController::class, 'store'])->name('professional_careers.store');
+            Route::get('/{id}', [ProfessionalCareerController::class, 'show'])->name('professional_careers.show');
+            Route::get('/{id}/edit', [ProfessionalCareerController::class, 'edit'])->name('professional_careers.edit');
+            Route::put('/{id}', [ProfessionalCareerController::class, 'update'])->name('professional_careers.update');
+            Route::delete('/{id}', [ProfessionalCareerController::class, 'destroy'])->name('professional_careers.destroy');
         });
 
         // Routes pour les historiques de grades
-        Route::prefix('profile/{profile}/rank_histories')->group(function () {
+        Route::prefix('/profile/{profile}/rank_histories')->group(function () {
             Route::get('/', [RankHistoryController::class, 'index'])->name('rank_histories.index');
+            Route::get('/create', [RankHistoryController::class, 'create'])->name('rank_histories.create');
             Route::post('/', [RankHistoryController::class, 'store'])->name('rank_histories.store');
+            Route::get('/{id}', [RankHistoryController::class, 'show'])->name('rank_histories.show');
+            Route::get('/{id}/edit', [RankHistoryController::class, 'edit'])->name('rank_histories.edit');
+            Route::put('/{id}', [RankHistoryController::class, 'update'])->name('rank_histories.update');
             Route::delete('/{id}', [RankHistoryController::class, 'destroy'])->name('rank_histories.destroy');
         });
 
-        // Routes pour les campagnes militaires
-        Route::prefix('profile/{profile}/military_campaigns')->group(function () {
-            Route::get('/', [MilitaryCampaignController::class, 'index'])->name('military_campaigns.index');
-            Route::post('/', [MilitaryCampaignController::class, 'store'])->name('military_campaigns.store');
-            Route::delete('/{id}', [MilitaryCampaignController::class, 'destroy'])->name('military_campaigns.destroy');
-        });
-
-        // Routes pour les renseignements des enfants
-        Route::prefix('profile/{profile}/children_details')->group(function () {
-            Route::get('/', [ChildrenDetailController::class, 'index'])->name('children_details.index');
-            Route::post('/', [ChildrenDetailController::class, 'store'])->name('children_details.store');
-            Route::delete('/{id}', [ChildrenDetailController::class, 'destroy'])->name('children_details.destroy');
-        });
-
         // Routes pour les distinctions honorifiques
-        Route::prefix('profile/{profile}/honorary_distinctions')->group(function () {
+        Route::prefix('/profile/{profile}/honorary_distinctions')->group(function () {
             Route::get('/', [HonoraryDistinctionController::class, 'index'])->name('honorary_distinctions.index');
+            Route::get('/create', [HonoraryDistinctionController::class, 'create'])->name('honorary_distinctions.create');
             Route::post('/', [HonoraryDistinctionController::class, 'store'])->name('honorary_distinctions.store');
+            Route::get('/{id}', [HonoraryDistinctionController::class, 'show'])->name('honorary_distinctions.show');
+            Route::get('/{id}/edit', [HonoraryDistinctionController::class, 'edit'])->name('honorary_distinctions.edit');
+            Route::put('/{id}', [HonoraryDistinctionController::class, 'update'])->name('honorary_distinctions.update');
             Route::delete('/{id}', [HonoraryDistinctionController::class, 'destroy'])->name('honorary_distinctions.destroy');
         });
 
-        // Routes pour le conjoint
-        Route::prefix('profile/{profile}/spouse_detail')->group(function () {
-            Route::get('/', [SpouseDetailController::class, 'index'])->name('spouse_detail.index');
-            Route::put('/', [SpouseDetailController::class, 'update'])->name('spouse_detail.update');
+        // Routes pour les campagnes militaires
+        Route::prefix('/profile/{profile}/campaign_histories')->group(function () {
+            Route::get('/', [MilitaryCampaignController::class, 'index'])->name('campaign_histories.index');
+            Route::get('/create', [MilitaryCampaignController::class, 'create'])->name('campaign_histories.create');
+            Route::post('/', [MilitaryCampaignController::class, 'store'])->name('campaign_histories.store');
+            Route::get('/{id}', [MilitaryCampaignController::class, 'show'])->name('campaign_histories.show');
+            Route::get('/{id}/edit', [MilitaryCampaignController::class, 'edit'])->name('campaign_histories.edit');
+            Route::put('/{id}', [MilitaryCampaignController::class, 'update'])->name('campaign_histories.update');
+            Route::delete('/{id}', [MilitaryCampaignController::class, 'destroy'])->name('campaign_histories.destroy');
         });
     });
 });

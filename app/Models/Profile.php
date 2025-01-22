@@ -71,7 +71,7 @@ class Profile extends Model
 
     public function professionalCareers()
     {
-        return $this->hasMany(ProfessionalCareer::class, 'profile_id', 'id');
+        return $this->hasMany(ProfessionalCareer::class, 'profile_id', 'id')->orderBy('start_date', 'desc');
     }
 
     public function academicPaths()
@@ -91,7 +91,7 @@ class Profile extends Model
 
     public function rankHistories()
     {
-        return $this->hasMany(RankHistory::class, 'profile_id', 'id');
+        return $this->hasMany(RankHistory::class, 'profile_id', 'id')->orderBy('history_promotion_date', 'desc');
     }
 
     public function militaryCampaigns()

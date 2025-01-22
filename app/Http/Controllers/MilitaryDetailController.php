@@ -13,6 +13,16 @@ class MilitaryDetailController extends Controller
         return view('military_details.index', compact('profile', 'militaryDetail'));
     }
 
+    public function show(Profile $profile, $id)
+    {
+        //
+    }
+
+    public function edit(Profile $profile, $id)
+    {
+        //
+    }
+
     public function store(Request $request, Profile $profile)
     {
         // Validation des données

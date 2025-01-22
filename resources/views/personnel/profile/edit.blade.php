@@ -123,67 +123,7 @@
                                         <!-- Conjoint(e) -->
                                         <div class="tab-pane fade" id="v-pills-spouse" role="tabpanel"
                                             aria-labelledby="v-pills-spouse-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
-                                                <div class="d-flex justify-content-between">
-                                                    <h3 class="text-lg font-medium text-gray-900">
-                                                        {{ __('Renseignements conjoint(e)') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        {{ $profile->spouseDetails->isEmpty() ? 'Ajouter' : 'Modifier' }}
-                                                    </a>
-                                                </div>
-                                                <hr class="my-3">
-                                                @forelse ($profile->spouseDetails as $spouse)
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Nom du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_name ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Nom de jeune fille du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_maiden_name ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Prénom du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_firstname ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Date de naissance du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ optional($spouse->spouse_birth_date)->format('d/m/Y') ?? '-' }}
-                                                        </p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Lieu de naissance du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_birth_place ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Profession du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_profession ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Autorisation de mariage') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->marriage_authorization ?? '-' }}</p>
-                                                    </div>
-                                                @empty
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ __('Aucun conjoint(e) enregistré') }}</p>
-                                                    </div>
-                                                @endforelse
-                                            </div>
+                                            @include('personnel.profile.partials.editprofile.spouse-details-edit-form')
                                         </div>
 
                                         <!-- Enfant(s) -->

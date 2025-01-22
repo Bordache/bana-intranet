@@ -10,13 +10,12 @@ class AcademicPathController extends Controller
 {
     public function index(Profile $profile)
     {
-        $academicPaths = $profile->academicPaths;
-        return view('academic_paths.index', compact('profile', 'academicPaths'));
+        //
     }
 
     public function create(Profile $profile)
     {
-        return view('academic_paths.create', compact('profile'));
+        //
     }
 
     public function store(Request $request, Profile $profile)
@@ -24,23 +23,25 @@ class AcademicPathController extends Controller
         $validated = $request->validate([
             'school_name' => 'required|string|max:255',
             'duration' => 'required|string|max:255',
-            'diploma' => 'nullable|text',
+            'diploma' => 'nullable|string',
         ]);
 
         $profile->academicPaths()->create($validated);
-        return redirect()->route('academic_paths.index', $profile->id)->with('success', 'Parcours ajouté avec succès.');
+
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'academic_paths',
+        ])->with('success', 'Parcours ajouté avec succès.');
     }
 
     public function show(Profile $profile, $id)
     {
-        $academicPath = $profile->academicPaths()->findOrFail($id);
-        return view('academic_paths.show', compact('profile', 'academicPath'));
+        //
     }
 
     public function edit(Profile $profile, $id)
     {
-        $academicPath = $profile->academicPaths()->findOrFail($id);
-        return view('academic_paths.edit', compact('profile', 'academicPath'));
+        //
     }
 
     public function update(Request $request, Profile $profile, $id)
@@ -49,18 +50,26 @@ class AcademicPathController extends Controller
 
         $validated = $request->validate([
             'school_name' => 'required|string|max:255',
-            'degree' => 'required|string|max:255',
-            'graduation_date' => 'nullable|date',
+            'duration' => 'required|string|max:255',
+            'diploma' => 'nullable|string',
         ]);
 
         $academicPath->update($validated);
-        return redirect()->route('academic_paths.index', $profile->id)->with('success', 'Parcours mis à jour avec succès.');
+
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'academic_paths',
+        ])->with('success', 'Parcours mis à jour avec succès.');
     }
 
     public function destroy(Profile $profile, $id)
     {
         $academicPath = $profile->academicPaths()->findOrFail($id);
         $academicPath->delete();
-        return redirect()->route('academic_paths.index', $profile->id)->with('success', 'Parcours supprimé avec succès.');
+
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'academic_paths',
+        ])->with('success', 'Parcours supprimé avec succès.');
     }
 }

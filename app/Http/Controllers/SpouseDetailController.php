@@ -13,6 +13,16 @@ class SpouseDetailController extends Controller
         return view('spouse_details.index', compact('profile', 'spouseDetail'));
     }
 
+    public function show(Profile $profile, $id)
+    {
+        //
+    }
+
+    public function edit(Profile $profile, $id)
+    {
+        //
+    }
+
     public function update(Request $request, Profile $profile)
     {
         $validated = $request->validate([

@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Profile;
-use App\Models\MilitaryPath;
+use App\Models\ProfessionalCareer;
 
-class MilitaryPathController extends Controller
+class ProfessionalCareerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -30,16 +30,18 @@ class MilitaryPathController extends Controller
     public function store(Request $request, Profile $profile)
     {
         $validated = $request->validate([
-            'academy_name' => 'required|string|max:255',
-            'academy_duration' => 'required|string|max:255',
-            'academy_diploma' => 'nullable|string',
+            'company_name' => 'required|string|max:255',
+            'job_title' => 'nullable|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date',
+            'description' => 'nullable|string',
         ]);
 
-        $profile->militaryPaths()->create($validated);
+        $profile->professionalCareers()->create($validated);
 
         return redirect()->route('personnel.show', [
             'id' => $profile->id,
-            'tab' => 'military_paths',
+            'tab' => 'professional_careers',
         ])->with('success', 'Parcours ajouté avec succès.');
     }
 
@@ -64,19 +66,21 @@ class MilitaryPathController extends Controller
      */
     public function update(Request $request, Profile $profile, $id)
     {
-        $militaryPaths = $profile->militaryPaths()->findOrFail($id);
+        $professionalCareers = $profile->professionalCareers()->findOrFail($id);
 
         $validated = $request->validate([
-            'academy_name' => 'required|string|max:255',
-            'academy_duration' => 'required|string|max:255',
-            'academy_diploma' => 'nullable|string',
+            'company_name' => 'required|string|max:255',
+            'job_title' => 'nullable|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date',
+            'description' => 'nullable|string',
         ]);
 
-        $militaryPaths->update($validated);
+        $professionalCareers->update($validated);
 
         return redirect()->route('personnel.show', [
             'id' => $profile->id,
-            'tab' => 'military_paths',
+            'tab' => 'professional_careers',
         ])->with('success', 'Parcours mis à jour avec succès.');
     }
 
@@ -85,12 +89,12 @@ class MilitaryPathController extends Controller
      */
     public function destroy(Profile $profile, $id)
     {
-        $militaryPath = $profile->militaryPaths()->findOrFail($id);
-        $militaryPath->delete();
+        $professionalCareer = $profile->professionalCareers()->findOrFail($id);
+        $professionalCareer->delete();
 
         return redirect()->route('personnel.show', [
             'id' => $profile->id,
-            'tab' => 'military_paths',
+            'tab' => 'professional_careers',
         ])->with('success', 'Parcours supprimé avec succès.');
     }
 }

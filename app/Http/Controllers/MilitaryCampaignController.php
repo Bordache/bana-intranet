@@ -14,22 +14,56 @@ class MilitaryCampaignController extends Controller
         return view('military_campaigns.index', compact('profile', 'militaryCampaigns'));
     }
 
+    public function show(Profile $profile, $id)
+    {
+        //
+    }
+
+    public function edit(Profile $profile, $id)
+    {
+        //
+    }
+
     public function store(Request $request, Profile $profile)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'campaign_period' => 'required|string|max:255',
-            'campaign_locations' => 'required|string|max:255',
+            'campaign_title' => 'required|string|max:255',
+            'campaign_period' => 'nullable|string|max:255',
+            'campaign_locations' => 'nullable|string|max:255',
         ]);
 
         $profile->militaryCampaigns()->create($validated);
-        return redirect()->route('military_campaigns.index', $profile->id)->with('success', 'Campagne ajoutée avec succès.');
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'campaign_histories',
+        ])->with('success', 'Campagne ajoutée avec succès.');
+    }
+
+    public function update(Request $request, Profile $profile, $id)
+    {
+        $campaign = $profile->militaryCampaigns()->findOrFail($id);
+        $validated = $request->validate([
+            'campaign_title' => 'required|string|max:255',
+            'campaign_period' => 'nullable|string|max:255',
+            'campaign_locations' => 'nullable|string|max:255',
+        ]);
+
+        $campaign->update($validated);
+
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'campaign_histories',
+        ])->with('success', 'Campagne mise à jour avec succès');
     }
 
     public function destroy(Profile $profile, $id)
     {
         $campaign = $profile->militaryCampaigns()->findOrFail($id);
         $campaign->delete();
-        return redirect()->route('military_campaigns.index', $profile->id)->with('success', 'Campagne supprimée avec succès.');
+
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'campaign_histories',
+        ])->with('success', 'Campagne supprimée avec succès');
     }
 }

@@ -18,7 +18,7 @@
                 </ol>
             </nav>
             <div class="p-4 sm:p-8 bg-white">
-                <div class="container">
+                <div class="container border">
                     <div class="row g-3">
                         <!-- Photo et Nom -->
                         <div class="d-flex justify-content-between align-items-center">
@@ -50,7 +50,7 @@
                                             onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce détail ?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"
+                                            <button type="submit" title="Supprimer"
                                                 class="btn btn-sm btn-danger w-100">Supprimer</button>
                                         </form>
                                     </li>
@@ -67,7 +67,7 @@
                                     aria-selected="true">Informations</button>
                                 <button class="nav-link" id="nav-perm-tab" data-bs-toggle="tab"
                                     data-bs-target="#nav-perm" type="button" role="tab" aria-controls="nav-perm"
-                                    aria-selected="false">Permissions</button>
+                                    aria-selected="false">Congés et permissions</button>
                                 <button class="nav-link" id="nav-role-tab" data-bs-toggle="tab"
                                     data-bs-target="#nav-role" type="button" role="tab" aria-controls="nav-role"
                                     aria-selected="false">Paramètres</button>
@@ -86,43 +86,43 @@
                                 <div class="d-flex align-items-start">
                                     <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
                                         aria-orientation="vertical">
-                                        <button class="nav-link active btn-sm text-start" id="v-pills-civil-status-tab"
+                                        <button class="nav-link btn-sm text-start {{ $tab == 'personnal_information' ? 'active' : '' }}" id="v-pills-civil-status-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-civil-status" type="button"
                                             role="tab" aria-controls="v-pills-civil-status"
                                             aria-selected="true">Etat civil</button>
-                                        <button class="nav-link text-start btn-sm" id="v-pills-military-status-tab"
+                                        <button class="nav-link text-start btn-sm {{ $tab == 'military_detail' ? 'active' : '' }}" id="v-pills-military-status-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-military-status"
                                             type="button" role="tab" aria-controls="v-pills-military-status"
                                             aria-selected="false">Renseignements militaires</button>
-                                        <button class="nav-link text-start btn-sm" id="v-pills-spouse-tab"
+                                        <button class="nav-link text-start btn-sm {{ $tab == 'spouse_details' ? 'active' : '' }}" id="v-pills-spouse-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-spouse" type="button"
                                             role="tab" aria-controls="v-pills-spouse"
                                             aria-selected="false">Conjoint(e)</button>
-                                        <button class="nav-link text-start btn-sm" id="v-pills-children-tab"
+                                        <button class="nav-link text-start btn-sm {{ $tab == 'children_details' ? 'active' : '' }}" id="v-pills-children-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-children" type="button"
                                             role="tab" aria-controls="v-pills-children"
                                             aria-selected="false">Enfant(s)</button>
-                                        <button class="nav-link text-start btn-sm" id="v-pills-education-tab"
+                                        <button class="nav-link text-start btn-sm {{ $tab == 'academic_paths' ? 'active' : '' }}" id="v-pills-education-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-education" type="button"
                                             role="tab" aria-controls="v-pills-education"
                                             aria-selected="false">Parcours académique</button>
-                                        <button class="nav-link text-start btn-sm" id="v-pills-military-path-tab"
+                                        <button class="nav-link text-start btn-sm {{ $tab == 'military_paths' ? 'active' : '' }}" id="v-pills-military-path-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-military-path"
                                             type="button" role="tab" aria-controls="v-pills-military-path"
                                             aria-selected="false">Parcours militaire</button>
-                                        <button class="nav-link text-start btn-sm" id="v-pills-professional-path-tab"
+                                        <button class="nav-link text-start btn-sm {{ $tab == 'professional_careers' ? 'active' : '' }}" id="v-pills-professional-path-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-professional-path"
                                             type="button" role="tab" aria-controls="v-pills-professional-path"
                                             aria-selected="false">Parcours professionnel</button>
-                                        <button class="nav-link text-start btn-sm" id="v-pills-rank-history-tab"
+                                        <button class="nav-link text-start btn-sm {{ $tab == 'rank_histories' ? 'active' : '' }}" id="v-pills-rank-history-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-rank-history"
                                             type="button" role="tab" aria-controls="v-pills-rank-history"
                                             aria-selected="false">Grades successifs</button>
-                                        <button class="nav-link text-start btn-sm" id="v-pills-aware-history-tab"
+                                        <button class="nav-link text-start btn-sm {{ $tab == 'honorary_distinctions' ? 'active' : '' }}" id="v-pills-aware-history-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-aware-history"
                                             type="button" role="tab" aria-controls="v-pills-aware-history"
                                             aria-selected="false">Décorations successives</button>
-                                        <button class="nav-link text-start btn-sm" id="v-pills-campaign-history-tab"
+                                        <button class="nav-link text-start btn-sm {{ $tab == 'campaign_histories' ? 'active' : '' }}" id="v-pills-campaign-history-tab"
                                             data-bs-toggle="pill" data-bs-target="#v-pills-campaign-history"
                                             type="button" role="tab" aria-controls="v-pills-campaign-history"
                                             aria-selected="false">Campagnes militaires</button>
@@ -130,14 +130,44 @@
                                     <div class="tab-content w-100" id="v-pills-tabContent">
 
                                         <!-- Etat civil -->
-                                        <div class="tab-pane fade show active" id="v-pills-civil-status" role="tabpanel"
+                                        @include('personnel.profile.partials.templates.civil-modal')
+                                        <div class="tab-pane fade {{ $tab == 'personnal_information' ? 'show active' : '' }}" id="v-pills-civil-status" role="tabpanel"
                                             aria-labelledby="v-pills-civil-status-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Etat civil') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">Modifier</a>
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#civilModal"
+                                                        data-action="{{ route('personnel.update', ['id' => $profile->id]) }}"
+                                                        data-method="PUT"
+                                                        data-title="Modification d'état civil"
+                                                        data-name="{{ $profile->name }}"
+                                                        data-firstname="{{ $profile->firstname }}"
+                                                        data-birth_date="{{ optional($profile->birth_date)->format('Y-m-d') }}"
+                                                        data-birth_place="{{ $profile->birth_place }}"
+                                                        data-gender="{{ $profile->gender }}"
+                                                        data-national_id="{{ $profile->national_id }}"
+                                                        data-last_national_id="{{ $profile->national_id }}"
+                                                        data-issue_date="{{ optional($profile->issue_date)->format('Y-m-d') }}"
+                                                        data-issue_place="{{ $profile->issue_place }}"
+                                                        data-duplicate_date="{{ optional($profile->duplicate_date)->format('Y-m-d') }}"
+                                                        data-duplicate_place="{{ $profile->duplicate_place }}"
+                                                        data-address="{{ $profile->address }}"
+                                                        data-phone="{{ $profile->phone }}"
+                                                        data-email="{{ $profile->email }}"
+                                                        data-blood_group="{{ $profile->blood_group }}"
+                                                        data-size="{{ $profile->size }}"
+                                                        data-father_name="{{ $profile->father_name }}"
+                                                        data-mother_name="{{ $profile->mother_name }}"
+                                                        data-marital_status="{{ $profile->marital_status }}"
+                                                        data-fallback_address="{{ $profile->fallback_address }}"
+                                                        data-driver_license="{{ $profile->driver_license }}"
+                                                        data-practiced_sport="{{ $profile->practiced_sport }}"
+                                                        data-hobbies="{{ $profile->hobbies }}">
+                                                        Modifier
+                                                    </button>
                                                 </div>
                                                 <hr class="my-3">
                                                 <div class="row g-3">
@@ -282,7 +312,7 @@
                                         </div>
 
                                         <!-- Renseignements militaires -->
-                                        <div class="tab-pane fade" id="v-pills-military-status" role="tabpanel"
+                                        <div class="tab-pane fade {{ $tab == 'military_detail' ? 'show active' : '' }}" id="v-pills-military-status" role="tabpanel"
                                             aria-labelledby="v-pills-military-status-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
@@ -448,7 +478,7 @@
                                         </div>
 
                                         <!-- Conjoint(e) -->
-                                        <div class="tab-pane fade" id="v-pills-spouse" role="tabpanel"
+                                        <div class="tab-pane fade {{ $tab == 'spouse_details' ? 'show active' : '' }}" id="v-pills-spouse" role="tabpanel"
                                             aria-labelledby="v-pills-spouse-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
@@ -514,51 +544,95 @@
                                         </div>
 
                                         <!-- Enfant(s) -->
-                                        <div class="tab-pane fade" id="v-pills-children" role="tabpanel"
+                                        @include('personnel.profile.partials.templates.child-modal')
+                                        <div class="tab-pane fade {{ $tab == 'children_details' ? 'show active' : '' }}" id="v-pills-children" role="tabpanel"
                                             aria-labelledby="v-pills-children-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">{{ __('Enfant(s)') }}
                                                     </h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        {{ $profile->childrenDetails->isEmpty() ? 'Ajouter' : 'Modifier' }}
-                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#childModal"
+                                                        data-action="{{ route('children_details.store', ['profile' => $profile->id]) }}"
+                                                        data-method="POST"
+                                                        data-title="Ajout d'un enfant">
+                                                        Ajouter
+                                                    </button>
                                                 </div>
                                                 <hr class="my-3">
                                                 @forelse ($profile->childrenDetails as $child)
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Nom et prénoms') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $child->child_full_name ?? '-' }}</p>
+                                                    <div class="row g-3">
+                                                        <div class="col-md-3">
+                                                            <div class="my-2">
+                                                                <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Nom et prénoms') }}</p>
+                                                                <p class="mt-1 text-sm text-gray-600">
+                                                                    {{ $child->child_full_name ?? '-' }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2">
+                                                                <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Date de naissance') }}</p>
+                                                                <p class="mt-1 text-sm text-gray-600">
+                                                                    {{ optional($child->child_birth_date)->format('d/m/Y') ?? '-' }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2">
+                                                                <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Lieu de naissance') }}</p>
+                                                                <p class="mt-1 text-sm text-gray-600">
+                                                                    {{ $child->child_birth_place ?? '-' }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <div class="my-2">
+                                                                <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Genre') }}</p>
+                                                                <p class="mt-1 text-sm text-gray-600">
+                                                                    {{ $child->child_gender ?? '-' }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2">
+                                                                <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Situation de l\'enfant') }}</p>
+                                                                <p class="mt-1 text-sm text-gray-600">
+                                                                    {{ $child->child_status ?? '-' }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2 text-end">
+                                                                <form action="{{ route('children_details.destroy', ['profile' => $profile->id, 'id' => $child->id]) }}" method="POST"
+                                                                    class="d-inline"
+                                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet enfant ?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" title="Supprimer"
+                                                                        class="btn btn-sm btn-danger">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#childModal"
+                                                                    data-action="{{ route('children_details.update', ['profile' => $profile->id, 'id' => $child->id]) }}"
+                                                                    data-method="PUT"
+                                                                    data-title="Modification d'un enfant"
+                                                                    data-full_name="{{ $child->child_full_name }}"
+                                                                    data-birth_date="{{ $child->child_birth_date->format('Y-m-d') }}"
+                                                                    data-birth_place="{{ $child->child_birth_place }}"
+                                                                    data-gender="{{ $child->child_gender }}"
+                                                                    data-status="{{ $child->child_status }}">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Date de naissance') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ optional($child->child_birth_date)->format('d/m/Y') ?? '-' }}
-                                                        </p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Lieu de naissance') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $child->child_birth_place ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Genre') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $child->child_gender ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Situation de l\'enfant') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $child->child_status ?? '-' }}</p>
-                                                    </div>
-
+                                                    <hr class="my-2">
                                                 @empty
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm text-gray-600">
@@ -569,16 +643,21 @@
                                         </div>
 
                                         <!-- Parcours académique -->
-                                        <div class="tab-pane fade" id="v-pills-education" role="tabpanel"
+                                        @include('personnel.profile.partials.templates.academic-modal')
+                                        <div class="tab-pane fade {{ $tab == 'academic_paths' ? 'show active' : '' }}" id="v-pills-education" role="tabpanel"
                                             aria-labelledby="v-pills-education-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Parcours académique') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        {{ $profile->academicPaths->isEmpty() ? 'Ajouter' : 'Modifier' }}
-                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#academicModal"
+                                                        data-action="{{ route('academic_paths.store', ['profile' => $profile->id]) }}"
+                                                        data-method="POST"
+                                                        data-title="Ajout d'un parcours">
+                                                        Ajouter
+                                                    </button>
                                                 </div>
                                                 <hr class="my-3">
                                                 @forelse ($profile->academicPaths as $education)
@@ -599,7 +678,7 @@
                                                                     {{ $education->duration ?? '-' }}</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-4">
                                                             <div class="my-2">
                                                                 <p class="mt-1 text-sm font-medium text-gray-900">
                                                                     {{ __('Diplômes, certificats ou attestations obtenus') }}</p>
@@ -607,7 +686,33 @@
                                                                     {{ $education->diploma ?? '-' }}</p>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2 text-end">
+                                                                <form action="{{ route('academic_paths.destroy', ['profile' => $profile->id, 'id' => $education->id]) }}" method="POST"
+                                                                    class="d-inline"
+                                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce parcours ?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" title="Supprimer"
+                                                                        class="btn btn-sm btn-danger">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#academicModal"
+                                                                    data-action="{{ route('academic_paths.update', ['profile' => $profile->id, 'id' => $education->id]) }}"
+                                                                    data-method="PUT"
+                                                                    data-title="Modification d'un parcours"
+                                                                    data-school_name="{{ $education->school_name }}"
+                                                                    data-duration="{{ $education->duration }}"
+                                                                    data-diploma="{{ $education->diploma }}">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <hr class="my-2">
                                                 @empty
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm text-gray-600">
@@ -619,16 +724,21 @@
                                         </div>
 
                                         <!-- Parcours militaire -->
-                                        <div class="tab-pane fade" id="v-pills-military-path" role="tabpanel"
+                                        @include('personnel.profile.partials.templates.academy-modal')
+                                        <div class="tab-pane fade {{ $tab == 'military_paths' ? 'show active' : '' }}" id="v-pills-military-path" role="tabpanel"
                                             aria-labelledby="v-pills-military-path-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Parcours militaire') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        {{ $profile->militaryPaths->isEmpty() ? 'Ajouter' : 'Modifier' }}
-                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#academyModal"
+                                                        data-action="{{ route('military_paths.store', ['profile' => $profile->id]) }}"
+                                                        data-method="POST"
+                                                        data-title="Ajout d'un parcours">
+                                                        Ajouter
+                                                    </button>
                                                 </div>
                                                 <hr class="my-3">
                                                 @forelse ($profile->militaryPaths as $military)
@@ -641,7 +751,7 @@
                                                                     {{ $military->academy_name ?? '-' }}</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-2">
                                                             <div class="my-2">
                                                                 <p class="mt-1 text-sm font-medium text-gray-900">
                                                                     {{ __('Période') }}</p>
@@ -649,7 +759,7 @@
                                                                     {{ $military->academy_duration ?? '-' }}</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-5">
                                                             <div class="my-2">
                                                                 <p class="mt-1 text-sm font-medium text-gray-900">
                                                                     {{ __('Diplômes, certificats ou attestations obtenus') }}</p>
@@ -657,7 +767,33 @@
                                                                     {{ $military->academy_diploma ?? '-' }}</p>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2 text-end">
+                                                                <form action="{{ route('military_paths.destroy', ['profile' => $profile->id, 'id' => $military->id]) }}" method="POST"
+                                                                    class="d-inline"
+                                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce parcours ?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" title="Supprimer"
+                                                                        class="btn btn-sm btn-danger">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#academyModal"
+                                                                    data-action="{{ route('military_paths.update', ['profile' => $profile->id, 'id' => $military->id]) }}"
+                                                                    data-method="PUT"
+                                                                    data-title="Modification d'un parcours"
+                                                                    data-academy_name="{{ $military->academy_name }}"
+                                                                    data-academy_duration="{{ $military->academy_duration }}"
+                                                                    data-academy_diploma="{{ $military->academy_diploma }}">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <hr class="my-2">
                                                 @empty
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm text-gray-600">
@@ -669,16 +805,21 @@
                                         </div>
 
                                         <!-- Parcours professionnel -->
-                                        <div class="tab-pane fade" id="v-pills-professional-path" role="tabpanel"
+                                        @include('personnel.profile.partials.templates.career-modal')
+                                        <div class="tab-pane fade {{ $tab == 'professional_careers' ? 'show active' : '' }}" id="v-pills-professional-path" role="tabpanel"
                                             aria-labelledby="v-pills-professional-path-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Parcours professionnel') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        {{ $profile->professionalCareers->isEmpty() ? 'Ajouter' : 'Modifier' }}
-                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#careerModal"
+                                                        data-action="{{ route('professional_careers.store', ['profile' => $profile->id]) }}"
+                                                        data-method="POST"
+                                                        data-title="Ajout d'un parcours">
+                                                        Ajouter
+                                                    </button>
                                                 </div>
                                                 <hr class="my-3">
                                                 @forelse ($profile->professionalCareers as $professional)
@@ -715,7 +856,7 @@
                                                                     {{ optional($professional->end_date)->format('d/m/Y') ?? '-' }}</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-4">
+                                                        <div class="col-md-2">
                                                             <div class="my-2">
                                                                 <p class="mt-1 text-sm font-medium text-gray-900">
                                                                     {{ __('Référence') }}</p>
@@ -723,7 +864,35 @@
                                                                     {{ $professional->description ?? '-' }}</p>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2 text-end">
+                                                                <form action="{{ route('professional_careers.destroy', ['profile' => $profile->id, 'id' => $professional->id]) }}" method="POST"
+                                                                    class="d-inline"
+                                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce parcours ?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" title="Supprimer"
+                                                                        class="btn btn-sm btn-danger">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#careerModal"
+                                                                    data-action="{{ route('professional_careers.update', ['profile' => $profile->id, 'id' => $professional->id]) }}"
+                                                                    data-method="PUT"
+                                                                    data-title="Modification d'un parcours"
+                                                                    data-company_name="{{ $professional->company_name }}"
+                                                                    data-job_title="{{ $professional->job_title }}"
+                                                                    data-start_date="{{ optional($professional->start_date)->format('Y-m-d') }}"
+                                                                    data-end_date="{{ optional($professional->end_date)->format('Y-m-d') }}"
+                                                                    data-description="{{ $professional->description }}">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <hr class="my-2">
                                                 @empty
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm text-gray-600">
@@ -735,16 +904,21 @@
                                         </div>
 
                                         <!-- Grades successifs -->
-                                        <div class="tab-pane fade" id="v-pills-rank-history" role="tabpanel"
+                                        @include('personnel.profile.partials.templates.rank-modal')
+                                        <div class="tab-pane fade {{ $tab == 'rank_histories' ? 'show active' : '' }}" id="v-pills-rank-history" role="tabpanel"
                                             aria-labelledby="v-pills-rank-history-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Grades successifs') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        {{ $profile->rankHistories->isEmpty() ? 'Ajouter' : 'Modifier' }}
-                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#rankModal"
+                                                        data-action="{{ route('rank_histories.store', ['profile' => $profile->id]) }}"
+                                                        data-method="POST"
+                                                        data-title="Ajout d'un grade">
+                                                        Ajouter
+                                                    </button>
                                                 </div>
                                                 <hr class="my-3">
                                                 @forelse ($profile->rankHistories as $rank)
@@ -757,7 +931,7 @@
                                                                     {{ $rank->history_rank ?? '-' }}</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-2">
                                                             <div class="my-2">
                                                                 <p class="mt-1 text-sm font-medium text-gray-900">
                                                                     {{ __('Date d\'effet') }}</p>
@@ -774,7 +948,33 @@
                                                                     {{ $rank->history_rank_reference ?? '-' }}</p>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2 text-end">
+                                                                <form action="{{ route('rank_histories.destroy', ['profile' => $profile->id, 'id' => $rank->id]) }}" method="POST"
+                                                                    class="d-inline"
+                                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce grade ?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" title="Supprimer"
+                                                                        class="btn btn-sm btn-danger">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#rankModal"
+                                                                    data-action="{{ route('rank_histories.update', ['profile' => $profile->id, 'id' => $rank->id]) }}"
+                                                                    data-method="PUT"
+                                                                    data-title="Modification d'un grade"
+                                                                    data-history_rank="{{ $rank->history_rank }}"
+                                                                    data-history_promotion_date="{{ optional($rank->history_promotion_date)->format('Y-m-d') }}"
+                                                                    data-history_rank_reference="{{ $rank->history_rank_reference }}">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <hr class="my-2">
                                                 @empty
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm text-gray-600">
@@ -785,21 +985,26 @@
                                         </div>
 
                                         <!-- Décorations successives -->
-                                        <div class="tab-pane fade" id="v-pills-aware-history" role="tabpanel"
+                                        @include('personnel.profile.partials.templates.award-modal')
+                                        <div class="tab-pane fade {{ $tab == 'honorary_distinctions' ? 'show active' : '' }}" id="v-pills-aware-history" role="tabpanel"
                                             aria-labelledby="v-pills-aware-history-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Décorations successives') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        {{ $profile->honoraryDistinctions->isEmpty() ? 'Ajouter' : 'Modifier' }}
-                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#awardModal"
+                                                        data-action="{{ route('honorary_distinctions.store', ['profile' => $profile->id]) }}"
+                                                        data-method="POST"
+                                                        data-title="Ajout d'une distinction honorifique">
+                                                        Ajouter
+                                                    </button>
                                                 </div>
                                                 <hr class="my-3">
                                                 @forelse ($profile->honoraryDistinctions as $award)
                                                     <div class="row g-3">
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-2">
                                                             <div class="my-2">
                                                                 <p class="mt-1 text-sm font-medium text-gray-900">
                                                                     {{ __('Intitulé') }}</p>
@@ -807,7 +1012,7 @@
                                                                     {{ $award->honorary_title ?? '-' }}</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-2">
                                                             <div class="my-2">
                                                                 <p class="mt-1 text-sm font-medium text-gray-900">
                                                                     {{ __('Promotion') }}</p>
@@ -823,7 +1028,33 @@
                                                                     {{ $award->honorary_reference ?? '-' }}</p>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2 text-end">
+                                                                <form action="{{ route('honorary_distinctions.destroy', ['profile' => $profile->id, 'id' => $award->id]) }}" method="POST"
+                                                                    class="d-inline"
+                                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette distinction ?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" title="Supprimer"
+                                                                        class="btn btn-sm btn-danger">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#awardModal"
+                                                                    data-action="{{ route('honorary_distinctions.update', ['profile' => $profile->id, 'id' => $award->id]) }}"
+                                                                    data-method="PUT"
+                                                                    data-title="Modification d'une distinction"
+                                                                    data-honorary_title="{{ $award->honorary_title }}"
+                                                                    data-honorary_promotion="{{ $award->honorary_promotion }}"
+                                                                    data-honorary_reference="{{ $award->honorary_reference }}">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <hr class="my-2">
                                                 @empty
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm text-gray-600">
@@ -834,21 +1065,26 @@
                                         </div>
 
                                         <!-- Campagnes militaires -->
-                                        <div class="tab-pane fade" id="v-pills-campaign-history" role="tabpanel"
+                                        @include('personnel.profile.partials.templates.campaign-modal')
+                                        <div class="tab-pane fade {{ $tab == 'campaign_histories' ? 'show active' : '' }}" id="v-pills-campaign-history" role="tabpanel"
                                             aria-labelledby="v-pills-campaign-history-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Campagnes militaires') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        {{ $profile->militaryCampaigns->isEmpty() ? 'Ajouter' : 'Modifier' }}
-                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#campaignModal"
+                                                        data-action="{{ route('campaign_histories.store', ['profile' => $profile->id]) }}"
+                                                        data-method="POST"
+                                                        data-title="Ajout d'une campagne">
+                                                        Ajouter
+                                                    </button>
                                                 </div>
                                                 <hr class="my-3">
                                                 @forelse ($profile->militaryCampaigns as $campaign)
                                                     <div class="row g-3">
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-2">
                                                             <div class="my-2">
                                                                 <p class="mt-1 text-sm font-medium text-gray-900">
                                                                     {{ __('Intitulé') }}</p>
@@ -856,7 +1092,7 @@
                                                                     {{ $campaign->campaign_title ?? '-' }}</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-2">
                                                             <div class="my-2">
                                                                 <p class="mt-1 text-sm font-medium text-gray-900">
                                                                     {{ __('Période') }}</p>
@@ -872,7 +1108,33 @@
                                                                     {{ $campaign->campaign_reference ?? '-' }}</p>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-2">
+                                                            <div class="my-2 text-end">
+                                                                <form action="{{ route('campaign_histories.destroy', ['profile' => $profile->id, 'id' => $campaign->id]) }}" method="POST"
+                                                                    class="d-inline"
+                                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette campagne ?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" title="Supprimer"
+                                                                        class="btn btn-sm btn-danger">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#campaignModal"
+                                                                    data-action="{{ route('campaign_histories.update', ['profile' => $profile->id, 'id' => $campaign->id]) }}"
+                                                                    data-method="PUT"
+                                                                    data-title="Modification d'une campagne"
+                                                                    data-campaign_title="{{ $campaign->campaign_title }}"
+                                                                    data-campaign_period="{{ $campaign->campaign_period }}"
+                                                                    data-campaign_locations="{{ $campaign->campaign_locations }}">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <hr class="my-2">
                                                 @empty
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm text-gray-600">
@@ -887,7 +1149,7 @@
                             <!-- Permissions -->
                             <div class="tab-pane fade" id="nav-perm" role="tabpanel"
                                 aria-labelledby="nav-perm-tab">
-                                Permissions
+                                Congés et permissions
                             </div>
 
                             <!-- Paramètres -->
@@ -1071,6 +1333,32 @@
             </div>
         </div>
     </div>
+
+    <!-- Toast -->
+    @if(session('success'))
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="fas fa-check-circle text-success px-2"></i>
+                    <strong class="me-auto">Bravo !</strong>
+                    <small>A l'instant</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Script to trigger the toast -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const toastElement = document.getElementById('liveToast');
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show(); // Automatically display the toast
+            });
+        </script>
+    @endif
 </x-app-layout>
 
 <script>
