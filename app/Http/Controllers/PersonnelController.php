@@ -106,7 +106,7 @@ class PersonnelController extends Controller
             ->orderBy('profiles.birth_date')
             ->get();
 
-        $groupedMilitaryDetails = $militaryDetails->groupBy('unit_name');
+        $groupedMilitaryDetails = $militaryDetails->groupBy('unit_abbreviate');
 
         return view("personnel.profile.list", compact('groupedMilitaryDetails'));
     }

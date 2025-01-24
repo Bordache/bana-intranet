@@ -18,10 +18,10 @@
                 </ol>
             </nav>
             <div class="p-4 sm:p-8 bg-white">
-                <div class="container border">
+                <div class="container">
                     <div class="row g-3">
                         <!-- Photo et Nom -->
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center bg-light bg-gradient">
                             <div class="d-flex align-items-center">
                                 <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center overflow-hidden"
                                     style="width: 100px; height: 100px; font-size: 36px; font-weight: bold; flex-shrink: 0;">
@@ -178,7 +178,7 @@
                                                             <p class="mt-1 text-sm text-gray-600">{{ $profile->name ?? '-' }}</p>
                                                         </div>
                                                         <div class="my-2">
-                                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Prénom') }}
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Prénoms') }}
                                                             </p>
                                                             <p class="mt-1 text-sm text-gray-600">{{ $profile->firstname ?? '-' }}
                                                             </p>
@@ -203,19 +203,19 @@
                                                         </div>
                                                         <div class="my-2">
                                                             <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('ID national') }}</p>
+                                                                {{ __('Carte d\'identité nationale') }}</p>
                                                             <p class="mt-1 text-sm text-gray-600">
                                                                 {{ $profile->national_id ?? '-' }}</p>
                                                         </div>
                                                         <div class="my-2">
                                                             <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('Date d\'émission') }}</p>
+                                                                {{ __('Date de délivrance') }}</p>
                                                             <p class="mt-1 text-sm text-gray-600">
                                                                 {{ optional($profile->issue_date)->format('d/m/Y') ?? '-' }}</p>
                                                         </div>
                                                         <div class="my-2">
                                                             <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('Lieu d\'émission') }}</p>
+                                                                {{ __('Lieu de délivrance') }}</p>
                                                             <p class="mt-1 text-sm text-gray-600">
                                                                 {{ $profile->issue_place ?? '-' }}</p>
                                                         </div>
@@ -233,7 +233,7 @@
                                                                 {{ $profile->duplicate_place ?? '-' }}</p>
                                                         </div>
                                                         <div class="my-2">
-                                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Adresse') }}
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Adresse actuelle') }}
                                                             </p>
                                                             <p class="mt-1 text-sm text-gray-600">{{ $profile->address ?? '-' }}
                                                             </p>
@@ -242,11 +242,11 @@
                                                     <div class="col-md-6">
                                                         <div class="my-2">
                                                             <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('Téléphone') }}</p>
+                                                                {{ __('Contact téléphonique') }}</p>
                                                             <p class="mt-1 text-sm text-gray-600">{{ $profile->phone ?? '-' }}</p>
                                                         </div>
                                                         <div class="my-2">
-                                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Email') }}
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Adresse email') }}
                                                             </p>
                                                             <p class="mt-1 text-sm text-primary">
                                                                 <a href="mailto:{{ $profile->email }}"
@@ -260,7 +260,7 @@
                                                                 {{ $profile->blood_group ?? '-' }}</p>
                                                         </div>
                                                         <div class="my-2">
-                                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Taille') }}
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Taille (en cm)') }}
                                                             </p>
                                                             <p class="mt-1 text-sm text-gray-600">{{ $profile->size ?? '-' }}</p>
                                                         </div>
@@ -278,13 +278,13 @@
                                                         </div>
                                                         <div class="my-2">
                                                             <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('État civil') }}</p>
+                                                                {{ __('Situation matrimoniale') }}</p>
                                                             <p class="mt-1 text-sm text-gray-600">
                                                                 {{ $profile->marital_status ?? '-' }}</p>
                                                         </div>
                                                         <div class="my-2">
                                                             <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('Adresse secondaire') }}</p>
+                                                                {{ __('Adresse de repli') }}</p>
                                                             <p class="mt-1 text-sm text-gray-600">
                                                                 {{ $profile->fallback_address ?? '-' }}</p>
                                                         </div>
@@ -296,15 +296,15 @@
                                                         </div>
                                                         <div class="my-2">
                                                             <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('Sport pratiqué') }}</p>
+                                                                {{ __('Sports pratiqués') }}</p>
                                                             <p class="mt-1 text-sm text-gray-600">
                                                                 {{ $profile->practiced_sport ?? '-' }}</p>
                                                         </div>
                                                         <div class="my-2">
-                                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Hobbies') }}
-                                                            </p>
-                                                            <p class="mt-1 text-sm text-gray-600">{{ $profile->hobbies ?? '-' }}
-                                                            </p>
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                {{ __('Centres d\'intérêts') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                {{ $profile->hobbies ?? '-' }}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -312,14 +312,44 @@
                                         </div>
 
                                         <!-- Renseignements militaires -->
+                                        @include('personnel.profile.partials.templates.military-modal')
                                         <div class="tab-pane fade {{ $tab == 'military_detail' ? 'show active' : '' }}" id="v-pills-military-status" role="tabpanel"
                                             aria-labelledby="v-pills-military-status-tab">
                                             <div class="border border-gray-200 p-3 mb-4">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Renseignements militaires') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">Modifier</a>
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#militaryModal"
+                                                        data-action="{{ route('military_details.update', ['profile' => $profile->id, 'id' => $profile->militaryDetail->id]) }}"
+                                                        data-method="PUT"
+                                                        data-title="Modification de renseignements militaires"
+                                                        data-army="{{ $profile->militaryDetail->army }}"
+                                                        data-position="{{ $profile->militaryDetail->position }}"
+                                                        data-position_date="{{ optional($profile->militaryDetail->position_date)->format('Y-m-d') }}"
+                                                        data-position_reference="{{ $profile->militaryDetail->position_reference }}"
+                                                        data-military_registration_number="{{ $profile->militaryDetail->military_registration_number }}"
+                                                        data-military_id_card_number="{{ $profile->militaryDetail->military_id_card_number }}"
+                                                        data-finance_registration_number="{{ $profile->militaryDetail->finance_registration_number }}"
+                                                        data-recruitment_origin="{{ $profile->militaryDetail->recruitment_origin }}"
+                                                        data-recruitment_promotion="{{ $profile->militaryDetail->recruitment_promotion }}"
+                                                        data-service_entry_date="{{ optional($profile->militaryDetail->service_entry_date)->format('Y-m-d') }}"
+                                                        data-corps_assignment="{{ $profile->militaryDetail->corps_assignment }}"
+                                                        data-unit_id="{{ $profile->militaryDetail->unit_id }}"
+                                                        data-rank_id="{{ $profile->militaryDetail->rank_id }}"
+                                                        data-rank_date="{{ optional($profile->militaryDetail->rank_date)->format('Y-m-d') }}"
+                                                        data-current_function="{{ $profile->militaryDetail->current_function }}"
+                                                        data-specialty="{{ $profile->militaryDetail->specialty }}"
+                                                        data-exact_assignment="{{ $profile->militaryDetail->exact_assignment }}"
+                                                        data-interruption_start_date="{{ optional($profile->militaryDetail->interruption_start_date)->format('Y-m-d') }}"
+                                                        data-interruption_end_date="{{ optional($profile->militaryDetail->interruption_end_date)->format('Y-m-d') }}"
+                                                        data-military_status="{{ $profile->militaryDetail->military_status }}"
+                                                        data-military_status_reference="{{ $profile->militaryDetail->military_status_reference }}"
+                                                        data-military_driver_license="{{ $profile->militaryDetail->military_driver_license }}"
+                                                        data-other_information="{{ $profile->militaryDetail->other_information }}">
+                                                        Modifier
+                                                    </button>
                                                 </div>
                                                 <hr class="my-3">
                                                 <div class="row g-3">
@@ -478,69 +508,117 @@
                                         </div>
 
                                         <!-- Conjoint(e) -->
+                                        @include('personnel.profile.partials.templates.spouse-modal')
                                         <div class="tab-pane fade {{ $tab == 'spouse_details' ? 'show active' : '' }}" id="v-pills-spouse" role="tabpanel"
                                             aria-labelledby="v-pills-spouse-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
-                                                <div class="d-flex justify-content-between">
-                                                    <h3 class="text-lg font-medium text-gray-900">
-                                                        {{ __('Renseignements conjoint(e)') }}</h3>
-                                                    <a href="{{ route('personnel.edit', $profile->id) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        {{ $profile->spouseDetails->isEmpty() ? 'Ajouter' : 'Modifier' }}
-                                                    </a>
+                                            @forelse ($profile->spouseDetails as $spouse)
+                                                <div class="border border-gray-200 p-3 mb-4">
+                                                    <div class="d-flex justify-content-between">
+                                                        <h3 class="text-lg font-medium text-gray-900">
+                                                            {{ __('Renseignements conjoint(e)') }}</h3>
+                                                        <div>
+                                                            <form action="{{ route('spouse_details.destroy', ['profile' => $profile->id, 'id' => $spouse->id]) }}" method="POST"
+                                                                class="d-inline"
+                                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer {{ $spouse->spouse_title == 'Monsieur' ? 'ce conjoint ?' : 'cette conjointe ?' }}')">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" title="Supprimer"
+                                                                    class="btn btn-sm btn-danger">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                            <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#spouseModal"
+                                                                data-action="{{ route('spouse_details.update', ['profile' => $profile->id, 'id' => $spouse->id]) }}"
+                                                                data-method="PUT"
+                                                                data-title="{{ $spouse->spouse_title == 'Monsieur' ? 'Modification renseignements du conjoint' : 'Modification renseignements de la conjointe' }}"
+                                                                data-spouse_title="{{ $spouse->spouse_title }}"
+                                                                data-spouse_name="{{ $spouse->spouse_name }}"
+                                                                data-spouse_maiden_name="{{ optional($spouse)->spouse_maiden_name }}"
+                                                                data-spouse_firstname="{{ optional($spouse)->spouse_firstname }}"
+                                                                data-spouse_birth_date="{{ optional(optional($spouse)->spouse_birth_date)->format('Y-m-d') }}"
+                                                                data-spouse_birth_place="{{ optional($spouse)->spouse_birth_place }}"
+                                                                data-spouse_profession="{{ optional($spouse)->spouse_profession }}"
+                                                                data-marriage_authorization="{{ optional($spouse)->marriage_authorization }}">
+                                                                Modifier
+                                                        </button>
+                                                        </div>
+                                                    </div>
+                                                    <hr class="my-3">
+                                                    <div class="my-2">
+                                                        <p class="mt-1 text-sm font-medium text-gray-900">
+                                                            {{ __('Titre') }}</p>
+                                                        <p class="mt-1 text-sm text-gray-600">
+                                                            {{ $spouse->spouse_title ?? '-' }}</p>
+                                                    </div>
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                {{ __('Nom du conjoint(e)') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                {{ $spouse->spouse_name ?? '-' }}</p>
+                                                        </div>
+                                                        @if ($spouse->spouse_title == 'Madame')
+                                                            <div class="my-2">
+                                                                <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                        {{ __('Nom de jeune fille du conjoint(e)') }}</p>
+                                                                <p class="mt-1 text-sm text-gray-600">
+                                                                        {{ $spouse->spouse_maiden_name ?? '-' }}</p>
+                                                            </div>
+                                                        @endif
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Prénom du conjoint(e)') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                    {{ $spouse->spouse_firstname ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Date de naissance du conjoint(e)') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                    {{ optional($spouse->spouse_birth_date)->format('d/m/Y') ?? '-' }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Lieu de naissance du conjoint(e)') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                    {{ $spouse->spouse_birth_place ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Profession du conjoint(e)') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                    {{ $spouse->spouse_profession ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="my-2">
+                                                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                                                    {{ __('Autorisation de mariage') }}</p>
+                                                            <p class="mt-1 text-sm text-gray-600">
+                                                                {{ $spouse->marriage_authorization ?? '-' }}</p>
+                                                        </div>
                                                 </div>
-                                                <hr class="my-3">
-                                                @forelse ($profile->spouseDetails as $spouse)
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Nom du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_name ?? '-' }}</p>
+                                            @empty
+                                                <div class="border border-gray-200 p-3 mb-4"><h3 class="text-lg font-medium text-gray-900">
+                                                    <div class="d-flex justify-content-between">
+                                                        <h3 class="text-lg font-medium text-gray-900">
+                                                            {{ __('Renseignements conjoint(e)') }}</h3>
+                                                        <button type="button" class="btn btn-sm btn-warning" title="Editer"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#spouseModal"
+                                                            data-action="{{ route('spouse_details.store', ['profile' => $profile->id]) }}"
+                                                            data-method="POST"
+                                                            data-title="Ajout de conjoint(e)">
+                                                            Ajouter
+                                                        </button>
                                                     </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Nom de jeune fille du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_maiden_name ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Prénom du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_firstname ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Date de naissance du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ optional($spouse->spouse_birth_date)->format('d/m/Y') ?? '-' }}
-                                                        </p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Lieu de naissance du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_birth_place ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Profession du conjoint(e)') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->spouse_profession ?? '-' }}</p>
-                                                    </div>
-                                                    <div class="my-2">
-                                                        <p class="mt-1 text-sm font-medium text-gray-900">
-                                                            {{ __('Autorisation de mariage') }}</p>
-                                                        <p class="mt-1 text-sm text-gray-600">
-                                                            {{ $spouse->marriage_authorization ?? '-' }}</p>
-                                                    </div>
-                                                @empty
+                                                    <hr class="my-3">
                                                     <div class="my-2">
                                                         <p class="mt-1 text-sm text-gray-600">
                                                             {{ __('Aucun conjoint(e) enregistré') }}</p>
                                                     </div>
-                                                @endforelse
-                                            </div>
+                                                </div>
+                                            @endforelse
                                         </div>
 
                                         <!-- Enfant(s) -->

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('spouse_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
+            $table->string('spouse_title');
             $table->string('name');
             $table->string('maiden_name')->nullable();
             $table->string('firstname')->nullable();

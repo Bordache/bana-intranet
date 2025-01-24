@@ -24,6 +24,7 @@ class SpouseDetail extends Model
 
     protected $fillable = [
         'profile_id',
+        'spouse_title',
         'spouse_name',
         'spouse_maiden_name',
         'spouse_firstname',

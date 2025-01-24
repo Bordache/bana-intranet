@@ -4,7 +4,7 @@
     <div class="modal fade" id="civilModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header bg-light">
                         <h1 class="text-lg font-medium text-gray-900" id="civilModalLabel"></h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -314,6 +314,28 @@
         const civilModal = document.getElementById('civilModal');
         const civilForm = document.getElementById('civilForm');
 
+        const submitButton = civilForm.querySelector('button[type="submit"]');
+
+        // Masquer le bouton au départ
+        submitButton.style.display = 'none';
+
+        // Activer l'écoute des modifications
+        civilForm.addEventListener('input', function (event) {
+            const hasChanged = Array.from(civilForm.elements).some(input => {
+                if (input.type === 'hidden' || input.type === 'submit' || input.disabled) {
+                    return false;
+                }
+                return input.defaultValue !== input.value;
+            });
+
+            if (hasChanged) {
+                submitButton.style.display = 'inline-block'; // Afficher le bouton
+            } else {
+                submitButton.style.display = 'none'; // Masquer le bouton
+            }
+        });
+
+
         // Gestion de l'ouverture du modal
         civilModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
@@ -329,7 +351,7 @@
             // Pré-remplir les champs
             const fields = [
                 'name', 'firstname', 'gender', 'birth_date', 'birth_place', 'national_id', 'last_national_id',
-                'issue_date', 'issue_place', 'duplicate_date', 'address', 'phone', 'email', 'blood_group', 'size',
+                'issue_date', 'issue_place', 'duplicate_date', 'duplicate_place', 'address', 'phone', 'email', 'blood_group', 'size',
                 'father_name', 'mother_name', 'marital_status', 'fallback_address', 'driver_license',
                 'practiced_sport', 'hobbies'
             ];
@@ -353,6 +375,7 @@
 
         // Réinitialisation à la fermeture du modal
         civilModal.addEventListener('hidden.bs.modal', function () {
+            submitButton.style.display = 'none'; // Masquer le bouton
             civilForm.reset();
             civilForm.removeAttribute('action');
             const methodField = civilForm.querySelector('input[name="_method"]');

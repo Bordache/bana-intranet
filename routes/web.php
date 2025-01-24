@@ -117,14 +117,14 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         });
 
         // Routes pour le conjoint
-        Route::prefix('/profile/{profile}/spouse_detail')->group(function () {
-            Route::get('/', [SpouseDetailController::class, 'index'])->name('spouse_detail.index');
-            Route::get('/create', [SpouseDetailController::class, 'create'])->name('spouse_detail.create');
-            Route::post('/', [SpouseDetailController::class, 'store'])->name('spouse_detail.store');
-            Route::get('/{id}', [SpouseDetailController::class, 'show'])->name('spouse_detail.show');
-            Route::get('/{id}/edit', [SpouseDetailController::class, 'edit'])->name('spouse_detail.edit');
-            Route::put('/{id}', [SpouseDetailController::class, 'update'])->name('spouse_detail.update');
-            Route::delete('/{id}', [SpouseDetailController::class, 'destroy'])->name('spouse_detail.destroy');
+        Route::prefix('/profile/{profile}/spouse_details')->group(function () {
+            Route::get('/', [SpouseDetailController::class, 'index'])->name('spouse_details.index');
+            Route::get('/create', [SpouseDetailController::class, 'create'])->name('spouse_details.create');
+            Route::post('/', [SpouseDetailController::class, 'store'])->name('spouse_details.store');
+            Route::get('/{id}', [SpouseDetailController::class, 'show'])->name('spouse_details.show');
+            Route::get('/{id}/edit', [SpouseDetailController::class, 'edit'])->name('spouse_details.edit');
+            Route::put('/{id}', [SpouseDetailController::class, 'update'])->name('spouse_details.update');
+            Route::delete('/{id}', [SpouseDetailController::class, 'destroy'])->name('spouse_details.destroy');
         });
 
         // Routes pour les renseignements des enfants

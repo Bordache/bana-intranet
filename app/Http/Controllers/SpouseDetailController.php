@@ -23,9 +23,12 @@ class SpouseDetailController extends Controller
         //
     }
 
-    public function update(Request $request, Profile $profile)
+    public function update(Request $request, Profile $profile, $id)
     {
+        $spouseDetails = $profile->spouseDetails()->findOrFail($id);
+
         $validated = $request->validate([
+            'spouse_title' => 'required|string|max:255',
             'spouse_name' => 'required|string|max:255',
             'spouse_maiden_name' => 'nullable|string|max:255',
             'spouse_firstname' => 'nullable|string|max:255',
@@ -35,7 +38,46 @@ class SpouseDetailController extends Controller
             'marriage_authorization' => 'nullable|string|max:255',
         ]);
 
-        $profile->spouseDetail()->updateOrCreate([], $validated);
-        return redirect()->route('spouse_detail.index', $profile->id)->with('success', 'Informations du conjoint mises à jour avec succès.');
+        $successMessage = $request->spouse_title == 'Monsieur' ? 'Conjoint mis à jour avec succès.' : 'Conjointe mise à jour avec succès.';
+
+        $spouseDetails->update($validated);
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'spouse_details',
+        ])->with('success', $successMessage);
+    }
+
+    public function store(Request $request, Profile $profile)
+    {
+        $validated = $request->validate([
+            'spouse_title' => 'required|string|max:255',
+            'spouse_name' => 'required|string|max:255',
+            'spouse_maiden_name' => 'nullable|string|max:255',
+            'spouse_firstname' => 'nullable|string|max:255',
+            'spouse_birth_date' => 'nullable|date',
+            'spouse_birth_place' => 'nullable|string|max:255',
+            'spouse_profession' => 'nullable|string|max:255',
+            'marriage_authorization' => 'nullable|string|max:255',
+        ]);
+
+        $successMessage = $request->spouse_title == 'Monsieur' ? 'Conjoint ajouté avec succès.' : 'Conjointe ajouté avec succès.';
+
+        $profile->spouseDetails()->create($validated);
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'spouse_details',
+        ])->with('success', $successMessage);
+    }
+
+    public function destroy(Profile $profile, $id)
+    {
+        $spouseDetails = $profile->spouseDetails()->findOrFail($id);
+        $successMessage = $spouseDetails->spouse_title == 'Monsieur' ? 'Conjoint supprimé avec succès.' : 'Conjointe supprimée avec succès.';
+        $spouseDetails->delete();
+
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'spouse_details',
+        ])->with('success', $successMessage);
     }
 }

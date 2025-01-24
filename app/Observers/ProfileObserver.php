@@ -39,6 +39,7 @@ class ProfileObserver
             'firstname' => $profile->firstname,
             'username' => $username,
             'email' => $username . $domain,
+            'user_unit' => $profile->militaryDetail->unit_id,
             'password' => Hash::make($passwordRandom),
 
         ]);
