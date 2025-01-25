@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('ranks', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('abbreviate');
+            $table->string('rank_name');
+            $table->string('rank_abbreviate');
+            $table->integer('rank_age_limit')->nullable();
             $table->timestamps();
         });
     }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('gender')->nullable();
             $table->date('birth_date')->nullable();
             $table->string('birth_place')->nullable();
-            $table->string('national_id', 12);
+            $table->unsignedBigInteger('national_id')->unique();
             $table->date('issue_date')->nullable();
             $table->string('issue_place')->nullable();
             $table->date('duplicate_date')->nullable();
@@ -32,6 +32,9 @@ return new class extends Migration
             $table->string('mother_name')->nullable();
             $table->string('marital_status')->nullable();
             $table->string('fallback_address')->nullable();
+            $table->string('driver_license')->nullable();
+            $table->text('practiced_sport')->nullable();
+            $table->text('hobbies')->nullable();
             $table->timestamps();
         });
     }

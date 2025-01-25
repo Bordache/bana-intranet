@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('children_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
-            $table->string('full_name');
-            $table->date('birth_date');
-            $table->string('birth_place')->nullable();
-            $table->string('gender');
-            $table->string('status')->nullable();
+            $table->string('child_full_name');
+            $table->date('child_birth_date');
+            $table->string('child_birth_place')->nullable();
+            $table->string('child_gender');
+            $table->string('child_status')->nullable();
             $table->timestamps();
 
             $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');

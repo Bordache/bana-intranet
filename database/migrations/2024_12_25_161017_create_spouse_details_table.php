@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('profile_id');
             $table->string('spouse_title');
-            $table->string('name');
-            $table->string('maiden_name')->nullable();
-            $table->string('firstname')->nullable();
-            $table->date('birth_date')->nullable();
-            $table->string('birth_place')->nullable();
-            $table->string('profession')->nullable();
+            $table->string('spouse_name');
+            $table->string('spouse_maiden_name')->nullable();
+            $table->string('spouse_firstname')->nullable();
+            $table->date('spouse_birth_date')->nullable();
+            $table->string('spouse_birth_place')->nullable();
+            $table->string('spouse_profession')->nullable();
             $table->string('marriage_authorization')->nullable();
             $table->timestamps();
 

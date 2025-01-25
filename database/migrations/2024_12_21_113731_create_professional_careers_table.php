@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('profile_id');
             $table->string('company_name');
             $table->string('job_title')->nullable();
-            $table->date('start_date')->nullable();
+            $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

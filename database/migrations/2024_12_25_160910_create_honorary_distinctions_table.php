@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('honorary_distinctions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
-            $table->string('title');
-            $table->string('promotion');
-            $table->string('reference')->nullable();
+            $table->string('honorary_title');
+            $table->string('honorary_promotion')->nullable();
+            $table->string('honorary_reference')->nullable();
             $table->timestamps();
 
             $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');

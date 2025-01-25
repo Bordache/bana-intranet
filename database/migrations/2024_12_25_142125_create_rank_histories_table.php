@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('rank_histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
-            $table->string('rank');
-            $table->date('promotion_date');
-            $table->string('rank_reference')->nullable();
+            $table->string('history_rank');
+            $table->date('history_promotion_date');
+            $table->string('history_rank_reference')->nullable();
             $table->timestamps();
 
             $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');

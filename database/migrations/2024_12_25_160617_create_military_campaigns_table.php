@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('military_campaigns', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
-            $table->string('title');
-            $table->string('campaign_period');
-            $table->string('campaign_locations');
+            $table->string('campaign_title');
+            $table->string('campaign_period')->nullable();
+            $table->string('campaign_locations')->nullable();
             $table->timestamps();
 
             $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');

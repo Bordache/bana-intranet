@@ -19,19 +19,29 @@ return new class extends Migration
             $table->date('position_date')->nullable();
             $table->string('position_reference')->nullable();
             $table->string('military_registration_number', 6);
-            $table->string('military_id_card_number', 6)->nullable();
+            $table->string('military_id_card_number')->nullable();
             $table->string('finance_registration_number')->nullable();
             $table->string('recruitment_origin')->nullable();
             $table->string('recruitment_promotion')->nullable();
             $table->date('service_entry_date');
             $table->string('corps_assignment');
-            $table->string('unit_assignment');
-            $table->string('rank');
+            $table->unsignedBigInteger('unit_id');
+            $table->unsignedBigInteger('rank_id');
+            $table->date('rank_date')->nullable();
             $table->string('current_function')->nullable();
             $table->string('specialty')->nullable();
+            $table->string('exact_assignment')->nullable();
+            $table->date('interruption_start_date')->nullable();
+            $table->date('interruption_end_date')->nullable();
+            $table->string('military_status')->nullable();
+            $table->string('military_status_reference')->nullable();
+            $table->string('military_driver_license')->nullable();
+            $table->text('other_information')->nullable();
             $table->timestamps();
 
             $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');
+            $table->foreign('rank_id')->references('id')->on('ranks');
+            $table->foreign('unit_id')->references('id')->on('units');
         });
     }
 

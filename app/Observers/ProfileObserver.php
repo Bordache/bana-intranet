@@ -39,6 +39,7 @@ class ProfileObserver
             'firstname' => $profile->firstname,
             'username' => $username,
             'email' => $username . $domain,
+            'email_verified_at' => now(),
             'password' => Hash::make($passwordRandom),
 
         ]);
