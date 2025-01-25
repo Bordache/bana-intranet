@@ -151,7 +151,7 @@
 
     <!-- Email -->
     <div class="col-md-4 d-flex pt-2">
-        <x-input-label for="email" :value="__('Email')" />
+        <x-input-label for="email" :value="__('Adresse email')" />
     </div>
     <div class="col-md-1 d-flex pt-2">
         <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Adresse électronique" role="img" aria-label="Adresse électronique"></i>
@@ -237,5 +237,41 @@
     <div class="col-md-7">
         <x-textarea-input id="fallback_address" name="fallback_address" rows="3" placeholder="Entrer adresse de repli">{{ old('fallback_address') }}</x-textarea-input>
         <x-input-error class="mt-2" :messages="$errors->get('fallback_address')" />
+    </div>
+
+    <!-- Driver licence -->
+    <div class="col-md-4 d-flex pt-2">
+        <x-input-label for="driver_license" :value="__('Permis de conduire')" />
+    </div>
+    <div class="col-md-1 d-flex pt-2">
+        <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Permis de conduire" role="img" aria-label="Permis de conduire"></i>
+    </div>
+    <div class="col-md-7">
+        <x-text-input id="driver_license" name="driver_license" type="text" placeholder="Entrer catégorie de permis de conduire" :value="old('driver_license')"/>
+        <x-input-error class="mt-2" :messages="$errors->get('fallback_address')" />
+    </div>
+
+    <!-- Practiced sport -->
+    <div class="col-md-4 d-flex pt-2">
+        <x-input-label for="practiced_sport" :value="__('Sports pratiqués')" />
+    </div>
+    <div class="col-md-1 d-flex pt-2">
+        <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Sports pratiqués" role="img" aria-label="Sports pratiqués"></i>
+    </div>
+    <div class="col-md-7">
+        <x-textarea-input id="practiced_sport" name="practiced_sport" rows="3" placeholder="Entrer sports pratiqués">{{ old('practiced_sport') }}</x-textarea-input>
+        <x-input-error class="mt-2" :messages="$errors->get('practiced_sport')" />
+    </div>
+
+    <!-- Hobbies -->
+    <div class="col-md-4 d-flex pt-2">
+        <x-input-label for="hobbies" :value="__('Centres d\'intérêts')" />
+    </div>
+    <div class="col-md-1 d-flex pt-2">
+        <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Centres d'intérêts" role="img" aria-label="Centres d'intérêts"></i>
+    </div>
+    <div class="col-md-7">
+        <x-textarea-input id="hobbies" name="hobbies" rows="3" placeholder="Entrer centres d'intérêts">{{ old('hobbies') }}</x-textarea-input>
+        <x-input-error class="mt-2" :messages="$errors->get('hobbies')" />
     </div>
 </section>

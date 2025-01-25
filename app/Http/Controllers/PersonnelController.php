@@ -112,6 +112,73 @@ class PersonnelController extends Controller
     }
 
     /**
+     * Custom search
+     */
+    public function customSearch(Request $request)
+    {
+        $query = Profile::with([
+            'militaryDetail',
+            'academicPaths',
+            'militaryPaths',
+            'honoraryDistinctions',
+            'militaryCampaigns',
+        ]);
+
+        // Filtrage par rang
+        if ($request->filled('rank_id')) {
+            $query->whereHas('militaryDetail', function ($q) use ($request) {
+                $q->where('rank_id', $request->rank_id_search);
+            });
+        }
+
+        // Filtrage par unité
+        if ($request->filled('unit_id')) {
+            $query->whereHas('militaryDetail', function ($q) use ($request) {
+                $q->where('unit_id', $request->unit_id_search);
+            });
+        }
+
+        // Filtrage par date d'entrée en service
+        if ($request->filled('service_entry_start') && $request->filled('service_entry_end')) {
+            $query->whereHas('militaryDetail', function ($q) use ($request) {
+                $q->whereBetween('service_entry_date', [
+                    $request->service_entry_date_start,
+                    $request->service_entry_date_end,
+                ]);
+            });
+        }
+
+        // Filtrage par diplôme académique
+        if ($request->filled('academic_diploma')) {
+            $query->whereHas('academicPaths', function ($q) use ($request) {
+                $q->where('diploma', 'like', '%' . $request->academic_diploma_search . '%');
+            });
+        }
+
+        // Filtrage par diplôme militaire
+        if ($request->filled('military_diploma')) {
+            $query->whereHas('militaryPaths', function ($q) use ($request) {
+                $q->where('academy_diploma', 'like', '%' . $request->military_diploma_search . '%');
+            });
+        }
+
+        // Filtrage par distinctions honorifiques
+        if ($request->filled('honorary_title')) {
+            $query->whereHas('honoraryDistinctions', function ($q) use ($request) {
+                $q->where('honorary_title', 'like', '%' . $request->honorary_title_search . '%');
+            });
+        }
+
+        // Exécute la requête et retourne les résultats
+        $results = $query->get();
+
+        return response()->json([
+            'success' => true,
+            'results' => $results,
+        ]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -130,7 +197,8 @@ class PersonnelController extends Controller
     public function store(Request $request){
         $this->authorize("create {$this->entity}");
 
-        $request->validate(
+        $validated = $request->validate(
+             // Fusionner les règles des deux classes
                 array_merge(
                     ProfileFields::getFields(),
                     MilitaryFields::getFields(),
@@ -142,11 +210,25 @@ class PersonnelController extends Controller
                     $request->has('history_rank') ? RankFields::getFields() : [],
                     $request->has('honorary_title') ? HonoraryFields::getFields() : [],
                     $request->has('campaign_title') ? CampaignFields::getFields() : []
+                ),
+
+                // Fusionner les messages personnalisés des deux classes
+                array_merge(
+                    ProfileFields::getMessages(),
+                    MilitaryFields::getMessages(),
+                    $request->has('spouse_name') ? SpouseFields::getMessages() : [],
+                    $request->has('child_full_name') ? ChildrenFields::getMessages() : [],
+                    $request->has('school_name') ? SchoolFields::getMessages() : [],
+                    $request->has('academy_name') ? AcademyFields::getMessages() : [],
+                    $request->has('company_name') ? CareerFields::getMessages() : [],
+                    $request->has('history_rank') ? RankFields::getMessages() : [],
+                    $request->has('honorary_title') ? HonoraryFields::getMessages() : [],
+                    $request->has('campaign_title') ? CampaignFields::getMessages() : []
                 )
         );
 
         // **Étape 1 : Création du profil**
-        $Profile = Profile::create($request->only(ProfileFields::getFieldNames()));
+        $Profile = Profile::create($validated(only(ProfileFields::getFieldNames())));
 
         // **Étape 2 : Création des détails militaires**
         $Profile->militaryDetail()->create(
@@ -161,6 +243,7 @@ class PersonnelController extends Controller
             foreach ($request->spouse_name as $key => $spouse) {
                 $Profile->spouseDetails()->create([
                     'profile_id' => $Profile->id,
+                    'spouse_title' => $request->spouse_title[$key],
                     'spouse_name' => $spouse,
                     'spouse_maiden_name' => $request->spouse_maiden_name[$key],
                     'spouse_firstname' => $request->spouse_firstname[$key],

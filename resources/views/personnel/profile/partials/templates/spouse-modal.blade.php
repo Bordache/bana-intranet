@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <div class="pb-4 row g-3">
 
-                       <!-- Position -->
+                       <!-- Titre -->
                        <div class="col-md-4 d-flex pt-2">
                             <x-input-label for="spouse_title" :value="__('Titre civil')" />
                         </div>

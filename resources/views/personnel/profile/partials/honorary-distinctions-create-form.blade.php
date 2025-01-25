@@ -26,7 +26,6 @@
                 </div>
                 <div class="col-md-1 d-flex pt-2">
                     <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Promotion" role="img" aria-label="Promotion"></i>
-                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
                 </div>
                 <div class="col-md-7">
                     <x-text-input id="honorary_promotion_{{ $index }}" name="honorary_promotion[]" type="text"
@@ -86,7 +85,6 @@
         </div>
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Promotion" role="img" aria-label="Promotion"></i>
-            <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
             <x-text-input id="honorary_promotion" name="honorary_promotion[]" type="text" placeholder="Entrer promotion" />

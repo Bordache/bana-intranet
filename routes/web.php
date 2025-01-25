@@ -93,6 +93,9 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
     // Routes pour le personnel
     Route::prefix('personnel')->group(function () {
+        // Recherche de profil
+        Route::get('/custom-search', [PersonnelController::class, 'customSearch'])->name('personnel.search');
+
         // Gestion des profils
         Route::get('/', [PersonnelController::class, 'index'])->name('personnel.index');
         Route::get('/profile/list', [PersonnelController::class, 'list'])->name('personnel.list');
@@ -136,6 +139,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::get('/{id}/edit', [ChildrenDetailController::class, 'edit'])->name('children_details.edit');
             Route::put('/{id}', [ChildrenDetailController::class, 'update'])->name('children_details.update');
             Route::delete('/{id}', [ChildrenDetailController::class, 'destroy'])->name('children_details.destroy');
+            Route::delete('/', [ChildrenDetailController::class, 'destroyAll'])->name('children_details.destroyAll');
         });
 
         // Routes pour les parcours scolaires liés à un profil

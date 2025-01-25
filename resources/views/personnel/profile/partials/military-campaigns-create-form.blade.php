@@ -26,7 +26,6 @@
                 </div>
                 <div class="col-md-1 d-flex pt-2">
                     <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Période" role="img" aria-label="Période"></i>
-                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
                 </div>
                 <div class="col-md-7">
                     <x-text-input id="campaign_period_{{ $index }}" name="campaign_period[]" type="text"
@@ -42,7 +41,6 @@
                 </div>
                 <div class="col-md-1 d-flex pt-2">
                     <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu" role="img" aria-label="Lieu"></i>
-                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
                 </div>
                 <div class="col-md-7">
                     <x-textarea-input id="campaign_locations_{{ $index }}" name="campaign_locations[]" rows="3"
@@ -86,7 +84,6 @@
         </div>
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Période" role="img" aria-label="Période"></i>
-            <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
             <x-text-input id="campaign_period" name="campaign_period[]" type="text" placeholder="Entrer période" />
@@ -98,7 +95,6 @@
         </div>
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu" role="img" aria-label="Lieu"></i>
-            <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
             <x-textarea-input id="campaign_locations" name="campaign_locations[]" rows="3" placeholder="Entrer lieu(x)"></x-textarea-input>

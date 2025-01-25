@@ -72,4 +72,15 @@ class ChildrenDetailController extends Controller
             'tab' => 'children_details',
         ])->with('success', 'Enfant supprimé avec succès');
     }
+
+    public function destroyAll(Profile $profile)
+    {
+        $profile->childrenDetails()->delete();
+
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'children_details',
+        ])->with('success', 'Tous les enfants ont été supprimés avec succès');
+    }
+
 }

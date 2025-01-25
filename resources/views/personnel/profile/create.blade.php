@@ -21,7 +21,7 @@
             <form id="personnelForm" method="post" action="{{ route('personnel.store') }}">
                 @csrf
                 <div class="p-4 sm:p-8 bg-white">
-                    <div class="mx-auto">
+                    <div class="container-md">
                         <section>
                             <div class="accordion accordion-flush" id="accordionFlushExample">
                                 <!-- Accordion Item #1 -->

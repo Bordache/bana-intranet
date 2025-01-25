@@ -26,7 +26,6 @@
                 </div>
                 <div class="col-md-1 d-flex pt-2">
                     <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Fonction ou emploi tenu" role="img" aria-label="Fonction ou emploi tenu"></i>
-                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
                 </div>
                 <div class="col-md-7">
                     <x-text-input id="job_title_{{ $index }}" name="job_title[]" type="text"
@@ -115,7 +114,6 @@
         </div>
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Fonction ou emploi tenu" role="img" aria-label="Fonction ou emploi tenu"></i>
-            <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
             <x-text-input id="job_title" name="job_title[]" type="text" placeholder="Entrer fonction ou emploi" />
@@ -127,6 +125,7 @@
         </div>
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de début d'affectation" role="img" aria-label="Date de début d'affectation"></i>
+            <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
         <div class="col-md-7">
             <x-text-input id="start_date" name="start_date[]" type="date" />

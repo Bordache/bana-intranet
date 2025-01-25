@@ -76,7 +76,6 @@
                 <option value="BANA" {{ old('corps_assignment') == 'BANA' ? 'selected' : '' }}>{{ __('BANA') }}</option>
                 <option value="BIMA" {{ old('corps_assignment') == 'BIMA' ? 'selected' : '' }}>{{ __('BIMA') }}</option>
                 <option value="CORMAR" {{ old('corps_assignment') == 'CORMAR' ? 'selected' : '' }}>{{ __('CORMAR') }}</option>
-                <option value="BATINF" {{ old('corps_assignment') == 'BATINF' ? 'selected' : '' }}>{{ __('BATINF') }}</option>
             </x-select-input>
             <x-input-error class="mt-2" :messages="$errors->get('corps_assignment')" />
         </div>

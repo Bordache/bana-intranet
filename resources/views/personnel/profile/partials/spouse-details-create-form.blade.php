@@ -4,6 +4,24 @@
         @foreach (old('spouse_name') as $index => $spouseName)
             <div class="spouse-detail pb-4 row g-3">
 
+                <!-- Titre -->
+                <div class="col-md-4 d-flex pt-2">
+                    <x-input-label for="spouse_title_{{ $index }}" :value="__('Titre civil')" />
+                </div>
+                <div class="col-md-1 d-flex pt-2">
+                    <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Titre" role="img" aria-label="Titre"></i>
+                    <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
+                </div>
+                <div class="col-md-7">
+                    <x-select-input id="spouse_title_{{ $index }}" name="spouse_title[]"
+                            class="{{ $errors->has('spouse_title.' . $index) ? 'is-invalid' : '' }}">
+                        <option value="" {{ old('spouse_title.' . $index) == null ? 'selected' : '' }} >{{ __('Choisir à la selection') }}</option>
+                        <option value="Monsieur" {{ old('spouse_title.' . $index) == 'Monsieur' ? 'selected' : '' }} >{{ __('Monsieur') }}</option>
+                        <option value="Madame" {{ old('spouse_title.' . $index) == 'Madame' ? 'selected' : '' }} >{{ __('Madame') }}</option>
+                    </x-select-input>
+                    <x-input-error class="mt-2" :messages="$errors->get('spouse_title.' . $index)" />
+                </div>
+
                 <!-- Nom -->
                 <div class="col-md-4 d-flex pt-2">
                     <x-input-label for="spouse_name_{{ $index }}" :value="__('Nom')" />
@@ -119,6 +137,22 @@
 <!-- Template pour les conjoints -->
 <template id="spouse-template">
     <div class="spouse-detail pb-4 row g-3">
+        <!-- Titre -->
+        <div class="col-md-4 d-flex pt-2">
+            <x-input-label for="spouse_title" :value="__('Titre civil')" />
+        </div>
+        <div class="col-md-1 d-flex pt-2">
+            <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Titre" role="img" aria-label="Titre"></i>
+            <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
+        </div>
+        <div class="col-md-7">
+            <x-select-input id="spouse_title" name="spouse_title[]">
+                <option value="" >{{ __('Choisir à la selection') }}</option>
+                <option value="Monsieur" >{{ __('Monsieur') }}</option>
+                <option value="Madame" >{{ __('Madame') }}</option>
+            </x-select-input>
+        </div>
+
         <!-- Nom -->
         <div class="col-md-4 d-flex pt-2">
             <x-input-label for="spouse_name" :value="__('Nom')" />

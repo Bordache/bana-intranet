@@ -17,6 +17,80 @@
                     </li>
                 </ol>
             </nav>
+
+            <!-- Fenêtre modale -->
+            <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <form action="{{ route('personnel.search')}}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="searchModalLabel">Recherche personnalisée</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <!-- Critères -->
+                                    <!-- Rang -->
+                                    <div class="col-md-6">
+                                        <label for="rank_id_search" class="form-label">Grade</label>
+                                        <select id="rank_id_search" name="rank_id_search" class="form-control">
+                                            <option value="">Choisir à la selection</option>
+                                            @foreach($selectRanks as $rank)
+                                                <option value="{{ $rank->id }}" title="{{ $rank->rank_abbreviate }}" >{{ $rank->rank_abbreviate }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Unité -->
+                                    <div class="col-md-6">
+                                        <label for="unit_id_search" class="form-label">Unité</label>
+                                        <select id="unit_id_search" name="unit_id_search" class="form-control">
+                                            <option value="">Choisir à la selection</option>
+                                            @foreach($selectUnits as $unit)
+                                                <option value="{{ $unit->id }}" title="{{ $unit->unit_abbreviate }}" >{{ $unit->unit_abbreviate }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Date d'entrée en service -->
+                                    <div class="col-md-6">
+                                        <label for="service_entry_date_start" class="form-label">Date d'entrée en service (Début)</label>
+                                        <input type="date" id="service_entry_date_start" name="service_entry_date_start" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="service_entry_date_end" class="form-label">Date d'entrée en service (Fin)</label>
+                                        <input type="date" id="service_entry_date_end" name="service_entry_date_end" class="form-control">
+                                    </div>
+
+                                    <!-- Diplômes académiques -->
+                                    <div class="col-md-6">
+                                        <label for="academic_diploma_search" class="form-label">Diplômes académiques</label>
+                                        <input type="text" id="academic_diploma_search" name="academic_diploma_search" class="form-control" placeholder="Ex: Bacc, Licence, Master ...">
+                                    </div>
+
+                                    <!-- Diplômes militaires -->
+                                    <div class="col-md-6">
+                                        <label for="military_diploma_search" class="form-label">Diplômes militaires</label>
+                                        <input type="text" id="military_diploma_search" name="military_diploma_search" class="form-control" placeholder="Ex: BE, BAT, EMS1 ...">
+                                    </div>
+
+                                    <!-- Distinctions honorifiques -->
+                                    <div class="col-md-6">
+                                        <label for="honorary_title_search" class="form-label">Distinctions honorifiques</label>
+                                        <input type="text" id="honorary_title_search" name="honorary_title_search" class="form-control" placeholder="Ex: CHOMM, OFOMM, CHONM ...">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="submit" class="btn btn-primary" >Rechercher</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenu -->
             <div class="p-4 sm:p-8 bg-white">
                 <div class="container">
                     <div class="row g-3">
@@ -133,7 +207,7 @@
                                         @include('personnel.profile.partials.templates.civil-modal')
                                         <div class="tab-pane fade {{ $tab == 'personnal_information' ? 'show active' : '' }}" id="v-pills-civil-status" role="tabpanel"
                                             aria-labelledby="v-pills-civil-status-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
+                                            <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Etat civil') }}</h3>
@@ -315,7 +389,7 @@
                                         @include('personnel.profile.partials.templates.military-modal')
                                         <div class="tab-pane fade {{ $tab == 'military_detail' ? 'show active' : '' }}" id="v-pills-military-status" role="tabpanel"
                                             aria-labelledby="v-pills-military-status-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
+                                            <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Renseignements militaires') }}</h3>
@@ -512,38 +586,47 @@
                                         <div class="tab-pane fade {{ $tab == 'spouse_details' ? 'show active' : '' }}" id="v-pills-spouse" role="tabpanel"
                                             aria-labelledby="v-pills-spouse-tab">
                                             @forelse ($profile->spouseDetails as $spouse)
-                                                <div class="border border-gray-200 p-3 mb-4">
+                                                <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                     <div class="d-flex justify-content-between">
                                                         <h3 class="text-lg font-medium text-gray-900">
                                                             {{ __('Renseignements conjoint(e)') }}</h3>
-                                                        <div>
-                                                            <form action="{{ route('spouse_details.destroy', ['profile' => $profile->id, 'id' => $spouse->id]) }}" method="POST"
-                                                                class="d-inline"
-                                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer {{ $spouse->spouse_title == 'Monsieur' ? 'ce conjoint ?' : 'cette conjointe ?' }}')">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" title="Supprimer"
-                                                                    class="btn btn-sm btn-danger">
-                                                                    <i class="fas fa-trash"></i>
+                                                            <div class="dropdown">
+                                                                <button class="btn" type="button" id="spouseDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background: transparent;">
+                                                                    <i class="fas fa-ellipsis-vertical"></i>
                                                                 </button>
-                                                            </form>
-                                                            <button type="button" class="btn btn-sm btn-warning" title="Editer"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#spouseModal"
-                                                                data-action="{{ route('spouse_details.update', ['profile' => $profile->id, 'id' => $spouse->id]) }}"
-                                                                data-method="PUT"
-                                                                data-title="{{ $spouse->spouse_title == 'Monsieur' ? 'Modification renseignements du conjoint' : 'Modification renseignements de la conjointe' }}"
-                                                                data-spouse_title="{{ $spouse->spouse_title }}"
-                                                                data-spouse_name="{{ $spouse->spouse_name }}"
-                                                                data-spouse_maiden_name="{{ optional($spouse)->spouse_maiden_name }}"
-                                                                data-spouse_firstname="{{ optional($spouse)->spouse_firstname }}"
-                                                                data-spouse_birth_date="{{ optional(optional($spouse)->spouse_birth_date)->format('Y-m-d') }}"
-                                                                data-spouse_birth_place="{{ optional($spouse)->spouse_birth_place }}"
-                                                                data-spouse_profession="{{ optional($spouse)->spouse_profession }}"
-                                                                data-marriage_authorization="{{ optional($spouse)->marriage_authorization }}">
-                                                                Modifier
-                                                        </button>
-                                                        </div>
+                                                                <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="spouseDropdown">
+                                                                    <li>
+                                                                        <button type="button" class="dropdown-item"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#spouseModal"
+                                                                            data-action="{{ route('spouse_details.update', ['profile' => $profile->id, 'id' => $spouse->id]) }}"
+                                                                            data-method="PUT"
+                                                                            data-title="{{ $spouse->spouse_title == 'Monsieur' ? 'Modification renseignements du conjoint' : 'Modification renseignements de la conjointe' }}"
+                                                                            data-spouse_title="{{ $spouse->spouse_title }}"
+                                                                            data-spouse_name="{{ $spouse->spouse_name }}"
+                                                                            data-spouse_maiden_name="{{ optional($spouse)->spouse_maiden_name }}"
+                                                                            data-spouse_firstname="{{ optional($spouse)->spouse_firstname }}"
+                                                                            data-spouse_birth_date="{{ optional(optional($spouse)->spouse_birth_date)->format('Y-m-d') }}"
+                                                                            data-spouse_birth_place="{{ optional($spouse)->spouse_birth_place }}"
+                                                                            data-spouse_profession="{{ optional($spouse)->spouse_profession }}"
+                                                                            data-marriage_authorization="{{ optional($spouse)->marriage_authorization }}">
+                                                                            Modifier
+                                                                        </button>
+                                                                    </li>
+                                                                    <li>
+                                                                        <form action="{{ route('spouse_details.destroy', ['profile' => $profile->id, 'id' => $spouse->id]) }}" method="POST"
+                                                                            class="d-inline"
+                                                                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer {{ $spouse->spouse_name .' '.$spouse->spouse_firstname }} ?')">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit"
+                                                                                class="dropdown-item">
+                                                                                Supprimer
+                                                                            </button>
+                                                                        </form>
+                                                                  </li>
+                                                                </ul>
+                                                            </div>
                                                     </div>
                                                     <hr class="my-3">
                                                     <div class="my-2">
@@ -599,7 +682,7 @@
                                                         </div>
                                                 </div>
                                             @empty
-                                                <div class="border border-gray-200 p-3 mb-4"><h3 class="text-lg font-medium text-gray-900">
+                                                <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]"><h3 class="text-lg font-medium text-gray-900">
                                                     <div class="d-flex justify-content-between">
                                                         <h3 class="text-lg font-medium text-gray-900">
                                                             {{ __('Renseignements conjoint(e)') }}</h3>
@@ -625,18 +708,41 @@
                                         @include('personnel.profile.partials.templates.child-modal')
                                         <div class="tab-pane fade {{ $tab == 'children_details' ? 'show active' : '' }}" id="v-pills-children" role="tabpanel"
                                             aria-labelledby="v-pills-children-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
+                                            <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">{{ __('Enfant(s)') }}
                                                     </h3>
-                                                    <button type="button" class="btn btn-sm btn-warning" title="Editer"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#childModal"
-                                                        data-action="{{ route('children_details.store', ['profile' => $profile->id]) }}"
-                                                        data-method="POST"
-                                                        data-title="Ajout d'un enfant">
-                                                        Ajouter
-                                                    </button>
+                                                    <div class="dropdown">
+                                                        <button class="btn" type="button" id="childDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background: transparent;">
+                                                            <i class="fas fa-ellipsis-vertical"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="childDropdown">
+                                                            <li>
+                                                                <button type="button" class="dropdown-item"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#childModal"
+                                                                    data-action="{{ route('children_details.store', ['profile' => $profile->id]) }}"
+                                                                    data-method="POST"
+                                                                    data-title="Ajout d'un enfant">
+                                                                    Ajouter
+                                                                </button>
+                                                            </li>
+                                                            @if(!$profile->childrenDetails->isEmpty() && $profile->childrenDetails->count()>1)
+                                                                <li>
+                                                                    <form action="{{ route('children_details.destroyAll', ['profile' => $profile->id]) }}" method="POST"
+                                                                        class="d-inline"
+                                                                        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer tous les enfants de {{ $profile->name .' '. $profile->firstname }} ?')">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit"
+                                                                            class="dropdown-item">
+                                                                            Supprimer tout
+                                                                        </button>
+                                                                    </form>
+                                                                </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                                 <hr class="my-3">
                                                 @forelse ($profile->childrenDetails as $child)
@@ -684,29 +790,40 @@
                                                         </div>
                                                         <div class="col-md-2">
                                                             <div class="my-2 text-end">
-                                                                <form action="{{ route('children_details.destroy', ['profile' => $profile->id, 'id' => $child->id]) }}" method="POST"
-                                                                    class="d-inline"
-                                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet enfant ?')">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" title="Supprimer"
-                                                                        class="btn btn-sm btn-danger">
-                                                                        <i class="fas fa-trash"></i>
+                                                                <div class="dropdown">
+                                                                    <button class="btn" type="button" id="childFieldDropdown{{ $child->id }}" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background: transparent;">
+                                                                        <i class="fas fa-ellipsis-vertical"></i>
                                                                     </button>
-                                                                </form>
-                                                                <button type="button" class="btn btn-sm btn-warning" title="Editer"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#childModal"
-                                                                    data-action="{{ route('children_details.update', ['profile' => $profile->id, 'id' => $child->id]) }}"
-                                                                    data-method="PUT"
-                                                                    data-title="Modification d'un enfant"
-                                                                    data-full_name="{{ $child->child_full_name }}"
-                                                                    data-birth_date="{{ $child->child_birth_date->format('Y-m-d') }}"
-                                                                    data-birth_place="{{ $child->child_birth_place }}"
-                                                                    data-gender="{{ $child->child_gender }}"
-                                                                    data-status="{{ $child->child_status }}">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </button>
+                                                                    <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="childFieldDropdown{{ $child->id }}">
+                                                                        <li>
+                                                                            <button type="button" class="dropdown-item"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#childModal"
+                                                                                data-action="{{ route('children_details.update', ['profile' => $profile->id, 'id' => $child->id]) }}"
+                                                                                data-method="PUT"
+                                                                                data-title="Modification d'un enfant"
+                                                                                data-full_name="{{ $child->child_full_name }}"
+                                                                                data-birth_date="{{ $child->child_birth_date->format('Y-m-d') }}"
+                                                                                data-birth_place="{{ $child->child_birth_place }}"
+                                                                                data-gender="{{ $child->child_gender }}"
+                                                                                data-status="{{ $child->child_status }}">
+                                                                                Modifier
+                                                                            </button>
+                                                                        </li>
+                                                                        <li>
+                                                                            <form action="{{ route('children_details.destroy', ['profile' => $profile->id, 'id' => $child->id]) }}" method="POST"
+                                                                                class="d-inline"
+                                                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer {{ $child->child_full_name }} ?')">
+                                                                                @csrf
+                                                                                @method('DELETE')
+                                                                                <button type="submit"
+                                                                                    class="dropdown-item">
+                                                                                    Supprimer
+                                                                                </button>
+                                                                            </form>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -724,7 +841,7 @@
                                         @include('personnel.profile.partials.templates.academic-modal')
                                         <div class="tab-pane fade {{ $tab == 'academic_paths' ? 'show active' : '' }}" id="v-pills-education" role="tabpanel"
                                             aria-labelledby="v-pills-education-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
+                                            <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Parcours académique') }}</h3>
@@ -805,7 +922,7 @@
                                         @include('personnel.profile.partials.templates.academy-modal')
                                         <div class="tab-pane fade {{ $tab == 'military_paths' ? 'show active' : '' }}" id="v-pills-military-path" role="tabpanel"
                                             aria-labelledby="v-pills-military-path-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
+                                            <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Parcours militaire') }}</h3>
@@ -886,7 +1003,7 @@
                                         @include('personnel.profile.partials.templates.career-modal')
                                         <div class="tab-pane fade {{ $tab == 'professional_careers' ? 'show active' : '' }}" id="v-pills-professional-path" role="tabpanel"
                                             aria-labelledby="v-pills-professional-path-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
+                                            <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Parcours professionnel') }}</h3>
@@ -985,7 +1102,7 @@
                                         @include('personnel.profile.partials.templates.rank-modal')
                                         <div class="tab-pane fade {{ $tab == 'rank_histories' ? 'show active' : '' }}" id="v-pills-rank-history" role="tabpanel"
                                             aria-labelledby="v-pills-rank-history-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
+                                            <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Grades successifs') }}</h3>
@@ -1066,7 +1183,7 @@
                                         @include('personnel.profile.partials.templates.award-modal')
                                         <div class="tab-pane fade {{ $tab == 'honorary_distinctions' ? 'show active' : '' }}" id="v-pills-aware-history" role="tabpanel"
                                             aria-labelledby="v-pills-aware-history-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
+                                            <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Décorations successives') }}</h3>
@@ -1146,7 +1263,7 @@
                                         @include('personnel.profile.partials.templates.campaign-modal')
                                         <div class="tab-pane fade {{ $tab == 'campaign_histories' ? 'show active' : '' }}" id="v-pills-campaign-history" role="tabpanel"
                                             aria-labelledby="v-pills-campaign-history-tab">
-                                            <div class="border border-gray-200 p-3 mb-4">
+                                            <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="text-lg font-medium text-gray-900">
                                                         {{ __('Campagnes militaires') }}</h3>
@@ -1249,7 +1366,7 @@
                                             <div class="tab-content w-100" id="v-pills-tabContent">
                                                 <!-- Etat de service -->
                                                 <div class="tab-pane fade show active" id="v-pills-serv-stat" role="tabpanel" aria-labelledby="v-pills-serv-stat-tab">
-                                                    <div id="etatService" class="border border-gray-200 p-3 mb-4">
+                                                    <div id="etatService" class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                         <h3 class="text-lg font-medium text-gray-900">
                                                             {{ __('Etat de service') }}</h3>
                                                         <hr class="my-3">
@@ -1338,7 +1455,7 @@
                                     <div class="tab-contentn w-100" id="v-pills-tabContent">
                                         <!-- Etat de service -->
                                         <div class="tab-pane fade show active" id="v-pills-service-stat" role="tabpanel" aria-labelledby="v-pills-service-stat-tab">
-                                            <div id="etatService" class="border border-gray-200 p-3 mb-4">
+                                            <div id="etatService" class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                 <h3 class="text-lg font-medium text-gray-900">
                                                     {{ __('Etat de service') }}</h3>
                                                 <hr class="my-3">
