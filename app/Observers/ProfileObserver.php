@@ -11,6 +11,8 @@ use App\Services\PasswordGeneratorService;
 
 class ProfileObserver
 {
+    public static $disable = false;
+    
     protected $usernameGenerator;
     protected $passwordGenerator;
 
@@ -28,6 +30,10 @@ class ProfileObserver
      */
     public function created(Profile $profile): void
     {
+        if (self::$disable) {
+            return;
+        }
+        
          $username = $this->usernameGenerator->generateUniqueUsername($profile->name, $profile->firstname);
          $passwordRandom = $this->passwordGenerator->passwordGenerator(8);
 
