@@ -38,15 +38,19 @@ class ProfileObserver
             'name' => $profile->name,
             'firstname' => $profile->firstname,
             'username' => $username,
+            'password' => Hash::make($passwordRandom),
             'email' => $username . $domain,
             'email_verified_at' => now(),
-            'password' => Hash::make($passwordRandom),
+            'created_at' => now(),
+            'updated_at' => now(),
 
         ]);
 
         PasswordInit::create([
             'user_id' => $user->id,
             'password' => $passwordRandom,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 

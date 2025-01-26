@@ -15,7 +15,7 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         $targets = ['com', 'doc', 'rh', 'stg', 'user', 'log'];
-        $actions = ['view', 'create', 'edit', 'destroy'];
+        $actions = ['view', 'create', 'edit', 'destroy', 'manage'];
         $entity = ['communication', 'documentation et archives', 'ressources humaines', 'stage et formation'];
 
         // Créer les permissions
