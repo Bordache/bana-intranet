@@ -68,7 +68,12 @@ class PersonnelController extends Controller
     public function index()
     {
         $this->authorize("view {$this->entity}");
-        $profiles = Profile::all();
+        $profiles = MilitaryDetail::with(['profile', 'rank'])
+        ->join('profiles', 'military_details.profile_id', '=', 'profiles.id')
+        ->join('ranks', 'military_details.rank_id', '=', 'ranks.id')
+        ->orderBy('profiles.created_at', 'desc')
+        ->limit(5)
+        ->get();
         return view('personnel.index', compact('profiles'));
     }
 

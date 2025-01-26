@@ -110,27 +110,29 @@
                                     <p class="text-muted mb-0">{{ $profileRank->rank_name }}</p>
                                 </div>
                             </div>
-                            <div>
-                                <ul>
-                                    <li class="mb-2">
-                                        <a href="{{ route('personnel.create', ['recipient' => $profile->id]) }}"
-                                            class="btn btn-sm btn-light d-flex align-items-center">
-                                            <i class="fas fa-envelope me-2"></i> Envoyer message
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <form action="{{ route('personnel.destroy', $profile->id) }}" method="POST"
-                                            class="d-inline"
-                                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce détail ?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" title="Supprimer"
-                                                class="btn btn-sm btn-danger w-100">Supprimer</button>
-                                        </form>
-                                    </li>
-                                </ul>
+                            @if(auth()->user()->profile_id !== $profile->id)
+                                <div>
+                                    <ul>
+                                        <li class="mb-2">
+                                            <a href="{{ route('personnel.create', ['recipient' => $profile->id]) }}"
+                                                class="btn btn-sm btn-light d-flex align-items-center">
+                                                <i class="fas fa-envelope me-2"></i> Envoyer message
+                                            </a>
+                                        </li>
 
-                            </div>
+                                        <li>
+                                            <form action="{{ route('personnel.destroy', $profile->id) }}" method="POST"
+                                                class="d-inline"
+                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce détail ?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" title="Supprimer"
+                                                    class="btn btn-sm btn-danger w-100">Supprimer</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Navigation -->

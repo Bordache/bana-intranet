@@ -48,9 +48,10 @@ Route::get('/admin', function () {
 * Profile
 */
 Route::middleware(['auth', 'password.changed'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('myprofile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('myprofile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('myprofile.destroy');
+    Route::get('/account', [ProfileController::class, 'edit'])->name('myprofile.edit');
+    Route::patch('/account', [ProfileController::class, 'update'])->name('myprofile.update');
+    Route::delete('/account', [ProfileController::class, 'destroy'])->name('myprofile.destroy');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('myprofile.show');
 });
 
 /*

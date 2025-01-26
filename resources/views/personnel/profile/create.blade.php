@@ -392,19 +392,4 @@
     });
 </script>
 
-<script>
-    // Supprime les espaces ou sauts de ligne superflus
-    document.addEventListener("DOMContentLoaded", () => {
-        const textareaInputs = document.querySelectorAll('textarea');
-        textareaInputs.forEach(textarea => {
-                textarea.value = textarea.value.trim();
-        });
-    });
 
-    function cleanTextareaInput(fieldId) {
-        const textarea = document.getElementById(fieldId);
-        if (textarea) {
-            textarea.value = textarea.value.trim();
-        }
-    }
-</script>
