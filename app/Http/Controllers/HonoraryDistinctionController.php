@@ -50,10 +50,10 @@ class HonoraryDistinctionController extends Controller
 
         $award->update($validated);
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Distinction mise à jour avec succès.',
             'tab' => 'honorary_distinctions',
-        ])->with('success', 'Distinction mise à jour avec succès');
+        ]);
     }
 
     public function destroy(Profile $profile, $id)
@@ -61,9 +61,20 @@ class HonoraryDistinctionController extends Controller
         $distinction = $profile->honoraryDistinctions()->findOrFail($id);
         $distinction->delete();
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Distinction supprimé avec succès.',
             'tab' => 'honorary_distinctions',
-        ])->with('success', 'Distinction supprimée avec succès');
+        ]);
     }
+
+    public function destroyAll(Profile $profile)
+    {
+        $profile->honoraryDistinctions()->delete();
+
+        return back()->with([
+            'success' => 'Toutes les distinctions ont été supprimées avec succès.',
+            'tab' => 'honorary_distinctions',
+        ]);
+    }
+
 }

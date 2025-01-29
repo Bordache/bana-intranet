@@ -48,10 +48,11 @@ class RankHistoryController extends Controller
         ]);
 
         $rankHistory->update($validated);
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+
+        return back()->with([
+            'success' => 'Grade mis à jour avec succès.',
             'tab' => 'rank_histories',
-        ])->with('success', 'Grade mis à jour avec succès.');
+        ]);
     }
 
     public function destroy(Profile $profile, $id)
@@ -59,9 +60,19 @@ class RankHistoryController extends Controller
         $rankHistory = $profile->rankHistories()->findOrFail($id);
         $rankHistory->delete();
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Grade supprimé avec succès.',
             'tab' => 'rank_histories',
-        ])->with('success', 'Grade supprimé avec succès');
+        ]);
+    }
+
+    public function destroyAll(Profile $profile)
+    {
+        $profile->rankHistories()->delete();
+
+        return back()->with([
+            'success' => 'Tous les grades ont été supprimés avec succès.',
+            'tab' => 'rank_histories',
+        ]);
     }
 }

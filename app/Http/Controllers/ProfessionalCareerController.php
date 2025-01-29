@@ -78,10 +78,10 @@ class ProfessionalCareerController extends Controller
 
         $professionalCareers->update($validated);
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Parcours mis à jour avec succès.',
             'tab' => 'professional_careers',
-        ])->with('success', 'Parcours mis à jour avec succès.');
+        ]);
     }
 
     /**
@@ -92,9 +92,19 @@ class ProfessionalCareerController extends Controller
         $professionalCareer = $profile->professionalCareers()->findOrFail($id);
         $professionalCareer->delete();
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Parcours supprimé avec succès.',
             'tab' => 'professional_careers',
-        ])->with('success', 'Parcours supprimé avec succès.');
+        ]);
+    }
+
+    public function destroyAll(Profile $profile)
+    {
+        $profile->professionalCareers()->delete();
+
+        return back()->with([
+            'success' => 'Tous les parcours ont été supprimés avec succès.',
+            'tab' => 'professional_careers',
+        ]);
     }
 }

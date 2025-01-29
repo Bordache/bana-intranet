@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 w-100 fixed z-1">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 sticky-top">
     <!-- Primary Navigation Menu -->
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -13,7 +13,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('Accueil') }}
                     </x-nav-link>
                     <x-nav-link :href="route('communication.index')" :active="request()->routeIs('communication.index') || request()->is('communication*')">
                         {{ __('Communication') }}
@@ -54,7 +54,7 @@
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('myprofile.show')">
-                            {{ __('Informations') }}
+                            {{ __('Profil') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -87,7 +87,7 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                {{ __('Accueil') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('communication.index')" :active="request()->routeIs('communication.index') || request()->is('communication*')">
                 {{ __('Communication') }}
@@ -118,7 +118,7 @@
                     {{ __('Compte') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('myprofile.show')">
-                    {{ __('Informations') }}
+                    {{ __('Profil') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->

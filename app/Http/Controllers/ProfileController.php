@@ -23,6 +23,8 @@ use App\Models\Profile;
 use App\Models\RankHistory;
 use App\Models\SpouseDetail;
 
+use App\Support\ProfileFields;
+
 class ProfileController extends Controller
 {
      /**
@@ -77,6 +79,20 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('myprofile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Update civil status onformation
+     */
+    public function updateCivilStatus(Request $request)
+    {
+        $id = Auth::user()->profile_id;
+        $profile = Profile::findOrFail($id);
+        $validated = $request->only(array_keys(ProfileFields::getFields()));
+
+        $profile->update($validated);
+
+        return redirect()->route('myprofile.show')->with('success', 'Etat civil mis à jour avec succès.');
     }
 
     /**

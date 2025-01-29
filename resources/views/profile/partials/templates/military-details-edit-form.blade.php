@@ -40,7 +40,7 @@
                 <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de position actuelle" role="img" aria-label="Date de position actuelle"></i>
             </div>
             <div class="col-md-7">
-                <x-text-input id="position_date" name="position_date" type="date" :value="$profile->militaryDetail->position_date" />
+                <x-text-input id="position_date" name="position_date" type="date" :value="optional($profile->militaryDetail->position_date)->format('Y-m-d')" />
                 <x-input-error class="mt-2" :messages="$errors->get('position_date')" />
             </div>
 
@@ -103,10 +103,10 @@
                 <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
             </div>
             <div class="col-md-7">
-                <x-select-input id="unit_id" name="unit_id" >
+                <x-select-input id="unit_id" name="unit_id" disabled>
                     <option value="" disabled {{ $profile->militaryDetail->unit_id == null ? 'selected' : '' }} >{{ __('Choisir à la selection') }}</option>
                     @foreach($selectUnits as $unit)
-                        <option value="$unit->id }}" {{ $profile->militaryDetail->unit_id == $unit->id ? 'selected' : '' }} title="{{ $unit->unit_abbreviate }}" >{{ $unit->unit_name }}</option>
+                        <option value="{{ $unit->id }}" {{ $profile->militaryDetail->unit_id == $unit->id ? 'selected' : '' }} title="{{ $unit->unit_abbreviate }}" >{{ $unit->unit_name }}</option>
                     @endforeach
                 </x-select-input>
                 <x-input-error class="mt-2" :messages="$errors->get('unit_id')" />
@@ -136,7 +136,7 @@
                 <x-select-input id="rank_id" name="rank_id" >
                     <option value="" disabled {{ $profile->militaryDetail->rank_id == null ? 'selected' : '' }} >Choisir à la selection</option>
                     @foreach($selectRanks as $rank)
-                        <option value="$rank->id }}" {{ $profile->militaryDetail->rank_id == $rank->id ? 'selected' : '' }} title="{{ $rank->rank_abbreviate }}" >{{ $rank->rank_name }}</option>
+                        <option value="{{ $rank->id }}" {{ $profile->militaryDetail->rank_id == $rank->id ? 'selected' : '' }} title="{{ $rank->rank_abbreviate }}" >{{ $rank->rank_name }}</option>
                     @endforeach
                 </x-select-input>
                 <x-input-error class="mt-2" :messages="$errors->get('rank_id')" />
@@ -150,7 +150,7 @@
                 <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de nomination du grade actuel" role="img" aria-label="Date de nomination du grade actuel"></i>
             </div>
             <div class="col-md-7">
-                <x-text-input id="rank_date" name="rank_date" type="date" :value="$profile->militaryDetail->rank_date " />
+                <x-text-input id="rank_date" name="rank_date" type="date" :value="optional($profile->militaryDetail->rank_date)->format('Y-m-d') " />
                 <x-input-error class="mt-2" :messages="$errors->get('rank_date')" />
             </div>
 
@@ -212,7 +212,7 @@
                 <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
             </div>
             <div class="col-md-7">
-                <x-text-input id="service_entry_date" name="service_entry_date" type="date" :value="$profile->militaryDetail->service_entry_date"/>
+                <x-text-input id="service_entry_date" name="service_entry_date" type="date" :value="optional($profile->militaryDetail->service_entry_date)->format('Y-m-d')"/>
                 <x-input-error class="mt-2" :messages="$errors->get('service_entry_date')" />
             </div>
 
@@ -248,7 +248,7 @@
                 <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date du début d'interruption" role="img" aria-label="Date du début d'interruption"></i>
             </div>
             <div class="col-md-7">
-                <x-text-input id="interruption_start_date" name="interruption_start_date" type="date" :value="$profile->militaryDetail->interruption_start_date " />
+                <x-text-input id="interruption_start_date" name="interruption_start_date" type="date" :value="optional($profile->militaryDetail->interruption_start_date)->format('Y-m-d') " />
                 <x-input-error class="mt-2" :messages="$errors->get('interruption_start_date')" />
             </div>
 
@@ -260,7 +260,7 @@
                 <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de fin d'interruption" role="img" aria-label="Date de fin d'interruption"></i>
             </div>
             <div class="col-md-7">
-                <x-text-input id="interruption_end_date" name="interruption_end_date" type="date" :value="$profile->militaryDetail->interruption_end_date " />
+                <x-text-input id="interruption_end_date" name="interruption_end_date" type="date" :value="optional($profile->militaryDetail->interruption_end_date)->format('Y-m-d') " />
                 <x-input-error class="mt-2" :messages="$errors->get('interruption_end_date')" />
             </div>
 

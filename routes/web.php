@@ -52,6 +52,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
     Route::patch('/account', [ProfileController::class, 'update'])->name('myprofile.update');
     Route::delete('/account', [ProfileController::class, 'destroy'])->name('myprofile.destroy');
     Route::get('/profile', [ProfileController::class, 'show'])->name('myprofile.show');
+    Route::patch('/profile', [ProfileController::class, 'updateCivilStatus'])->name('myprofile.updateCivilStatus');
 });
 
 /*
@@ -152,6 +153,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::get('/{id}/edit', [AcademicPathController::class, 'edit'])->name('academic_paths.edit');
             Route::put('/{id}', [AcademicPathController::class, 'update'])->name('academic_paths.update');
             Route::delete('/{id}', [AcademicPathController::class, 'destroy'])->name('academic_paths.destroy');
+            Route::delete('/', [AcademicPathController::class, 'destroyAll'])->name('academic_paths.destroyAll');
         });
 
         // Routes pour les parcours militaire liés à un profil
@@ -163,6 +165,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::get('/{id}/edit', [MilitaryPathController::class, 'edit'])->name('military_paths.edit');
             Route::put('/{id}', [MilitaryPathController::class, 'update'])->name('military_paths.update');
             Route::delete('/{id}', [MilitaryPathController::class, 'destroy'])->name('military_paths.destroy');
+            Route::delete('/', [MilitaryPathController::class, 'destroyAll'])->name('military_paths.destroyAll');
         });
 
          // Routes pour les parcours professionnel liés à un profil
@@ -174,6 +177,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::get('/{id}/edit', [ProfessionalCareerController::class, 'edit'])->name('professional_careers.edit');
             Route::put('/{id}', [ProfessionalCareerController::class, 'update'])->name('professional_careers.update');
             Route::delete('/{id}', [ProfessionalCareerController::class, 'destroy'])->name('professional_careers.destroy');
+            Route::delete('/', [ProfessionalCareerController::class, 'destroyAll'])->name('professional_careers.destroyAll');
         });
 
         // Routes pour les historiques de grades
@@ -185,6 +189,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::get('/{id}/edit', [RankHistoryController::class, 'edit'])->name('rank_histories.edit');
             Route::put('/{id}', [RankHistoryController::class, 'update'])->name('rank_histories.update');
             Route::delete('/{id}', [RankHistoryController::class, 'destroy'])->name('rank_histories.destroy');
+            Route::delete('/', [RankHistoryController::class, 'destroyAll'])->name('rank_histories.destroyAll');
         });
 
         // Routes pour les distinctions honorifiques
@@ -196,6 +201,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::get('/{id}/edit', [HonoraryDistinctionController::class, 'edit'])->name('honorary_distinctions.edit');
             Route::put('/{id}', [HonoraryDistinctionController::class, 'update'])->name('honorary_distinctions.update');
             Route::delete('/{id}', [HonoraryDistinctionController::class, 'destroy'])->name('honorary_distinctions.destroy');
+            Route::delete('/', [HonoraryDistinctionController::class, 'destroyAll'])->name('honorary_distinctions.destroyAll');
         });
 
         // Routes pour les campagnes militaires
@@ -207,6 +213,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::get('/{id}/edit', [MilitaryCampaignController::class, 'edit'])->name('campaign_histories.edit');
             Route::put('/{id}', [MilitaryCampaignController::class, 'update'])->name('campaign_histories.update');
             Route::delete('/{id}', [MilitaryCampaignController::class, 'destroy'])->name('campaign_histories.destroy');
+            Route::delete('/', [MilitaryCampaignController::class, 'destroyAll'])->name('campaign_histories.destroyAll');
         });
     });
 });

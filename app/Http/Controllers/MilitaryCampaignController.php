@@ -64,6 +64,16 @@ class MilitaryCampaignController extends Controller
         return redirect()->route('personnel.show', [
             'id' => $profile->id,
             'tab' => 'campaign_histories',
-        ])->with('success', 'Campagne supprimée avec succès');
+        ])->with('success', 'Campagne mise à jour avec succès');
+    }
+
+    public function destroyAll(Profile $profile)
+    {
+        $profile->militaryCampaigns()->delete();
+
+        return redirect()->route('personnel.show', [
+            'id' => $profile->id,
+            'tab' => 'campaign_histories',
+        ])->with('success', 'Toutes les campagnes ont été supprimées avec succès.');
     }
 }

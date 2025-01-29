@@ -1,10 +1,10 @@
-<form id="civilForm" action="{{ route('myprofile.updateCivilStatus', ['id' => $profile->id]) }}" method="POST">
+<form action="">
     @csrf
-    @method('PATCH')
+    @method('PUT')
     <section class="row g-3">
         <header>
             <h2 class="text-lg font-medium text-gray-900">
-                {{ __('Etat civil') }}
+                {{ __('Conjoint(e)') }}
             </h2>
 
             <p class="mt-1 text-sm text-gray-600">
@@ -20,13 +20,13 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Genre" role="img" aria-label="Genre"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-select-input id="gender" name="gender">
                 <option value="" {{ $profile->gender == null ? 'selected' : '' }} disabled>{{ __('Choisir à la selection') }}</option>
                 <option value="Masculin" {{ $profile->gender == 'Masculin' ? 'selected' : '' }}>{{ __('Masculin') }}</option>
                 <option value="Féminin" {{ $profile->gender == 'Féminin' ? 'selected' : '' }}>{{ __('Féminin') }}</option>
             </x-select-input>
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('gender')" />
         </div>
 
         <!-- Name -->
@@ -37,9 +37,9 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Nom de naissance" role="img" aria-label="Nom de naissance"></i>
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="name" name="name" type="text" :value="$profile->name" placeholder="Entrer nom" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <!-- Firstname -->
@@ -49,9 +49,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Prénom(s) de naissance" role="img" aria-label="Prénom(s) de naissance"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="firstname" name="firstname" type="text" :value="$profile->firstname" placeholder="Entrer prénom(s)" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('firstname')" />
         </div>
 
         <!-- Birth Date -->
@@ -61,9 +61,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de naissance" role="img" aria-label="Date de naissance"></i>
         </div>
-        <div class="col-md-7 text-start">
-            <x-text-input id="birth_date" name="birth_date" type="date" :value="optional($profile->birth_date)->format('Y-m-d')" />
-            <span class="error-message text-danger"></span>
+        <div class="col-md-7">
+            <x-text-input id="birth_date" name="birth_date" type="date" :value="$profile->birth_date" />
+            <x-input-error class="mt-2" :messages="$errors->get('birth_date')" />
         </div>
 
         <!-- Birth Place -->
@@ -73,9 +73,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu de naissance" role="img" aria-label="Lieu de naissance"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="birth_place" name="birth_place" type="text" :value="$profile->birth_place" placeholder="Entrer lieu de naissance" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('birth_place')" />
         </div>
 
         <!-- National ID -->
@@ -86,9 +86,9 @@
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Numéro CIN" role="img" aria-label="Numéro CIN"></i>
             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="national_id" name="national_id" type="number" min="0" :value="$profile->national_id" placeholder="Entrer numéro CIN" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('national_id')" />
         </div>
 
         <!-- Issue Date -->
@@ -98,9 +98,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de délivrance CIN" role="img" aria-label="Date de délivrance CIN"></i>
         </div>
-        <div class="col-md-7 text-start">
-            <x-text-input id="issue_date" name="issue_date" type="date" :value="optional($profile->issue_date)->format('Y-m-d')" />
-            <span class="error-message text-danger"></span>
+        <div class="col-md-7">
+            <x-text-input id="issue_date" name="issue_date" type="date" :value="$profile->issue_date" />
+            <x-input-error class="mt-2" :messages="$errors->get('issue_date')" />
         </div>
         <!-- Issue Place -->
         <div class="col-md-4 d-flex pt-2">
@@ -109,9 +109,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu de délivrance CIN" role="img" aria-label="Lieu de délivrance CIN"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="issue_place" name="issue_place" type="text" :value="$profile->issue_place" placeholder="Entrer lieu de délivrance" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('issue_place')" />
         </div>
 
         <!-- Duplicate Date -->
@@ -121,9 +121,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Date de duplicata CIN" role="img" aria-label="Date de duplicata CIN"></i>
         </div>
-        <div class="col-md-7 text-start">
-            <x-text-input id="duplicate_date" name="duplicate_date" type="date" :value="optional($profile->duplicate_date)->format('Y-m-d')" />
-            <span class="error-message text-danger"></span>
+        <div class="col-md-7">
+            <x-text-input id="duplicate_date" name="duplicate_date" type="date" :value="$profile->duplicate_date" />
+            <x-input-error class="mt-2" :messages="$errors->get('duplicate_date')" />
         </div>
 
         <!-- Duplicate Place -->
@@ -133,9 +133,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu de duplicata CIN" role="img" aria-label="Lieu de duplicata CIN"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="duplicate_place" name="duplicate_place" type="text" :value="$profile->duplicate_place" placeholder="Entrer lieu de duplication" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('duplicate_place')" />
         </div>
 
         <!-- Address -->
@@ -145,9 +145,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Adresse actuelle" role="img" aria-label="Adresse actuelle"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-textarea-input id="address" name="address" rows="3" placeholder="Entrer adresse du domicile">{{ $profile->address }}</x-textarea-input>
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
 
         <!-- Phone -->
@@ -157,9 +157,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Numéro téléphone mobile" role="img" aria-label="Numéro téléphone mobile"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="phone" name="phone" type="tel" :value="$profile->phone" placeholder="Entrer numéro de téléphone" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
         </div>
 
         <!-- Email -->
@@ -169,9 +169,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Adresse électronique" role="img" aria-label="Adresse électronique"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="email" name="email" type="email" :value="$profile->email" placeholder="Entrer adresse email" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('email')" />
         </div>
 
         <!-- Blood Group -->
@@ -181,9 +181,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Groupe sanguin" role="img" aria-label="Groupe sanguin"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="blood_group" name="blood_group" type="text" :value="$profile->blood_group" placeholder="Entrer groupe sanguin" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('blood_group')" />
         </div>
 
         <!-- Size -->
@@ -193,9 +193,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Taille en centimètre" role="img" aria-label="Taille en centimètre"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="size" name="size" type="number" min="150" :value="$profile->size" placeholder="Entrer taille en centimètre" />
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('size')" />
         </div>
 
         <!-- Father Name -->
@@ -205,9 +205,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Nom du père biologique" role="img" aria-label="Nom du père biologique"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="father_name" name="father_name" type="text" :value="$profile->father_name" placeholder="Entrer nom du père" />
-                <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('father_name')" />
         </div>
 
         <!-- Mother Name -->
@@ -217,9 +217,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Nom de la mère biologique" role="img" aria-label="Nom de la mère biologique"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="mother_name" name="mother_name" type="text" :value="$profile->mother_name" placeholder="Entrer nom de la mère" />
-                <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('mother_name')" />
         </div>
 
         <!-- Marital Status -->
@@ -229,7 +229,7 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Situation matrimoniale" role="img" aria-label="Situation matrimoniale"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-select-input id="marital_status" name="marital_status">
                 <option value="" {{ $profile->marital_status == null ? 'selected' : '' }} disabled>{{ __('Choisir à la selection') }}</option>
                 <option value="Célibataire" {{ $profile->marital_status == 'Célibataire' ? 'selected' : '' }}>{{ __('Célibataire') }}</option>
@@ -237,7 +237,7 @@
                 <option value="Divorcé(e)" {{ $profile->marital_status == 'Divorcé(e)' ? 'selected' : '' }}>{{ __('Divorcé(e)') }}</option>
                 <option value="Veuf/Veuve" {{ $profile->marital_status == 'Veuf/Veuve' ? 'selected' : '' }}>{{ __('Veuf/Veuve') }}</option>
             </x-select-input>
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('marital_status')" />
         </div>
 
             <!-- Fallback Address -->
@@ -247,9 +247,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Adresse de repli" role="img" aria-label="Adresse de repli"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-textarea-input id="fallback_address" name="fallback_address" rows="3" placeholder="Entrer adresse de repli">{{ $profile->fallback_address }}</x-textarea-input>
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('fallback_address')" />
         </div>
 
         <!-- Driver License -->
@@ -259,9 +259,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Permis de conduire" role="img" aria-label="Permis de conduire"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-text-input id="driver_license" name="driver_license" type="text" placeholder="Entrer catégorie de permis de conduire" :value="$profile->driver_license" />
-                <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('driver_license')" />
         </div>
 
         <!-- Practiced Sport -->
@@ -271,9 +271,9 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Sports pratiqués" role="img" aria-label="Sports pratiqués"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-textarea-input id="practiced_sport" name="practiced_sport" rows="3" placeholder="Entrer sports pratiqués">{{ $profile->practiced_sport }}</x-textarea-input>
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('practiced_sport')" />
         </div>
 
         <!-- Hobbies -->
@@ -283,144 +283,13 @@
         <div class="col-md-1 d-flex pt-2">
             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Centres d'intérêts" role="img" aria-label="Centres d'intérêts"></i>
         </div>
-        <div class="col-md-7 text-start">
+        <div class="col-md-7">
             <x-textarea-input id="hobbies" name="hobbies" rows="3" placeholder="Entrer centres d'intérêts">{{ $profile->hobbies }}</x-textarea-input>
-            <span class="error-message text-danger"></span>
+            <x-input-error class="mt-2" :messages="$errors->get('hobbies')" />
         </div>
 
         <div class="flex items-center gap-4">
-            <button id="civilBtn" type="submit" class="btn btn-primary">Enregistrer</button>
-
+            <x-primary-button>{{ __('Enregistrer') }}</x-primary-button>
         </div>
     </section>
 </form>
-
-<!-- Validation -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-
-    // Sélectionner le formulaire et le bouton de soumission
-    const civilForm = document.getElementById('civilForm');
-    const civilBtn = document.getElementById('civilBtn');
-
-    // Gestion de la soumission avec validation
-    civilBtn.addEventListener('click', function (event) {
-        event.preventDefault(); // Empêche la soumission par défaut
-
-        const fields = [
-            'name', 'firstname', 'gender', 'birth_date', 'birth_place', 'national_id', 'last_national_id',
-            'issue_date', 'issue_place', 'duplicate_date', 'duplicate_place', 'address', 'phone', 'email', 'blood_group', 'size',
-            'father_name', 'mother_name', 'marital_status', 'fallback_address', 'driver_license',
-            'practiced_sport', 'hobbies'
-        ];
-
-        fields.forEach(field => {
-            const value = civilForm.getElementById(field).value;
-            const input = civilForm.getElementById(field);
-            if (input) input.value = value;
-        });
-
-        const isValid = await validateForm(civilForm);
-
-        // Pré-remplir les champs
-
-
-        if (isValid) {
-            console.log("Formulaire valide, soumission en cours...");
-            civilForm.submit(); // Soumettre le formulaire si valide
-        } else {
-            console.log("Le formulaire contient des erreurs.");
-        }
-    });
-
-    // Fonction de validation
-    async function validateForm(form) {
-        let isValid = true;
-
-        // Réinitialiser les messages d'erreur
-        form.querySelectorAll('.error-message').forEach(e => e.textContent = '');
-        form.querySelectorAll('.is-invalid').forEach(i => i.classList.remove('is-invalid'));
-
-        // Définir les règles de validation
-        const fields = {
-            'name': {
-                value: name.value.trim(),
-                rules: [
-                    { test: v => !!v, message: "Le nom est requis." },
-                    { test: v => /^[a-zA-ZÀ-ÿ\s\-\'\.]+$/.test(v), message: "Caractères non valides." },
-                    { test: v => v.length <= 255, message: "255 caractères max." }
-                ]
-            },
-            'firstname': {
-                value: firstname.value.trim(),
-                rules: [
-                    { test: v => v === '' || /^[a-zA-ZÀ-ÿ\s\-\'\.]+$/.test(v), message: "Caractères non valides." }
-                ]
-            },
-            'email': {
-                value: email.value.trim(),
-                rules: [
-                    { test: v => v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), message: "L'adresse e-mail n'est pas valide." }
-                ]
-            },
-            'national_id': {
-                value: national_id.value.trim(),
-                rules: [
-                    { test: v => !!v, message: "L'identifiant national est requis." },
-                    { test: v => /^\d+$/.test(v), message: "L'identifiant national doit être numérique." },
-                    { test: v => v.length === 12, message: "L'identifiant national doit contenir exactement 12 chiffres." },
-                    {
-                        test: async v => {
-                            if (v === national_id.value.trim()) {
-                                return true;
-                            }
-                            const response = await fetch(`/api/check-national-id/${v}`);
-                            const result = await response.json();
-                            return result.isUnique;
-                        },
-                        message: "L'identifiant national existe déjà."
-                    }
-                ]
-            }
-        };
-
-        // Validation synchrone
-        Object.entries(fields).forEach(([name, { value, rules }]) => {
-            const input = form.querySelector(`[name="${name}"]`);
-            rules.forEach(({ test, message }) => {
-                if (typeof test === 'function' && !test(value)) {
-                    input.classList.add('is-invalid');
-                    const errorElement = input.nextElementSibling;
-                    if (errorElement) errorElement.textContent = message;
-                    isValid = false;
-                }
-            });
-        });
-
-        // Validation asynchrone
-        const asyncValidations = Object.entries(fields).map(([name, { value, rules }]) => {
-            const input = form.querySelector(`[name="${name}"]`);
-            return Promise.all(
-                rules
-                    .filter(({ test }) => test instanceof Function && test.constructor.name === 'AsyncFunction')
-                    .map(({ test, message }) =>
-                        test(value).then(isValidAsync => {
-                            if (!isValidAsync) {
-                                input.classList.add('is-invalid');
-                                const errorElement = input.nextElementSibling;
-                                if (errorElement) errorElement.textContent = message;
-                                isValid = false;
-                            }
-                        })
-                    )
-            );
-        });
-
-        await Promise.all(asyncValidations.flat());
-
-        return isValid;
-    }
-});
-</script>
-
-

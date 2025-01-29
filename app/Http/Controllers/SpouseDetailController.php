@@ -41,10 +41,11 @@ class SpouseDetailController extends Controller
         $successMessage = $request->spouse_title == 'Monsieur' ? 'Conjoint mis à jour avec succès.' : 'Conjointe mise à jour avec succès.';
 
         $spouseDetails->update($validated);
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+
+        return back()->with([
+            'success' => $successMessage,
             'tab' => 'spouse_details',
-        ])->with('success', $successMessage);
+        ]);
     }
 
     public function store(Request $request, Profile $profile)
@@ -63,10 +64,11 @@ class SpouseDetailController extends Controller
         $successMessage = $request->spouse_title == 'Monsieur' ? 'Conjoint ajouté avec succès.' : 'Conjointe ajouté avec succès.';
 
         $profile->spouseDetails()->create($validated);
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+
+        return back()->with([
+            'success' => $successMessage,
             'tab' => 'spouse_details',
-        ])->with('success', $successMessage);
+        ]);
     }
 
     public function destroy(Profile $profile, $id)
@@ -75,9 +77,9 @@ class SpouseDetailController extends Controller
         $successMessage = $spouseDetails->spouse_title == 'Monsieur' ? 'Conjoint supprimé avec succès.' : 'Conjointe supprimée avec succès.';
         $spouseDetails->delete();
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => $successMessage,
             'tab' => 'spouse_details',
-        ])->with('success', $successMessage);
+        ]);
     }
 }

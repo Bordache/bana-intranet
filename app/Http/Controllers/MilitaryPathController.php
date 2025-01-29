@@ -74,10 +74,10 @@ class MilitaryPathController extends Controller
 
         $militaryPaths->update($validated);
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Parcours mis à jour avec succès.',
             'tab' => 'military_paths',
-        ])->with('success', 'Parcours mis à jour avec succès.');
+        ]);
     }
 
     /**
@@ -88,9 +88,22 @@ class MilitaryPathController extends Controller
         $militaryPath = $profile->militaryPaths()->findOrFail($id);
         $militaryPath->delete();
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Parcours supprimé avec succès.',
             'tab' => 'military_paths',
-        ])->with('success', 'Parcours supprimé avec succès.');
+        ]);
+    }
+
+    /**
+     * Remove all resources from storage.
+     */
+    public function destroyAll(Profile $profile)
+    {
+        $profile->militaryPaths()->delete();
+
+        return back()->with([
+            'success' => 'Tous les parcours ont été supprimés avec succès.',
+            'tab' => 'military_paths',
+        ]);
     }
 }

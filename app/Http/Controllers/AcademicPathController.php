@@ -56,10 +56,10 @@ class AcademicPathController extends Controller
 
         $academicPath->update($validated);
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Parcours mis à jour avec succès.',
             'tab' => 'academic_paths',
-        ])->with('success', 'Parcours mis à jour avec succès.');
+        ]);
     }
 
     public function destroy(Profile $profile, $id)
@@ -67,9 +67,19 @@ class AcademicPathController extends Controller
         $academicPath = $profile->academicPaths()->findOrFail($id);
         $academicPath->delete();
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Parcours supprimé avec succès.',
             'tab' => 'academic_paths',
-        ])->with('success', 'Parcours supprimé avec succès.');
+        ]);
+    }
+
+    public function destroyAll(Profile $profile)
+    {
+        $profile->academicPaths()->delete();
+
+        return back()->with([
+            'success' => 'Tous les parcours ont été supprimés avec succès.',
+            'tab' => 'academic_paths',
+        ]);
     }
 }

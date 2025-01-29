@@ -515,10 +515,10 @@ class PersonnelController extends Controller
 
         $profile->update($validated);
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
-            'tab' => 'personnal_information',
-        ])->with('success', 'Etat civil mis à jour avec succès.');
+        return back()->with([
+            'success' => 'Votre profil a été mis à jour avec succès.',
+            'tab' => 'personal_information',
+        ]);
 
 
 

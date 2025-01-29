@@ -55,10 +55,10 @@ class ChildrenDetailController extends Controller
 
         $child->update($validated);
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Enfant mis à jour avec succès.',
             'tab' => 'children_details',
-        ])->with('success', 'Enfant mis à jour avec succès');
+        ]);
     }
 
 
@@ -67,20 +67,20 @@ class ChildrenDetailController extends Controller
         $child = $profile->childrenDetails()->findOrFail($id);
         $child->delete();
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Enfant supprimé avec succès.',
             'tab' => 'children_details',
-        ])->with('success', 'Enfant supprimé avec succès');
+        ]);
     }
 
     public function destroyAll(Profile $profile)
     {
         $profile->childrenDetails()->delete();
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Tous les enfants ont été supprimés avec succès.',
             'tab' => 'children_details',
-        ])->with('success', 'Tous les enfants ont été supprimés avec succès');
+        ]);
     }
 
 }

@@ -19,28 +19,32 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" :value="__('Nom')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
-            <x-input-label for="firstname" :value="__('Firstname')" />
+            <x-input-label for="firstname" :value="__('Prénoms')" />
             <x-text-input id="firstname" name="firstname" type="text" class="mt-1 block w-full" :value="old('firstname', $user->firstname)" autofocus autocomplete="firstname" />
             <x-input-error class="mt-2" :messages="$errors->get('firstname')" />
         </div>
 
         <div>
-            <x-input-label for="emailshow" :value="__('Account email')" />
-            <x-text-input id="emailshow" type="text" class="mt-1 block w-full" :value="old('email', $user->email)" disabled />
+            <x-input-label for="emailshow" :value="__('Email du compte')" />
+            <x-text-input id="emailshow" type="text" class="mt-1 block w-full" :value="$user->email" disabled />
+        </div>
+
+        <div>
+            <x-input-label for="username" :value="__('Identifiant')" />
+            <x-text-input id="username"  type="text" class="mt-1 block w-full" :value="$user->username" disabled />
         </div>
 
 
         <div>
             <x-text-input id="email" name="email" type="hidden" class="mt-1 block w-full" :value="old('email', $user->email)" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
+            {{-- @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800">
                         {{ __('Your email address is unverified.') }}
@@ -56,7 +60,7 @@
                         </p>
                     @endif
                 </div>
-            @endif
+            @endif --}}
         </div>
 
         <div class="flex items-center gap-4">

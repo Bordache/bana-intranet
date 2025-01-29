@@ -61,9 +61,9 @@ class MilitaryDetailController extends Controller
 
         $militaryDetail->update($validated);
 
-        return redirect()->route('personnel.show', [
-            'id' => $profile->id,
+        return back()->with([
+            'success' => 'Renseignements militaires mis à jour avec succès.',
             'tab' => 'military_detail',
-        ])->with('success', 'Renseignements militaires mis à jour avec succès');
+        ]);
     }
 }
