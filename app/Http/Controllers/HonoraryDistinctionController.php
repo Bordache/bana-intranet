@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
+use App\Helpers\LogHelper;
+use App\Models\Domain;
 use App\Models\HonoraryDistinction;
 use Illuminate\Http\Request;
 
@@ -33,6 +35,17 @@ class HonoraryDistinctionController extends Controller
         ]);
 
         $profile->honoraryDistinctions()->create($validated);
+
+        $domainId = Domain::where('name', 'rh')->value('id');
+
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Create_decoration',
+            "Ajout de décoration {$request->honorary_title} de {$profile->name} {$profile->firstname}",
+            $domainId
+        );
+
         return redirect()->route('personnel.show', [
             'id' => $profile->id,
             'tab' => 'honorary_distinctions',
@@ -50,6 +63,16 @@ class HonoraryDistinctionController extends Controller
 
         $award->update($validated);
 
+        $domainId = Domain::where('name', 'rh')->value('id');
+
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Update_decoration',
+            "Mise à jour de décoration {$request->honorary_title} de {$profile->name} {$profile->firstname}",
+            $domainId
+        );
+
         return back()->with([
             'success' => 'Distinction mise à jour avec succès.',
             'tab' => 'honorary_distinctions',
@@ -61,6 +84,16 @@ class HonoraryDistinctionController extends Controller
         $distinction = $profile->honoraryDistinctions()->findOrFail($id);
         $distinction->delete();
 
+        $domainId = Domain::where('name', 'rh')->value('id');
+
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Delete_decoration',
+            "Suppression de décoration {$distinction->honorary_title} de {$profile->name} {$profile->firstname}",
+            $domainId
+        );
+
         return back()->with([
             'success' => 'Distinction supprimé avec succès.',
             'tab' => 'honorary_distinctions',
@@ -70,6 +103,16 @@ class HonoraryDistinctionController extends Controller
     public function destroyAll(Profile $profile)
     {
         $profile->honoraryDistinctions()->delete();
+
+        $domainId = Domain::where('name', 'rh')->value('id');
+
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Delete_decoration',
+            "Suppression de toutes les décorations de {$profile->name} {$profile->firstname}",
+            $domainId
+        );
 
         return back()->with([
             'success' => 'Toutes les distinctions ont été supprimées avec succès.',

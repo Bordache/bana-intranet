@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Profile;
 use App\Models\ChildrenDetail;
+use App\Helpers\LogHelper;
+use App\Models\Domain;
 use Illuminate\Http\Request;
 
 class ChildrenDetailController extends Controller
@@ -36,6 +38,16 @@ class ChildrenDetailController extends Controller
 
         $profile->childrenDetails()->create($validated);
 
+        $domainId = Domain::where('name', 'rh')->value('id');
+
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Create_enfant',
+            "Ajout d'enfant {$request->child_full_name} de {$profile->name} {$profile->firstname}",
+            $domainId
+        );
+
         return redirect()->route('personnel.show', [
             'id' => $profile->id,
             'tab' => 'children_details',
@@ -55,6 +67,16 @@ class ChildrenDetailController extends Controller
 
         $child->update($validated);
 
+        $domainId = Domain::where('name', 'rh')->value('id');
+
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Update_enfant',
+            "Mise à jour de l'enfant {$request->child_full_name} de {$profile->name} {$profile->firstname}",
+            $domainId
+        );
+
         return back()->with([
             'success' => 'Enfant mis à jour avec succès.',
             'tab' => 'children_details',
@@ -67,6 +89,16 @@ class ChildrenDetailController extends Controller
         $child = $profile->childrenDetails()->findOrFail($id);
         $child->delete();
 
+        $domainId = Domain::where('name', 'rh')->value('id');
+
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Delete_enfant',
+            "Suppression d'enfant {$child->child_full_name} de {$profile->name} {$profile->firstname}",
+            $domainId
+        );
+
         return back()->with([
             'success' => 'Enfant supprimé avec succès.',
             'tab' => 'children_details',
@@ -76,6 +108,16 @@ class ChildrenDetailController extends Controller
     public function destroyAll(Profile $profile)
     {
         $profile->childrenDetails()->delete();
+
+        $domainId = Domain::where('name', 'rh')->value('id');
+
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Delete_enfant',
+            "Suppression de tous les enfants de {$profile->name} {$profile->firstname}",
+            $domainId
+        );
 
         return back()->with([
             'success' => 'Tous les enfants ont été supprimés avec succès.',

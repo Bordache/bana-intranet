@@ -3,22 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class CommunicationController extends Controller
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use ValidatesRequests;
 
-    protected $entity = 'com';
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $this->authorize("view {$this->entity}");
         return view("communication.index");
     }
 
@@ -27,7 +23,7 @@ class CommunicationController extends Controller
      */
     public function create()
     {
-        $this->authorize("create {$this->entity}");
+        //
     }
 
     /**
@@ -35,7 +31,7 @@ class CommunicationController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize("create {$this->entity}");
+        //
     }
 
     /**
@@ -51,7 +47,7 @@ class CommunicationController extends Controller
      */
     public function edit(string $id)
     {
-        $this->authorize("edit {$this->entity}");
+        //
     }
 
     /**
@@ -59,7 +55,7 @@ class CommunicationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $this->authorize("edit {$this->entity}");
+        //
     }
 
     /**
@@ -67,6 +63,6 @@ class CommunicationController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->authorize("destroy {$this->entity}");
+        //
     }
 }

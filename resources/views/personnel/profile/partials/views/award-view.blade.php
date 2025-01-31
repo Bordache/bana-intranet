@@ -60,12 +60,12 @@
             </div>
             <div class="col-md-1 text-end">
                 <div class="dropdown">
-                    <button class="btn" type="button" id="childFieldDropdown{{ $child->id }}"
+                    <button class="btn" type="button" id="awardFieldDropdown{{ $award->id }}"
                         data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background: transparent;">
                         <i class="fas fa-ellipsis-vertical"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-lg-end"
-                        aria-labelledby="childFieldDropdown{{ $child->id }}">
+                        aria-labelledby="awardFieldDropdown{{ $award->id }}">
                         <li>
                             <button type="button" class="dropdown-item" data-bs-toggle="modal"
                                 data-bs-target="#awardModal"

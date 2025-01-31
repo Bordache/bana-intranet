@@ -27,9 +27,12 @@
                     <x-nav-link :href="route('stg-formation.index')" :active="request()->routeIs('stg-formation.index') || request()->is('stg-formation*')">
                         {{ __('Stage et formation') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin')" :active="request()->routeIs('admin') || request()->is('admin*')">
-                        {{ __('Administration du site') }}
-                    </x-nav-link>
+                    @if(auth()->user() && (auth()->user()->hasRole('Administrateur') || auth()->user()->hasRole('Collaborateur')))
+                        <x-nav-link :href="route('admin')" :active="request()->routeIs('admin') || request()->is('admin*')">
+                            {{ __('Administration du site') }}
+                        </x-nav-link>
+                    @endif
+
                 </div>
             </div>
 
@@ -101,9 +104,11 @@
             <x-responsive-nav-link :href="route('stg-formation.index')" :active="request()->routeIs('stg-formation.index') || request()->is('stg-formation*')">
                 {{ __('Stage et formation') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin')" :active="request()->routeIs('admin') || request()->is('admin*')">
-                {{ __('Administration du site') }}
-            </x-responsive-nav-link>
+            @if(auth()->user() && (auth()->user()->hasRole('Administrateur') || auth()->user()->hasRole('Collaborateur')))
+                <x-responsive-nav-link :href="route('admin')" :active="request()->routeIs('admin') || request()->is('admin*')">
+                    {{ __('Administration du site') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

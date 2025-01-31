@@ -7,8 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +33,8 @@ use App\Models\MilitaryPath;
 use App\Models\Profile;
 use App\Models\RankHistory;
 use App\Models\SpouseDetail;
+use App\Helpers\LogHelper;
+use App\Models\Domain;
 
 use App\Support\AcademyFields;
 use App\Support\CampaignFields;
@@ -50,9 +50,8 @@ use App\Support\SpouseFields;
 
 class PersonnelController extends Controller
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use ValidatesRequests;
 
-    protected $entity = 'rh';
     protected $usernameGenerator;
     protected $passwordGenerator;
 
@@ -67,11 +66,10 @@ class PersonnelController extends Controller
      */
     public function index()
     {
-        $this->authorize("view {$this->entity}");
         $profiles = MilitaryDetail::with(['profile', 'rank'])
         ->join('profiles', 'military_details.profile_id', '=', 'profiles.id')
         ->join('ranks', 'military_details.rank_id', '=', 'ranks.id')
-        ->orderBy('profiles.created_at', 'desc')
+        ->orderBy('profiles.updated_at', 'desc')
         ->limit(5)
         ->get();
         return view('personnel.index', compact('profiles'));
@@ -188,7 +186,6 @@ class PersonnelController extends Controller
      */
     public function create()
     {
-        $this->authorize("create {$this->entity}");
 
         $ranks = Rank::all();
         $units = Unit::all();
@@ -200,7 +197,8 @@ class PersonnelController extends Controller
      */
 
     public function store(Request $request){
-        $this->authorize("create {$this->entity}");
+
+        $domainId = Domain::where('name', 'rh')->value('id');
 
         $validated = $request->validate(
              // Fusionner les règles des deux classes
@@ -234,6 +232,7 @@ class PersonnelController extends Controller
 
         // **Étape 1 : Création du profil**
         $Profile = Profile::create($validated(only(ProfileFields::getFieldNames())));
+
 
         // **Étape 2 : Création des détails militaires**
         $Profile->militaryDetail()->create(
@@ -348,6 +347,14 @@ class PersonnelController extends Controller
             }
         }
 
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Create_profile',
+            "Ajout de nouveau profil {$profile->name} {$profile->firstname}",
+            $domainId
+        );
+
         return redirect()->route('personnel.index');
     }
 
@@ -356,7 +363,6 @@ class PersonnelController extends Controller
      */
     public function show(string $id)
     {
-        $this->authorize("view {$this->entity}");
 
         // Chargement du profil avec toutes les relations nécessaires, y compris 'rank'
         $profile = Profile::with([
@@ -454,9 +460,7 @@ class PersonnelController extends Controller
      */
     public function edit(string $id)
     {
-        $this->authorize("edit {$this->entity}");
-
-        $profile = Profile::with([
+         $profile = Profile::with([
             'militaryDetail',
             'academicPaths',
             'militaryPaths',
@@ -484,8 +488,6 @@ class PersonnelController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $this->authorize("edit {$this->entity}");
-
         $profile = Profile::findOrFail($id);
 
         $validated = $request->validate([
@@ -515,6 +517,16 @@ class PersonnelController extends Controller
 
         $profile->update($validated);
 
+        $domainId = Domain::where('name', 'rh')->value('id');
+
+        // Log de l'action
+        LogHelper::logAction(
+            auth()->id(),
+            'Update_etat_civil_profile',
+            "Mise à jour des informations d'état civil de {$profile->name} {$profile->firstname}",
+            $domainId
+        );
+
         return back()->with([
             'success' => 'Votre profil a été mis à jour avec succès.',
             'tab' => 'personal_information',
@@ -529,7 +541,6 @@ class PersonnelController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->authorize("destroy {$this->entity}");
 
         // Trouver le profil avec l'ID donné
         $profile = Profile::findOrFail($id);
@@ -537,6 +548,16 @@ class PersonnelController extends Controller
         try {
             // Supprimer le profil
             $profile->delete();
+
+            $domainId = Domain::where('name', 'rh')->value('id');
+
+            // Log de l'action
+            LogHelper::logAction(
+                auth()->id(),
+                'Delete_profile',
+                "Suppression de {$profile->name} {$profile->firstname}",
+                $domainId
+            );
 
             // Retourne une réponse ou redirection avec un message de succès
             return redirect()

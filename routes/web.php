@@ -4,11 +4,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommunicationController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\StageFormationController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\UserController;
+
+
 use App\Http\Controllers\Auth\PasswordChangeController;
 
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\AcademicPathController;
 use App\Http\Controllers\MilitaryPathController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\MilitaryCampaignController;
 use App\Http\Controllers\ChildrenDetailController;
 use App\Http\Controllers\HonoraryDistinctionController;
 use App\Http\Controllers\SpouseDetailController;
+use App\Http\Controllers\LogController;
 use Illuminate\Support\Facades\Route;
 
 use App\Models\Profile;
@@ -42,18 +44,13 @@ Route::get('/dashboard', function () {
 */
 Route::get('/admin', function () {
     return view('administration');
-})->middleware(['auth', 'password.changed'])->name('admin');
+})->middleware([
+    'auth',
+    'password.changed',
+    'checkRole:Administrateur',
+    'checkRole:Collaborateur'
+])->name('admin');
 
-/*
-* Profile
-*/
-Route::middleware(['auth', 'password.changed'])->group(function () {
-    Route::get('/account', [ProfileController::class, 'edit'])->name('myprofile.edit');
-    Route::patch('/account', [ProfileController::class, 'update'])->name('myprofile.update');
-    Route::delete('/account', [ProfileController::class, 'destroy'])->name('myprofile.destroy');
-    Route::get('/profile', [ProfileController::class, 'show'])->name('myprofile.show');
-    Route::patch('/profile', [ProfileController::class, 'updateCivilStatus'])->name('myprofile.updateCivilStatus');
-});
 
 /*
 * Website Blades
@@ -65,31 +62,69 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 });
 
 /*
+* First password must be changed
+*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('user/password/change', [PasswordChangeController::class, 'edit'])->name('newpassword.change');
+    Route::post('user/password/change', [PasswordChangeController::class, 'update'])->name('newpassword.update');
+});
+
+/*
 * All Blades
 */
 Route::middleware(['auth', 'password.changed'])->group(function () {
 
+    // Admin
+    Route::prefix('admin')->group(function () {
+        // Roles
+        Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+        Route::post('/roles/store', [RoleController::class, 'store'])->name('roles.store');
+        Route::post('/roles/update', [RoleController::class, 'update'])->name('roles.update');
+        Route::post('/roles/delete', [RoleController::class, 'destroy'])->name('roles.destroy');
+        Route::post('/roles/update-permissions', [RoleController::class, 'updatePermissions'])->name('roles.updatePermissions');
+
+        // Users rôles and permissions
+        Route::get('/users/manage/{domain?}', [UserController::class, 'manageUsers'])->name('users.manage');
+        Route::post('/users/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
+        Route::post('/users/remove-role', [UserController::class, 'removeRole'])->name('users.removeRole');
+        Route::get('/users/admins', [UserController::class, 'manageAdmins'])->name('users.admins');
+        Route::post('/users/assign-super-admin', [UserController::class, 'assignSuperAdmin'])->name('users.assignSuperAdmin');
+        Route::post('/users/remove-super-admin', [UserController::class, 'removeSuperAdmin'])->name('users.removeSuperAdmin');
+
+        // Logs
+        Route::get('/logs/{domain?}', [LogController::class, 'index'])->name('admin.logs');
+    });
+
+    // Users account and profile
+    Route::prefix('user')->group(function () {
+        Route::get('/account', [ProfileController::class, 'edit'])->name('myprofile.edit');
+        Route::patch('/account', [ProfileController::class, 'update'])->name('myprofile.update');
+        Route::delete('/account', [ProfileController::class, 'destroy'])->name('myprofile.destroy');
+        Route::get('/profile', [ProfileController::class, 'show'])->name('myprofile.show');
+        Route::patch('/profile', [ProfileController::class, 'updateCivilStatus'])->name('myprofile.updateCivilStatus');
+    });
+
     // Routes pour la communication
     Route::prefix('communication')->group(function () {
-        Route::get('/', [CommunicationController::class, 'index'])->name('communication.index');
-        Route::get('/create', [CommunicationController::class, 'create'])->name('communication.create');
-        Route::post('/', [CommunicationController::class, 'store'])->name('communication.store');
-        Route::get('/{id}', [CommunicationController::class, 'show'])->name('communication.show');
-        Route::get('/{id}/edit', [CommunicationController::class, 'edit'])->name('communication.edit');
-        Route::put('/{id}', [CommunicationController::class, 'update'])->name('communication.update');
-        Route::delete('/{id}', [CommunicationController::class, 'destroy'])->name('communication.destroy');
+        Route::get('/', [CommunicationController::class, 'index'])->name('communication.index')->middleware('checkPermission:view,comm,post');
+        Route::get('/create', [CommunicationController::class, 'create'])->name('communication.create')->middleware('checkPermission:create,comm,post');
+        Route::post('/', [CommunicationController::class, 'store'])->name('communication.store')->middleware('checkPermission:create,comm,post');
+        Route::get('/{id}', [CommunicationController::class, 'show'])->name('communication.show')->middleware('checkPermission:view,comm,post');
+        Route::get('/{id}/edit', [CommunicationController::class, 'edit'])->name('communication.edit')->middleware('checkPermission:update,comm,post');
+        Route::put('/{id}', [CommunicationController::class, 'update'])->name('communication.update')->middleware('checkPermission:update,comm,post');
+        Route::delete('/{id}', [CommunicationController::class, 'destroy'])->name('communication.destroy')->middleware('checkPermission:destroy,comm,post');
     });
 
 
     // Routes pour la documentation
     Route::prefix('documentation')->group(function () {
-        Route::get('/', [DocumentationController::class, 'index'])->name('documentation.index');
-        Route::get('/create', [DocumentationController::class, 'create'])->name('documentation.create');
-        Route::post('/', [DocumentationController::class, 'store'])->name('documentation.store');
-        Route::get('/{id}', [DocumentationController::class, 'show'])->name('documentation.show');
-        Route::get('/{id}/edit', [DocumentationController::class, 'edit'])->name('documentation.edit');
-        Route::put('/{id}', [DocumentationController::class, 'update'])->name('documentation.update');
-        Route::delete('/{id}', [DocumentationController::class, 'destroy'])->name('documentation.destroy');
+        Route::get('/', [DocumentationController::class, 'index'])->name('documentation.index')->middleware('checkPermission:view,doc,file');
+        Route::get('/create', [DocumentationController::class, 'create'])->name('documentation.create')->middleware('checkPermission:create,doc,file');
+        Route::post('/', [DocumentationController::class, 'store'])->name('documentation.store')->middleware('checkPermission:create,doc,file');
+        Route::get('/{id}', [DocumentationController::class, 'show'])->name('documentation.show')->middleware('checkPermission:view,doc,file');
+        Route::get('/{id}/edit', [DocumentationController::class, 'edit'])->name('documentation.edit')->middleware('checkPermission:update,doc,file');
+        Route::put('/{id}', [DocumentationController::class, 'update'])->name('documentation.update')->middleware('checkPermission:update,doc,file');
+        Route::delete('/{id}', [DocumentationController::class, 'destroy'])->name('documentation.destroy')->middleware('checkPermission:destroy,doc,file');
     });
 
 
@@ -99,26 +134,25 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         Route::get('/custom-search', [PersonnelController::class, 'customSearch'])->name('personnel.search');
 
         // Gestion des profils
-        Route::get('/', [PersonnelController::class, 'index'])->name('personnel.index');
-        Route::get('/profile/list', [PersonnelController::class, 'list'])->name('personnel.list');
-        Route::get('/profile/create', [PersonnelController::class, 'create'])->name('personnel.create');
-        Route::post('/profile', [PersonnelController::class, 'store'])->name('personnel.store');
-        Route::get('/profile/{id}', [PersonnelController::class, 'show'])->name('personnel.show');
-        Route::get('/profile/{id}/edit', [PersonnelController::class, 'edit'])->name('personnel.edit');
-        Route::put('/profile/{id}', [PersonnelController::class, 'update'])->name('personnel.update');
-        Route::delete('/profile/{id}', [PersonnelController::class, 'destroy'])->name('personnel.destroy');
+        Route::get('/', [PersonnelController::class, 'index'])->name('personnel.index')->middleware('checkPermission:view,rh,personnel');
+        Route::get('/profile/list', [PersonnelController::class, 'list'])->name('personnel.list')->middleware('checkPermission:view,rh,personnel');
+        Route::get('/profile/create', [PersonnelController::class, 'create'])->name('personnel.create')->middleware('checkPermission:create,rh,personnel');
+        Route::post('/profile', [PersonnelController::class, 'store'])->name('personnel.store')->middleware('checkPermission:create,rh,personnel');
+        Route::get('/profile/{id}', [PersonnelController::class, 'show'])->name('personnel.show')->middleware('checkPermission:view,rh,personnel');
+        Route::get('/profile/{id}/edit', [PersonnelController::class, 'edit'])->name('personnel.edit')->middleware('checkPermission:update,rh,personnel');
+        Route::put('/profile/{id}', [PersonnelController::class, 'update'])->name('personnel.update')->middleware('checkPermission:update,rh,personnel');
+        Route::delete('/profile/{id}', [PersonnelController::class, 'destroy'])->name('personnel.destroy')->middleware('checkPermission:destroy,rh,personnel');
         Route::post('/profile/{id}/update-calculations', [PersonnelController::class, 'updateCalculations'])->name('personnel.update.calculations');
-/*         Route::get('/check-national-id/{national_id}', [PersonnelController::class, 'checkNationalId']); */
 
         // Routes pour les renseignements militaires
         Route::prefix('/profile/{profile}/military_details')->group(function () {
-            Route::get('/', [MilitaryDetailController::class, 'index'])->name('military_details.index');
-            Route::get('/create', [MilitaryDetailController::class, 'create'])->name('military_details.create');
-            Route::post('/', [MilitaryDetailController::class, 'store'])->name('military_details.store');
-            Route::get('/{id}', [MilitaryDetailController::class, 'show'])->name('military_details.show');
-            Route::get('/{id}/edit', [MilitaryDetailController::class, 'edit'])->name('military_details.edit');
-            Route::put('/{id}', [MilitaryDetailController::class, 'update'])->name('military_details.update');
-            Route::delete('/{id}', [MilitaryDetailController::class, 'destroy'])->name('military_details.destroy');
+            Route::get('/', [MilitaryDetailController::class, 'index'])->name('military_details.index')->middleware('checkPermission:view,rh,personnel');
+            Route::get('/create', [MilitaryDetailController::class, 'create'])->name('military_details.create')->middleware('checkPermission:create,rh,personnel');
+            Route::post('/', [MilitaryDetailController::class, 'store'])->name('military_details.store')->middleware('checkPermission:create,rh,personnel');
+            Route::get('/{id}', [MilitaryDetailController::class, 'show'])->name('military_details.show')->middleware('checkPermission:view,rh,personnel');
+            Route::get('/{id}/edit', [MilitaryDetailController::class, 'edit'])->name('military_details.edit')->middleware('checkPermission:update,rh,personnel');
+            Route::put('/{id}', [MilitaryDetailController::class, 'update'])->name('military_details.update')->middleware('checkPermission:update,rh,personnel');
+            Route::delete('/{id}', [MilitaryDetailController::class, 'destroy'])->name('military_details.destroy')->middleware('checkPermission:destroy,rh,personnel');
         });
 
         // Routes pour le conjoint
@@ -216,23 +250,6 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::delete('/', [MilitaryCampaignController::class, 'destroyAll'])->name('campaign_histories.destroyAll');
         });
     });
-});
-
-/*
-* Setting blades
-*/
-Route::middleware(['auth', 'password.changed'])->prefix('admin')->group(function () {
-    Route::resource('roles', RoleController::class);
-    Route::resource('permissions', PermissionController::class);
-    Route::resource('users', UserController::class);
-});
-
-/*
-* First password must be changed
-*/
-Route::middleware(['auth'])->group(function () {
-    Route::get('/password/change', [PasswordChangeController::class, 'edit'])->name('newpassword.change');
-    Route::post('/password/change', [PasswordChangeController::class, 'update'])->name('newpassword.update');
 });
 
 
