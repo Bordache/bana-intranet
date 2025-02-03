@@ -1,22 +1,19 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Gestion du personnel') }}
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"
+            class="d-flex justify-content-between align-items-center text-sm">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ route('personnel.index') }}">Personnel</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Profil</li>
+            </ol>
+        </nav>
+        <h2 class="pt-3 font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Informations générales') }}
         </h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <nav class="d-flex justify-content-between align-items-center" aria-label="breadcrumb"
-                style="--bs-breadcrumb-divider: '>';">
-                <ol class="breadcrumb mb-0 text-sm">
-                    <li class="breadcrumb-item"><a href="{{ route('personnel.index') }}">Base de données</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('personnel.list') }}">Liste du personnel</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        Informations du profil
-                    </li>
-                </ol>
-            </nav>
 
             <!-- Fenêtre modale -->
             <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
@@ -399,85 +396,6 @@
                                         </form>
                                     </div>
                                 </div>
-
-
-
-                                {{-- <div class="d-flex align-items-start">
-                                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                        <button class="nav-link active text-start" id="v-pills-service-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-service-stat" type="button" role="tab" aria-controls="v-pills-service-stat" aria-selected="true">Etat de service</button>
-                                        <button class="nav-link text-start" id="v-pills-perm-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-perm-stat" type="button" role="tab" aria-controls="v-pills-perm-stat" aria-selected="false">Congés et permissions</button>
-                                        <button class="nav-link text-start" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
-                                        <button class="nav-link text-start" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
-                                    </div>
-                                    <div class="tab-contentn w-100" id="v-pills-tabContent">
-                                        <!-- Etat de service -->
-                                        <div class="tab-pane fade show active" id="v-pills-service-stat" role="tabpanel" aria-labelledby="v-pills-service-stat-tab">
-                                            <div id="etatService" class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
-                                                <h3 class="text-lg font-medium text-gray-900">
-                                                    {{ __('Etat de service') }}</h3>
-                                                <hr class="my-3">
-                                                <div class="row g-3">
-                                                    <div class="col-md-3">
-                                                        <div class="my-2">
-                                                            <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('Age') }}</p>
-                                                            <p class="mt-1 text-sm text-gray-600">
-                                                                {{ floor($age) ?? '-' }} ans</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="my-2">
-                                                            <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('Ancienneté de service') }}</p>
-                                                            <p class="mt-1 text-sm text-gray-600">
-                                                                @if ($serviceSeniority)
-                                                                    {{ floor($serviceSeniority / 365) }} {{ __('an' . (floor($serviceSeniority / 365) > 1 ? 's' : '')) }},
-                                                                    {{ floor(($serviceSeniority % 365) / 30) }} {{ __('mois' . (floor(($serviceSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                                    {{ ($serviceSeniority % 365) % 30 }} {{ __('jour' . (($serviceSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                                @else
-                                                                    -
-                                                                @endif
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="my-2">
-                                                            <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('Ancienneté de port de grade') }}</p>
-                                                            <p class="mt-1 text-sm text-gray-600">
-                                                                @if ($rankSeniority)
-                                                                    {{ floor($rankSeniority / 365) }} {{ __('an' . (floor($rankSeniority / 365) > 1 ? 's' : '')) }},
-                                                                    {{ floor(($rankSeniority % 365) / 30) }} {{ __('mois' . (floor(($rankSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                                    {{ ($rankSeniority % 365) % 30 }} {{ __('jour' . (($rankSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                                @else
-                                                                    -
-                                                                @endif
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="my-2">
-                                                            <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                {{ __('Date de fin de carrière') }}</p>
-                                                            <p class="mt-1 text-sm text-gray-600">
-                                                                {{ $careerEndDate ? $careerEndDate->format('d/m/Y') : '-' }}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Congés et permissions -->
-                                        <div class="tab-pane fade" id="v-pills-perm-stat" role="tabpanel" aria-labelledby="v-pills-perm-stat-tab">Congés et permissions</div>
-
-                                        <!-- Messages -->
-                                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">Messages</div>
-
-                                        <!-- Settings -->
-                                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Settings</div>
-                                    </div>
-                                </div> --}}
                             </div>
                         </div>
                     </div>

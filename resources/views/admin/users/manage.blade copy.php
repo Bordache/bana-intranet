@@ -24,7 +24,7 @@
                 </button>
                 <form action="{{ route('users.manage.search') }}" method="GET" class="d-flex">
                     <x-text-input id="search" name="search" class="w-auto" type="text"
-                        value="{{ $search }}" placeholder="Entrer un mot clé ..."/>
+                        value="{{ $search }}" />
                     <button type="submit" class="mx-2 btn btn-sm btn-primary">Rechercher</button>
                 </form>
             </div>
@@ -33,7 +33,7 @@
                 aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form action="{{ route('users.assignRole') }}" method="POST">
+                        <form action="{{ route('personnel.users.assignRole') }}" method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="assignRoleModalLabel">Nouvelle attribution</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -45,7 +45,8 @@
                                     <label for="user_id" class="form-label">Utilisateur</label>
                                     <select name="user_id" class="form-control" required>
                                         @foreach ($allUsers as $allUser)
-                                            <option value="{{ $allUser->id }}">{{ $allUser->name }} {{ $allUser->firstname }}</option>
+                                            <option value="{{ $allUser->id }}">{{ $allUser->name }}
+                                                ({{ $allUser->email }})</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -99,36 +100,37 @@
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Modifié le</th>
-                            {{-- <th scope="col"
+                            <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            </th> --}}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($users as $user)
                             @php
-                                // Récupérer les rôles valides (en excluant "Super administrateur" si l'utilisateur a d'autres rôles)
-                                $validRoles = $user->userRoles->filter(fn($r) => $r->role->name !== 'Super administrateur' || $user->userRoles->count() === 1);
-                                $userDomains = $validRoles->pluck('domain_id')->unique(); // Domaines uniques
-                                $rowspan = count($userDomains); // Nombre de lignes pour fusionner les cellules
-                                $firstRow = true; // Indicateur pour la première ligne
+                                $userDomains = $user->userRoles->pluck('domain_id')->unique(); // Récupérer les domaines uniques de l'utilisateur
+                                $rowspan = count($userDomains); // Nombre de lignes nécessaires pour fusionner les cellules
+                                $firstRow = true; // Détermine si on est sur la première ligne de l'utilisateur
                             @endphp
 
                             @foreach ($userDomains as $domain_id)
                                 @php
                                     $domain = $domains->firstWhere('id', $domain_id); // Trouver le domaine correspondant
-                                    $userRole = $validRoles->firstWhere('domain_id', $domain_id); // Trouver le rôle correspondant
+                                    $userRole = $user->roles->firstWhere('pivot.domain_id', $domain_id);
                                 @endphp
 
                                 <tr>
                                     @if ($firstRow)
-                                        <td class="px-6 whitespace-nowrap text-sm text-gray-900" rowspan="{{ $rowspan }}">
+                                        <td class="px-6 whitespace-nowrap text-sm text-gray-900"
+                                            rowspan="{{ $rowspan }}">
                                             {!! highlight($user->militaryDetail?->rank?->rank_abbreviate ?? 'Aucun', $search) !!}
                                         </td>
-                                        <td class="px-6 whitespace-nowrap text-sm text-gray-900" rowspan="{{ $rowspan }}">
+                                        <td class="px-6 whitespace-nowrap text-sm text-gray-900"
+                                            rowspan="{{ $rowspan }}">
                                             {!! highlight($user->name, $search) !!} {!! highlight($user->firstname, $search) !!}
                                         </td>
-                                        <td class="px-6 whitespace-nowrap text-sm text-gray-900" rowspan="{{ $rowspan }}">
+                                        <td class="px-6 whitespace-nowrap text-sm text-gray-900"
+                                            rowspan="{{ $rowspan }}">
                                             {!! highlight($user->username, $search) !!}
                                         </td>
                                     @endif
@@ -137,10 +139,10 @@
                                         {!! highlight($domain?->domain_description ?? 'Aucun', $search) !!}
                                     </td>
                                     <td class="px-6 whitespace-nowrap text-sm text-gray-900">
-                                        {!! highlight($userRole ? $userRole->role->name : 'Aucun', $search) !!}
+                                        {!! highlight($userRole ? $userRole->name : 'Aucun', $search) !!}
                                     </td>
                                     <td class="px-6 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $userRole ? $userRole->updated_at->format('d/m/Y H:i') : null }}
+                                        {{ $userRole ? $userRole->pivot->updated_at->format('d/m/Y H:i') : null }}
                                     </td>
                                     <td>
                                         <div class="dropdown">
@@ -159,8 +161,8 @@
                                                         data-user_id="{{ $user->id }}"
                                                         data-user_username="{{ $user->username }}"
                                                         data-domain_id="{{ $domain->id ?? null }}"
-                                                        data-domain_name="{{ $domain->domain_description ?? null }}"
-                                                        data-role_id="{{ $userRole ? $userRole->role->id : null }}">
+                                                        data-domain_name="{{ $domain->domain_description ?? null}}"
+                                                        data-role_id="{{ $userRole ? $userRole->id : null }}">
                                                         Modifier ce rôle
                                                     </button>
                                                 </li>
@@ -168,7 +170,7 @@
                                                     @if ($userRole)
                                                         <form action="{{ route('users.removeRole') }}" method="POST"
                                                             class="d-inline"
-                                                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer le rôle {{ $userRole->role->name }} de {{ $user->username }} ?')">
+                                                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer le role {{ $userRole->name }} de {{ $user->username }} ?')">
                                                             @csrf
                                                             <input type="hidden" name="user_id"
                                                                 value="{{ $user->id }}">
@@ -188,7 +190,6 @@
                             @endforeach
                         @endforeach
                     </tbody>
-
 
                 </table>
                 {{ $users->links() }}

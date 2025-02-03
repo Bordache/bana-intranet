@@ -31,7 +31,6 @@ class UserRole extends Model
 
     public static function hasRole($userId, $roleName, $domainId = null)
     {
-        // Check if the user is a Super Administrator
         $isSuperAdmin = self::where('user_id', $userId)
             ->whereHas('role', fn($query) => $query->where('name', 'Super administrateur'))
             ->exists();

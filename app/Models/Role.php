@@ -10,9 +10,16 @@ class Role extends Model
     protected $fillable = ['name'];
 
     public function permissions()
-{
-    return $this->belongsToMany(Permission::class, 'role_permissions')
-                ->withPivot(['domain_id', 'object_id', 'created_at', 'updated_at']);
-}
+    {
+        return $this->belongsToMany(Permission::class, 'role_permissions')
+                    ->withPivot(['domain_id', 'object_id', 'created_at', 'updated_at']);
+    }
+
+    public function domains()
+    {
+        return $this->belongsToMany(Domain::class, 'role_domains')
+                    ->withPivot('domain_description')
+                    ->withTimestamps();
+    }
 
 }

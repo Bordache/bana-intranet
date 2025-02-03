@@ -129,4 +129,15 @@ class User extends Authenticatable
         return $this->hasOne(MilitaryDetail::class, 'profile_id', 'profile_id');
     }
 
+
+    public function userRoles()
+    {
+        return $this->hasMany(UserRole::class, 'user_id');
+    }
+
+    public function domains()
+    {
+        return $this->hasManyThrough(Domain::class, UserRole::class, 'user_id', 'id', 'id', 'domain_id');
+    }
+
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\StageFormationController;
 use App\Http\Controllers\Auth\PasswordChangeController;
 
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RoleDomainController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\AcademicPathController;
@@ -77,22 +78,29 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
     // Admin
     Route::prefix('admin')->group(function () {
         // Roles
-        Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+       /*  Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
         Route::post('/roles/store', [RoleController::class, 'store'])->name('roles.store');
         Route::post('/roles/update', [RoleController::class, 'update'])->name('roles.update');
-        Route::post('/roles/delete', [RoleController::class, 'destroy'])->name('roles.destroy');
+        Route::post('/roles/delete', [RoleController::class, 'destroy'])->name('roles.destroy'); */
         Route::post('/roles/update-permissions', [RoleController::class, 'updatePermissions'])->name('roles.updatePermissions');
 
+        Route::get('/roles', [RoleDomainController::class, 'index'])->name('admin.roles.index');
+        Route::post('/roles/store', [RoleDomainController::class, 'store'])->name('admin.roles.store');
+        Route::post('/roles/update', [RoleDomainController::class, 'update'])->name('admin.roles.update');
+        Route::post('/roles/delete', [RoleDomainController::class, 'destroy'])->name('admin.roles.delete');
+
         // Users rôles and permissions
-        Route::get('/users/manage/{domain?}', [UserController::class, 'manageUsers'])->name('users.manage');
+        Route::get('/users/manage', [UserController::class, 'manageUsers'])->name('users.manage');
+        Route::get('/users/manage/search', [UserController::class, 'manageUsersSearch'])->name('users.manage.search');
         Route::post('/users/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
         Route::post('/users/remove-role', [UserController::class, 'removeRole'])->name('users.removeRole');
         Route::get('/users/admins', [UserController::class, 'manageAdmins'])->name('users.admins');
         Route::post('/users/assign-super-admin', [UserController::class, 'assignSuperAdmin'])->name('users.assignSuperAdmin');
         Route::post('/users/remove-super-admin', [UserController::class, 'removeSuperAdmin'])->name('users.removeSuperAdmin');
 
-        // Logs
-        Route::get('/logs/{domain?}', [LogController::class, 'index'])->name('admin.logs');
+        // Admin Logs
+        Route::get('/logs', [LogController::class, 'adminLogsIndex'])->name('admin.logs');
+        Route::get('/logs/search', [LogController::class, 'adminLogsSearch'])->name('admin.logs.search');
     });
 
     // Users account and profile
@@ -248,6 +256,19 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::put('/{id}', [MilitaryCampaignController::class, 'update'])->name('campaign_histories.update');
             Route::delete('/{id}', [MilitaryCampaignController::class, 'destroy'])->name('campaign_histories.destroy');
             Route::delete('/', [MilitaryCampaignController::class, 'destroyAll'])->name('campaign_histories.destroyAll');
+        });
+
+        //Logs
+        Route::prefix('/logs')->group(function () {
+            Route::get('/', [LogController::class, 'personnelLogsIndex'])->name('personnel.logs');
+            Route::get('/search', [LogController::class, 'personnelLogsSearch'])->name('personnel.logs.search');
+        });
+
+        // Roles et permissions du personnel
+        Route::prefix('/users')->group(function () {
+            Route::get('/manage', [UserController::class, 'personnelManageUsers'])->name('personnel.users.manage');
+            Route::post('/assign-role', [UserController::class, 'personnelAssignRole'])->name('personnel.users.assignRole');
+            Route::post('/remove-role', [UserController::class, 'personnelRemoveRole'])->name('personnel.users.removeRole');
         });
     });
 });

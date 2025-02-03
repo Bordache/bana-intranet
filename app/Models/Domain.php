@@ -14,4 +14,11 @@ class Domain extends Model
     {
         return $this->hasMany(Objet::class);
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_domains')
+                    ->withPivot('domain_description')
+                    ->withTimestamps();
+    }
 }
