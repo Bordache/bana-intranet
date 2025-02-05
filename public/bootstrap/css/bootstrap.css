@@ -8484,6 +8484,10 @@ textarea.form-control-lg {
   text-transform: capitalize !important;
 }
 
+.text-capitalize-first::first-letter {
+    text-transform: uppercase !important;
+}
+
 .text-wrap {
   white-space: normal !important;
 }

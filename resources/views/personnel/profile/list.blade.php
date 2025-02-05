@@ -53,7 +53,7 @@
                                         <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $detail->military_registration_number }}</td>
                                         <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $detail->current_function }}</td>
                                         <td class="px-6 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $detail->profile->updated_at ? \Carbon\Carbon::parse($detail->profile->updated_at)->format('d/m/Y H:i:s') : 'Non spécifié' }}
+                                            {{ $detail->profile->updated_at ? optional($detail->profile->updated_at)->format('d/m/Y H:i:s') : 'Non spécifié' }}
                                         </td>
                                         <td>
                                             <div class="dropdown">

@@ -12,98 +12,56 @@
         </h2>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
-        @foreach ($domains as $domain)
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ $domain->domain_description }}</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Rôle</th>
-                                <th>Description</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($domain->roles as $role)
-                                @php
-                                    $roleDomain = $role->pivot;
-                                @endphp
-                                <tr>
-                                    <td>{{ $role->name }}</td>
-                                    <td>{{ $roleDomain->domain_description }}</td>
-                                    <td>
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#editRoleModal" data-role_domain_id="{{ $roleDomain->id }}"
-                                            data-domain_description="{{ $roleDomain->domain_description }}"
-                                            data-role_name="{{ $role->name }}">
-                                            Modifier
-                                        </button>
-
-                                        <form action="{{ route('admin.roles.delete') }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            <input type="hidden" name="role_domain_id" value="{{ $roleDomain->id }}">
-                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Supprimer ce rôle ?')">
-                                                Supprimer
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Modal d'édition -->
-    <div class="modal fade" id="editRoleModal" tabindex="-1" aria-labelledby="editRoleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editRoleModalLabel">Modifier le rôle</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                </div>
-                <form action="{{ route('admin.roles.update') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <input type="hidden" name="role_domain_id" id="role_domain_id">
-                        <div class="mb-3">
-                            <label for="role_name" class="form-label">Rôle</label>
-                            <input type="text" class="form-control" id="role_name" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label for="domain_description" class="form-label">Description</label>
-                            <input type="text" class="form-control" name="domain_description" id="domain_description"
-                                required>
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="accordion" id="accordionFlushRole">
+                @forelse ($domains as $key => $domain)
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading_{{ crc32($key) }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ crc32($key) }}" aria-expanded="false" aria-controls="flush-collapse{{ crc32($key) }}">
+                                {{ $domain->domain_description }}
+                            </button>
+                        </h2>
+                        <div id="flush-collapse{{ crc32($key) }}" class="accordion-collapse collapse" aria-labelledby="flush-heading_{{ crc32($key) }}" data-bs-parent="#accordionFlushRole">
+                            <div class="accordion-body">
+                                <table class="table table-striped table-hover text-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rôle</th>
+                                            <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                            <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modifié le</th>
+                                            <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modifier</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($domain->roles as $key => $role)
+                                        @php
+                                            $roleDomain = $domain->roleDomains->where('role_id', $role->id)->first();
+                                        @endphp
+                                            <tr>
+                                                <td class="px-6 whitespace-nowrap text-gray-900">{{ $role->name }}</td>
+                                                <td class="px-6 whitespace-nowrap text-gray-900">{{ $roleDomain ? $roleDomain->domain_description : 'Aucune description' }}</td>
+                                                <td class="px-6 whitespace-nowrap text-gray-900">{{ optional($role->updated_at)->format('d/m/Y H:m') }}</td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('role-permissions.edit', ['role_id' => $role->id, 'domain_id' => $domain->id]) }}"
+                                                        class="fas fa-pen" title="Modifier">
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-success">Enregistrer</button>
-                    </div>
-                </form>
+                @empty
+                    <div class="alert alert-info">Aucune permission trouvée.</div>
+                @endforelse
             </div>
         </div>
     </div>
 </x-app-layout>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var editRoleModal = document.getElementById('editRoleModal');
-        editRoleModal.addEventListener('show.bs.modal', function(event) {
-            var button = event.relatedTarget;
-            document.getElementById('role_domain_id').value = button.getAttribute(
-            'data-role_domain_id');
-            document.getElementById('domain_description').value = button.getAttribute(
-                'data-domain_description');
-            document.getElementById('role_name').value = button.getAttribute('data-role_name');
-        });
-    });
-</script>

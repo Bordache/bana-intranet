@@ -20,7 +20,6 @@ class RoleDomainController extends Controller
         $request->validate([
             'role_domain_id' => 'required|exists:role_domains,id',
             'domain_description' => 'required|string|max:255',
-            'permissions' => 'nullable|array',
         ]);
 
         $roleDomain = RoleDomain::findOrFail($request->role_domain_id);

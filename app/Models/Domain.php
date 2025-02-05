@@ -21,4 +21,10 @@ class Domain extends Model
                     ->withPivot('domain_description')
                     ->withTimestamps();
     }
+
+    public function roleDomains()
+    {
+        return $this->hasMany(RoleDomain::class, 'domain_id', 'id');
+    }
+
 }

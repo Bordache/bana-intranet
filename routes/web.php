@@ -24,6 +24,9 @@ use App\Http\Controllers\SpouseDetailController;
 use App\Http\Controllers\LogController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\RolePermissionController;
+use App\Http\Middleware\CheckPermission;
+
 use App\Models\Profile;
 
 Route::get('/', function () {
@@ -84,10 +87,17 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         Route::post('/roles/delete', [RoleController::class, 'destroy'])->name('roles.destroy'); */
         Route::post('/roles/update-permissions', [RoleController::class, 'updatePermissions'])->name('roles.updatePermissions');
 
-        Route::get('/roles', [RoleDomainController::class, 'index'])->name('admin.roles.index');
+        /* Route::get('/roles', [RoleDomainController::class, 'index'])->name('admin.roles.index'); */
         Route::post('/roles/store', [RoleDomainController::class, 'store'])->name('admin.roles.store');
         Route::post('/roles/update', [RoleDomainController::class, 'update'])->name('admin.roles.update');
         Route::post('/roles/delete', [RoleDomainController::class, 'destroy'])->name('admin.roles.delete');
+
+        Route::get('/roles', [RolePermissionController::class, 'rolesIndex'])->name('admin.roles.index');
+        Route::get('/role-permissions/edit/{role_id}/{domain_id}', [RolePermissionController::class, 'edit'])->name('role-permissions.edit');
+
+        Route::get('/role-permissions', [RolePermissionController::class, 'index'])->name('role-permissions.index');
+        Route::get('/role-permissions/get-objects-permissions', [RolePermissionController::class, 'getObjectsAndPermissions']);
+        Route::post('/role-permissions/store', [RolePermissionController::class, 'store'])->name('role-permissions.store');
 
         // Users rôles and permissions
         Route::get('/users/manage', [UserController::class, 'manageUsers'])->name('users.manage');
