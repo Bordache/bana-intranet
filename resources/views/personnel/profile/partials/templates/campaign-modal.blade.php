@@ -11,44 +11,43 @@
                 <div class="modal-body">
                     <div class="pb-4 row g-3">
 
-                    <!-- Établissement fréquenté -->
+                    <!-- Campagne -->
                         <div class="col-md-4 d-flex pt-2">
-                            <x-input-label for="school_name" :value="__('Etablissement fréquenté')" />
+                            <x-input-label for="campaign_title" :value="__('Intitulé')" />
                         </div>
                         <div class="col-md-1 d-flex pt-2">
-                            <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Ecole, collège, lycée, institut, université ..." role="img" aria-label="Ecole, collège, lycée, institut, université ..."></i>
+                            <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Manoeuvre ou campagne militaire" role="img" aria-label="Manoeuvre ou campagne militaire"></i>
                             <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
                         </div>
                         <div class="col-md-7 text-start">
-                            <x-text-input id="school_name" name="school_name" type="text"
-                                        placeholder="Entrer nom de l'établissement fréquenté" />
+                            <x-text-input id="campaign_title" name="campaign_title" type="text"
+                                        placeholder="Manoeuvre ou campagne militaire" />
                             <span class="error-message text-danger"></span>
                         </div>
 
                         <!-- Période -->
                         <div class="col-md-4 d-flex pt-2">
-                            <x-input-label for="duration" :value="__('Période')" />
+                            <x-input-label for="campaign_period" :value="__('Période')" />
                         </div>
                         <div class="col-md-1 d-flex pt-2">
                             <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Période" role="img" aria-label="Période"></i>
-                            <i class="icon fa fa-circle-exclamation text-danger fa-fw p-1" title="Requis" role="img" aria-label="Requis"></i>
                         </div>
                         <div class="col-md-7 text-start">
-                            <x-text-input id="duration" name="duration" type="text"
+                            <x-text-input id="campaign_period" name="campaign_period" type="text"
                                         placeholder="Entrer période" />
                             <span class="error-message text-danger"></span>
                         </div>
 
-                        <!-- Diplômes -->
+                        <!-- Référence -->
                         <div class="col-md-4 d-flex pt-2">
-                            <x-input-label for="diploma" :value="__('Sanctions')" />
+                            <x-input-label for="campaign_locations" :value="__('Référence')" />
                         </div>
                         <div class="col-md-1 d-flex pt-2">
-                            <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Sanctions d'études" role="img" aria-label="Sanctions d'études"></i>
+                            <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Document de référence" role="img" aria-label="Document de référence"></i>
                         </div>
                         <div class="col-md-7 text-start">
-                            <x-textarea-input id="diploma" name="diploma" rows="3"
-                                            placeholder="Entrer diplômes, certificats ou attestations obtenus"></x-textarea-input>
+                            <x-textarea-input id="campaign_locations" name="campaign_locations" rows="3"
+                                            placeholder="Document de référence"></x-textarea-input>
                             <span class="error-message text-danger"></span>
                         </div>
                     </div>
@@ -88,13 +87,13 @@
             document.getElementById('campaignModalLabel').textContent = title;
 
             // Pré-remplir les champs si c'est une édition
-            const schoolName = button.getAttribute('data-school_name') || '';
-            const schoolDuration = button.getAttribute('data-duration') || '';
-            const schoolDiploma = button.getAttribute('data-diploma') || '';
+            const campaign_title = button.getAttribute('data-campaign_title') || '';
+            const campaign_period = button.getAttribute('data-campaign_period') || '';
+            const campaign_locations = button.getAttribute('data-campaign_locations') || '';
 
-            document.getElementById('school_name').value = schoolName;
-            document.getElementById('duration').value = schoolDuration;
-            document.getElementById('diploma').value = schoolDiploma;
+            document.getElementById('campaign_title').value = campaign_title;
+            document.getElementById('campaign_period').value = campaign_period;
+            document.getElementById('campaign_locations').value = campaign_locations;
 
 
             let methodField = campaignForm.querySelector('input[name="_method"]');
@@ -113,13 +112,16 @@
             campaignForm.removeAttribute('action');
             const methodField = campaignForm.querySelector('input[name="_method"]');
             if (methodField) methodField.remove();
+            // Réinitialiser les erreurs
+            campaignForm.querySelectorAll('.error-message').forEach(e => e.textContent = '');
+            campaignForm.querySelectorAll('.is-invalid').forEach(i => i.classList.remove('is-invalid'));
         });
     });
 </script>
 
 <!-- Script de validation des champs -->
 <script>
-    function validatecampaignForm(form) {
+    function validateCampaignForm(form) {
         let isValid = true;
 
         // Réinitialiser les messages d'erreur
@@ -128,17 +130,22 @@
 
         // Champs à valider
         const fields = {
-            'school_name': {
-                value: form.school_name.value.trim(),
+            'campaign_title': {
+                value: form.campaign_title.value.trim(),
                 rules: [
-                    { test: v => !!v, message: "Le nom de l'établissement est requis." },
+                    { test: v => !!v, message: "L'intitulé est requis." },
                     { test: v => v.length <= 255, message: "255 caractères max." }
                 ]
             },
-            'duration': {
-                value: form.duration.value.trim(),
+            'campaign_period': {
+                value: form.campaign_period.value.trim(),
                 rules: [
-                    { test: v => !!v, message: "La période d'enseignement est requise." },
+                    { test: v => v.length <= 255, message: "255 caractères max." }
+                ]
+            },
+            'campaign_locations': {
+                value: form.campaign_locations.value.trim(),
+                rules: [
                     { test: v => v.length <= 255, message: "255 caractères max." }
                 ]
             }

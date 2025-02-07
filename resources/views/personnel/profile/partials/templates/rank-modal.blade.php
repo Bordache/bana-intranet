@@ -116,6 +116,9 @@
             rankForm.removeAttribute('action');
             const methodField = rankForm.querySelector('input[name="_method"]');
             if (methodField) methodField.remove();
+            // Réinitialiser les erreurs
+            rankForm.querySelectorAll('.error-message').forEach(e => e.textContent = '');
+            rankForm.querySelectorAll('.is-invalid').forEach(i => i.classList.remove('is-invalid'));
         });
     });
 </script>

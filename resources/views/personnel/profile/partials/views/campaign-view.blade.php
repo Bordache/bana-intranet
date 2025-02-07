@@ -61,7 +61,7 @@
                             <button type="button" class="dropdown-item"
                                 data-bs-toggle="modal"
                                 data-bs-target="#campaignModal"
-                                data-action="{{ route('campaign_histories.update', ['profile' => $profile->id, 'id' => $campaign->id]) }}"
+                                data-action="{{ route('campaign_histories.update', ['profile' => $profile->id, 'id' => $campaign->id, 'auth' => $auth ?? false]) }}"
                                 data-method="PUT"
                                 data-title="Modification d'une campagne"
                                 data-campaign_title="{{ $campaign->campaign_title }}"

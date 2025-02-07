@@ -135,7 +135,7 @@
                                 <x-select-input id="rank_id" name="rank_id" >
                                     <option value="" >Choisir à la selection</option>
                                     @foreach($selectRanks as $selectRank)
-                                        <option value="{{ $selectRank->id }}" title="{{ $selectRank->rank_abbreviate }}" >{{ $selectRank->rank_name }}</option>
+                                        <option value="{{ $selectRank->id }}" title="{{ $selectRank->rank_abbreviate }}" >{{ $selectRank->rank_abbreviate }} - {{ $selectRank->rank_name }}</option>
                                     @endforeach
                                 </x-select-input>
                                 <span class="error-message text-danger"></span>
@@ -468,7 +468,7 @@
             form.querySelectorAll('.is-invalid').forEach(i => i.classList.remove('is-invalid'));
 
             const fields = {
-                /* 'army': {
+                'army': {
                     value: form.army.value.trim(),
                     rules: [
                         { test: v => !!v, message: "Ce champ est requis." }
@@ -510,7 +510,7 @@
                     rules: [
                         { test: v => !!v, message: "Le grade est requis." }
                     ]
-                } */
+                }
             };
 
             // Validation synchrone

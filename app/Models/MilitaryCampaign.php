@@ -29,6 +29,19 @@ class MilitaryCampaign extends Model
         'campaign_locations',
     ];
 
+    // Déclenche l'update du profile lors d'une mise à jour
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($militaryCampaigns) {
+            $militaryCampaigns->profile->touch();
+        });
+        static::created(function ($militaryCampaigns) {
+            $militaryCampaigns->profile->touch();
+        });
+    }
+
     public function profile()
     {
         return $this->belongsTo(Profile::class, 'profile_id', 'id');

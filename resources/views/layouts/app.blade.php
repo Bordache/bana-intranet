@@ -38,8 +38,83 @@
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- Toast -->
+    @if(session('success'))
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="fas fa-check-circle text-success px-2"></i>
+                    <strong class="me-auto">Bravo !</strong>
+                    <small>A l'instant</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if (@session('danger'))
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-exclamation-circle text-danger px-2"></i>
+                <strong class="me-auto">Danger !</strong>
+                <small>A l'instant</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ session('danger') }}
+            </div>
+        </div>
+    </div>
+    @endsession
+
+    @if (@session('warning'))
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-exclamation-circle text-warning px-2"></i>
+                <strong class="me-auto">Attention !</strong>
+                <small>A l'instant</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ session('warning') }}
+            </div>
+        </div>
+    </div>
+    @endsession
+
+    @if (@session('info'))
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-circle-info text-info px-2"></i>
+                <strong class="me-auto">Informations !</strong>
+                <small>A l'instant</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ session('info') }}
+            </div>
+        </div>
+    </div>
+    @endsession
+
     </body>
 </html>
+
+<!-- Script to trigger the toast -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toastElement = document.getElementById('liveToast');
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show(); // Automatically display the toast
+    });
+</script>
 
 <script>
     // Supprime les espaces ou sauts de ligne superflus
@@ -56,4 +131,33 @@
             textarea.value = textarea.value.trim();
         }
     }
+</script>
+
+<!-- Plier et déplier un accordéon -->
+<script>
+    const expandAllBtn = document.getElementById('expandAllBtn');
+    const drapeAllBtn = document.getElementById('drapeAllBtn');
+    const collapses = document.querySelectorAll('.accordion-collapse');
+
+    expandAllBtn.addEventListener('click', () => {
+        collapses.forEach(collapse => {
+            collapse.classList.add('show'); // Ajouter la classe `show`
+            const button = collapse.previousElementSibling.querySelector('button');
+            button.classList.remove('collapsed'); // Enlever la classe `collapsed` des boutons
+            button.setAttribute('aria-expanded', 'true'); // Mettre `aria-expanded` à `true`
+        });
+        expandAllBtn.classList.add('d-none');
+        drapeAllBtn.classList.remove('d-none');
+    });
+
+    drapeAllBtn.addEventListener('click', () => {
+        collapses.forEach(collapse => {
+            collapse.classList.remove('show'); // Enlever la classe `show`
+            const button = collapse.previousElementSibling.querySelector('button');
+            button.classList.add('collapsed'); // Ajouter la classe `collapsed` des boutons
+            button.setAttribute('aria-expanded', 'false'); // Mettre `aria-expanded` à `false`
+        });
+        expandAllBtn.classList.remove('d-none');
+        drapeAllBtn.classList.add('d-none');
+    });
 </script>

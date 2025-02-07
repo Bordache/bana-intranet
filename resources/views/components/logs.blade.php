@@ -27,14 +27,18 @@
                 <td class="px-6 whitespace-nowrap text-sm text-gray-900">
                     {{ $log->created_at->format('d/m/Y H:i:s') }}</td>
                 <td class="px-6 whitespace-nowrap text-sm text-gray-900">
-                    {{ $log->user->username ?? '' }}</td>
+                    {!! highlight($log->user->username ?? '' , $search) !!}</td>
                 <td class="px-6 whitespace-nowrap text-sm text-gray-900">
-                    {{ $log->domain->domain_description ?? '-' }}</td>
-                <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $log->event_name }}</td>
-                <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $log->description }}</td>
-                <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $log->ip_address }}</td>
+                    {!! highlight($log->domain->domain_description ?? '-' , $search) !!}</td>
+                <td class="px-6 whitespace-nowrap text-sm text-gray-900">{!! highlight($log->event_name , $search) !!}</td>
+                <td class="px-6 whitespace-nowrap text-sm text-gray-900">{!! highlight($log->description , $search) !!}</td>
+                <td class="px-6 whitespace-nowrap text-sm text-gray-900">{!! highlight($log->ip_address , $search) !!}</td>
             </tr>
         @endforeach
     </tbody>
 </table>
-{{ $logs->links() }}
+{{ $logs->appends(request()->query())->links() }}
+
+
+
+

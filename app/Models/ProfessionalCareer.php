@@ -31,6 +31,19 @@ class ProfessionalCareer extends Model
         'description',
     ];
 
+    // Déclenche l'update du profile lors d'une mise à jour
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($professionalCareers) {
+            $professionalCareers->profile->touch();
+        });
+        static::created(function ($professionalCareers) {
+            $professionalCareers->profile->touch();
+        });
+    }
+
     /**
      * Les attributs qui doivent être convertis en types natifs.
      *

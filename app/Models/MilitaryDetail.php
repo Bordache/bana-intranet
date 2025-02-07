@@ -64,6 +64,20 @@ class MilitaryDetail extends Model
         'interruption_end_date' => 'date',
     ];
 
+     // Déclenche l'update du profile lors d'une mise à jour
+     protected static function boot()
+     {
+         parent::boot();
+
+         static::updated(function ($militaryDetail) {
+             $militaryDetail->profile->touch();
+         });
+         static::created(function ($militaryDetail) {
+            $militaryDetail->profile->touch();
+        });
+     }
+
+
     /**
      * Relation : Un profil a un utilisateur associé.
      *

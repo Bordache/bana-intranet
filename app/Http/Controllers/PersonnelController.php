@@ -98,88 +98,287 @@ class PersonnelController extends Controller
      */
     public function list()
     {
-        $militaryDetails = MilitaryDetail::with(['profile', 'rank'])
-            ->join('profiles', 'military_details.profile_id', '=', 'profiles.id')
-            ->join('ranks', 'military_details.rank_id', '=', 'ranks.id')
-            ->join('units', 'military_details.unit_id', '=', 'units.id')
-            ->orderBy('military_details.unit_id')
-            ->orderBy('military_details.rank_id')
-            ->orderBy('military_details.rank_date')
-            ->orderBy('military_details.service_entry_date')
-            ->orderBy('profiles.birth_date')
-            ->get();
+        $expand = false;
+        $perPage = 20;
+        $militaryDetails = Profile::with([
+            'militaryDetail',
+            'academicPaths',
+            'militaryPaths',
+            'honoraryDistinctions',
+            'militaryCampaigns',
+        ])
+        ->leftJoin('military_details', 'profiles.id', '=', 'military_details.profile_id')
+        ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->select([
+            'profiles.*',
+            'military_details.unit_id',
+            'military_details.rank_id',
+            'military_details.rank_date',
+            'military_details.service_entry_date',
+            'military_details.military_registration_number',
+            'military_details.current_function',
+            'ranks.rank_abbreviate',
+            'units.unit_abbreviate',
+            'profiles.updated_at as profile_updated_at'
+        ])
+        ->orderBy('rank_id', 'asc')
+        ->orderBy('rank_date', 'desc')
+        ->orderBy('service_entry_date', 'desc')
+        ->paginate($perPage);
 
-        $groupedMilitaryDetails = $militaryDetails->groupBy('unit_abbreviate');
-
-        return view("personnel.profile.list", compact('groupedMilitaryDetails'));
+        return view("personnel.profile.list", compact('militaryDetails', 'expand', 'perPage'));
     }
+
+    /**
+     * Display a listing by unit of the resource.
+     */
+    public function listByUnit()
+    {
+        $expand = true;
+
+        // Récupération des unités
+        $units = Unit::orderBy('unit_abbreviate')->get();
+
+        // Récupération des profils avec regroupement par unité
+        $profilesByUnit = Profile::with([
+            'militaryDetail',
+            'academicPaths',
+            'militaryPaths',
+            'honoraryDistinctions',
+            'militaryCampaigns',
+        ])
+        ->leftJoin('military_details', 'profiles.id', '=', 'military_details.profile_id')
+        ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->select([
+            'profiles.*',
+            'military_details.unit_id',
+            'military_details.rank_id',
+            'military_details.rank_date',
+            'military_details.service_entry_date',
+            'military_details.military_registration_number',
+            'military_details.current_function',
+            'ranks.rank_abbreviate',
+            'units.unit_abbreviate',
+            'profiles.updated_at as profile_updated_at'
+        ])
+        ->orderBy('military_details.rank_id', 'asc')
+        ->orderBy('military_details.rank_date', 'desc')
+        ->orderBy('military_details.service_entry_date', 'desc')
+        ->get()
+        ->groupBy('unit_id'); // Regroupement par unité
+
+        return view("personnel.profile.listByUnit", compact('profilesByUnit', 'units', 'expand'));
+    }
+
+
+    /**
+     * Display a listing of the resource by rank.
+     */
+    public function listByRank()
+    {
+        $expand = true;
+
+        $ranks = Rank::orderBy('id')->get();
+
+        $profilesByRank = Profile::with([
+            'militaryDetail',
+            'academicPaths',
+            'militaryPaths',
+            'honoraryDistinctions',
+            'militaryCampaigns',
+        ])
+        ->leftJoin('military_details', 'profiles.id', '=', 'military_details.profile_id')
+        ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->select([
+            'profiles.*',
+            'military_details.unit_id',
+            'military_details.rank_id',
+            'military_details.rank_date',
+            'military_details.service_entry_date',
+            'military_details.military_registration_number',
+            'military_details.current_function',
+            'ranks.rank_abbreviate',
+            'units.unit_abbreviate',
+            'profiles.updated_at as profile_updated_at'
+        ])
+        ->orderBy('military_details.rank_id', 'asc')
+        ->orderBy('military_details.rank_date', 'desc')
+        ->orderBy('military_details.service_entry_date', 'desc')
+        ->get()
+        ->groupBy('rank_id');
+
+        return view("personnel.profile.listByRank", compact('profilesByRank', 'ranks', 'expand'));
+    }
+
+    /**
+     * search
+     */
+
+     public function search(Request $request)
+     {
+        $expand = false;
+        $perPage = 20;
+         $search = trim(strip_tags($request->input('search')));
+
+         $query = Profile::with([
+             'militaryDetail',
+             'academicPaths',
+             'militaryPaths',
+             'honoraryDistinctions',
+             'militaryCampaigns',
+         ])
+         ->leftJoin('military_details', 'profiles.id', '=', 'military_details.profile_id')
+         ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
+         ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+         ->select([
+             'profiles.*',
+             'military_details.unit_id',
+             'military_details.rank_id',
+             'military_details.rank_date',
+             'military_details.service_entry_date',
+             'military_details.military_registration_number',
+             'military_details.current_function',
+             'ranks.rank_abbreviate',
+             'units.unit_abbreviate',
+             'profiles.updated_at as profile_updated_at'
+         ])
+         ->when($search, function ($query) use ($search) {
+             $query->where(function ($q) use ($search) {
+                 $q->where('profiles.name', 'like', "%{$search}%")
+                   ->orWhere('profiles.firstname', 'like', "%{$search}%")
+                   ->orWhere('ranks.rank_abbreviate', 'like', "%{$search}%")
+                   ->orWhere('units.unit_abbreviate', 'like', "%{$search}%")
+                   ->orWhere('military_details.military_registration_number', 'like', "%{$search}%")
+                   ->orWhere('military_details.current_function', 'like', "%{$search}%");
+
+                 // Vérifier si l'entrée correspond à une date sous forme "jour/mois"
+                 if (preg_match('/^(\d{1,2})\/(\d{1,2})$/', $search, $matches)) {
+                     [$full, $day, $month] = $matches;
+                     $q->orWhereRaw("DAY(profiles.updated_at) = ? AND MONTH(profiles.updated_at) = ?", [$day, $month]);
+                 }
+                 // Vérifier si l'entrée est un chiffre et rechercher dans profile_updated_at
+                 elseif (is_numeric($search)) {
+                     $q->orWhereRaw("DAY(profiles.updated_at) = ?", [$search])
+                       ->orWhereRaw("MONTH(profiles.updated_at) = ?", [$search])
+                       ->orWhereRaw("YEAR(profiles.updated_at) = ?", [$search])
+                       ->orWhereRaw("HOUR(profiles.updated_at) = ?", [$search])
+                       ->orWhereRaw("MINUTE(profiles.updated_at) = ?", [$search])
+                       ->orWhereRaw("SECOND(profiles.updated_at) = ?", [$search]);
+                 }
+             });
+         })
+         // Appliquer le tri après le filtrage
+         ->orderBy('military_details.rank_id')
+         ->orderBy('military_details.rank_date')
+         ->orderBy('military_details.service_entry_date')
+         ->orderBy('profiles.birth_date');
+
+         // Exécuter la requête
+         $results = $query->paginate($perPage)->appends($request->query());
+
+         return view("personnel.profile.result", compact('results', 'search', 'expand', 'perPage'));
+     }
 
     /**
      * Custom search
      */
     public function customSearch(Request $request)
     {
+        $expand = false;
+        $perPage = 20;
+
         $query = Profile::with([
             'militaryDetail',
             'academicPaths',
             'militaryPaths',
             'honoraryDistinctions',
             'militaryCampaigns',
+        ])
+        ->leftJoin('military_details', 'profiles.id', '=', 'military_details.profile_id')
+        ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->select([
+            'profiles.*',
+            'military_details.unit_id',
+            'military_details.rank_id',
+            'military_details.rank_date',
+            'military_details.service_entry_date',
+            'military_details.military_registration_number',
+            'military_details.current_function',
+            'ranks.rank_abbreviate',
+            'units.unit_abbreviate',
+            'profiles.updated_at as profile_updated_at'
         ]);
 
-        // Filtrage par rang
-        if ($request->filled('rank_id')) {
-            $query->whereHas('militaryDetail', function ($q) use ($request) {
-                $q->where('rank_id', $request->rank_id_search);
-            });
+        // Filtrage par grade
+        if ($request->filled('rank_abbreviate')) {
+            $rank = trim(strip_tags($request->rank_abbreviate));
+            $query->where('ranks.rank_abbreviate', 'like', "%{$rank}%");
         }
 
         // Filtrage par unité
-        if ($request->filled('unit_id')) {
-            $query->whereHas('militaryDetail', function ($q) use ($request) {
-                $q->where('unit_id', $request->unit_id_search);
-            });
+        if ($request->filled('unit_abbreviate')) {
+            $unit = trim(strip_tags($request->unit_abbreviate));
+            $query->where('units.unit_abbreviate', 'like', "%{$unit}%");
         }
 
-        // Filtrage par date d'entrée en service
-        if ($request->filled('service_entry_start') && $request->filled('service_entry_end')) {
-            $query->whereHas('militaryDetail', function ($q) use ($request) {
-                $q->whereBetween('service_entry_date', [
-                    $request->service_entry_date_start,
-                    $request->service_entry_date_end,
-                ]);
-            });
+        // Filtrage par date d'entrée en service (Vérification correcte)
+        if ($request->filled('service_entry_date_before') && $request->filled('service_entry_date_after')) {
+            $before = trim(strip_tags($request->service_entry_date_before));
+            $after = trim(strip_tags($request->service_entry_date_after));
+
+            if (strtotime($before) && strtotime($after)) { // Vérification des dates valides
+                $query->whereBetween('military_details.service_entry_date', [$before, $after]);
+            }
         }
 
         // Filtrage par diplôme académique
         if ($request->filled('academic_diploma')) {
-            $query->whereHas('academicPaths', function ($q) use ($request) {
-                $q->where('diploma', 'like', '%' . $request->academic_diploma_search . '%');
+            $diploma = trim(strip_tags($request->academic_diploma));
+            $query->whereHas('academicPaths', function ($q) use ($diploma) {
+                $q->where('diploma', 'like', "%{$diploma}%");
             });
         }
 
         // Filtrage par diplôme militaire
         if ($request->filled('military_diploma')) {
-            $query->whereHas('militaryPaths', function ($q) use ($request) {
-                $q->where('academy_diploma', 'like', '%' . $request->military_diploma_search . '%');
+            $militaryDiploma = trim(strip_tags($request->military_diploma));
+            $query->whereHas('militaryPaths', function ($q) use ($militaryDiploma) {
+                $q->where('academy_diploma', 'like', "%{$militaryDiploma}%");
             });
         }
 
         // Filtrage par distinctions honorifiques
         if ($request->filled('honorary_title')) {
-            $query->whereHas('honoraryDistinctions', function ($q) use ($request) {
-                $q->where('honorary_title', 'like', '%' . $request->honorary_title_search . '%');
+            $honoraryTitle = trim(strip_tags($request->honorary_title));
+            $query->whereHas('honoraryDistinctions', function ($q) use ($honoraryTitle) {
+                $q->where('honorary_title', 'like', "%{$honoraryTitle}%");
             });
         }
 
-        // Exécute la requête et retourne les résultats
-        $results = $query->get();
+        // Filtrage par campagnes militaires (Correction de l'erreur dans ta version)
+        if ($request->filled('campaign_title')) {
+            $campaignTitle = trim(strip_tags($request->campaign_title));
+            $query->whereHas('militaryCampaigns', function ($q) use ($campaignTitle) {
+                $q->where('campaign_title', 'like', "%{$campaignTitle}%");
+            });
+        }
 
-        return response()->json([
-            'success' => true,
-            'results' => $results,
-        ]);
+        // Appliquer le tri après le filtrage
+        $query->orderBy('military_details.rank_id')
+            ->orderBy('military_details.rank_date', 'desc')
+            ->orderBy('military_details.service_entry_date', 'desc')
+            ->orderBy('profiles.birth_date', 'asc');
+
+        $results = $query->paginate($perPage)->appends($request->query());
+
+        return view("personnel.profile.result", compact('results', 'expand', 'perPage'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -363,7 +562,6 @@ class PersonnelController extends Controller
      */
     public function show(string $id)
     {
-
         // Chargement du profil avec toutes les relations nécessaires, y compris 'rank'
         $profile = Profile::with([
             'militaryDetail',
@@ -486,10 +684,10 @@ class PersonnelController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id, bool $auth = false)
     {
+        $auth = $request->query('auth', false);
         $profile = Profile::findOrFail($id);
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'firstname' => 'nullable|string|max:255',
@@ -511,30 +709,67 @@ class PersonnelController extends Controller
             'marital_status' => 'nullable|string|max:255',
             'fallback_address' => 'nullable|string|max:255',
             'driver_license' => 'nullable|string|max:255',
-            'practiced_sport' => 'nullable|string',
-            'hobbies' => 'nullable|string',
+            'practiced_sport' => 'nullable|string|max:255',
+            'hobbies' => 'nullable|string|max:255',
         ]);
 
-        $profile->update($validated);
+        $changes = [];
 
-        $domainId = Domain::where('name', 'rh')->value('id');
+        foreach ($validated as $key => $newValue) {
+            $oldValue = $profile->$key;
 
-        // Log de l'action
-        LogHelper::logAction(
-            auth()->id(),
-            'Update_etat_civil_profile',
-            "Mise à jour des informations d'état civil de {$profile->name} {$profile->firstname}",
-            $domainId
-        );
+            // Normalisation des dates pour éviter les fausses différences
+            if (in_array($key, ['birth_date', 'issue_date', 'duplicate_date']) && $oldValue) {
+                $oldValue = \Carbon\Carbon::parse($oldValue)->format('Y-m-d');
+                $newValue = \Carbon\Carbon::parse($newValue)->format('Y-m-d');
+            }
+
+            if ($newValue != $oldValue) {
+                $changes[$key] = [
+                    'old' => $oldValue,
+                    'new' => $newValue
+                ];
+            }
+        }
+
+        if (!empty($changes)) {
+            // Correction : Conserver les clés et les valeurs correctement
+            $profile->update(collect($changes)->mapWithKeys(fn($change, $key) => [$key => $change['new']])->toArray());
+
+            $domainId = Domain::where('name', 'rh')->value('id');
+
+            $changeDetails = collect($changes)->map(fn($change, $field) => "{$field}: '{$change['old']}' → '{$change['new']}'")->implode(', ');
+
+            if ($auth) {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_account_civil_details',
+                    "Mise à jour des informations d'état civil du compte de " . auth()->user()->name . " " . auth()->user()->firstname . ". Modifications : {$changeDetails}",
+                    null
+                );
+            } else {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_civil_details',
+                    "Mise à jour des informations d'état civil de {$profile->name} {$profile->firstname}. Modifications : {$changeDetails}",
+                    $domainId
+                );
+            }
+
+            return back()->with([
+                'success' => 'Etat civil mis à jour avec succès.',
+                'tab' => 'personal_information',
+            ]);
+        }
 
         return back()->with([
-            'success' => 'Votre profil a été mis à jour avec succès.',
+            'info' => 'Aucune modification détectée.',
             'tab' => 'personal_information',
         ]);
-
-
-
     }
+
+
+
 
     /**
      * Remove the specified resource from storage.

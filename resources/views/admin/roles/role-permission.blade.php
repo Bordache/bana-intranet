@@ -5,7 +5,7 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin') }}">Administration</a></li>
                 <li class="breadcrumb-item" aria-current="page">Paramètres globaux</li>
-                <li class="breadcrumb-item active" aria-current="page">Rôles et permissions</li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('admin.roles.index') }}">Rôles et permissions</a></li>
             </ol>
         </nav>
         <h2 class="pt-3 font-semibold text-xl text-gray-800 leading-tight">
@@ -93,7 +93,9 @@
                         </tbody>
                     </table>
                 @endforeach
-                <button type="submit" class="btn btn-primary mt-3 w-auto">Enregistrer</button>
+                <div class="container-fluid sticky-bottom bg-white py-3">
+                    <button type="submit" class="btn btn-primary mt-3 w-auto">Enregistrer</button>
+                </div>
             </form>
         </div>
     </div>
@@ -105,7 +107,7 @@
             let role_id = {{ $role->id }};
             let domain_description = {{ $roleDomain->domain_description }};
 
-            fetch(`admin/role-permissions/get-objects-permissions?domain_id=${domain_id}`)
+            fetch(`admin/roles/get-objects-permissions?domain_id=${domain_id}`)
                 .then(response => response.json())
                 .then(data => {
                     let container = document.getElementById('permissions-container');

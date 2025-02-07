@@ -28,6 +28,20 @@ class AcademicPath extends Model
         'diploma',
     ];
 
+    // Déclenche l'update du profile lorsque military_details est mis à jour
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($academicPaths) {
+            $academicPaths->profile->touch();
+        });
+        static::created(function ($academicPaths) {
+            $academicPaths->profile->touch();
+        });
+    }
+
+
     public function profile()
     {
         return $this->belongsTo(Profile::class, 'profile_id', 'id');

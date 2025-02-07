@@ -52,31 +52,53 @@ class HonoraryDistinctionController extends Controller
         ])->with('success', 'Distinction ajoutée avec succès.');
     }
 
-    public function update(Request $request, Profile $profile, $id)
+    public function update(Request $request, Profile $profile, $id, bool $auth = false)
     {
+        $auth = $request->query('auth', false);
         $award = $profile->honoraryDistinctions()->findOrFail($id);
+
         $validated = $request->validate([
             'honorary_title' => 'required|string|max:255',
             'honorary_promotion' => 'nullable|string|max:255',
             'honorary_reference' => 'nullable|string|max:255',
         ]);
 
-        $award->update($validated);
+        $changes = [];
+        foreach ($validated as $key => $newValue) {
+            $oldValue = $award->$key;
+            if ($newValue != $oldValue) {
+                $changes[$key] = ['old' => $oldValue, 'new' => $newValue];
+            }
+        }
 
-        $domainId = Domain::where('name', 'rh')->value('id');
+        if (!empty($changes)) {
+            $award->update(collect($changes)->mapWithKeys(fn($change, $key) => [$key => $change['new']])->toArray());
 
-        // Log de l'action
-        LogHelper::logAction(
-            auth()->id(),
-            'Update_decoration',
-            "Mise à jour de décoration {$request->honorary_title} de {$profile->name} {$profile->firstname}",
-            $domainId
-        );
+            $changeDetails = collect($changes)->map(fn($change, $field) => "{$field}: '{$change['old']}' → '{$change['new']}'")->implode(', ');
 
-        return back()->with([
-            'success' => 'Distinction mise à jour avec succès.',
-            'tab' => 'honorary_distinctions',
-        ]);
+            // Récupérer l'ID du domaine "rh"
+            $domainId = Domain::where('name', 'rh')->value('id');
+
+            if ($auth) {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_account_decoration',
+                    "Mise à jour de la distinction honorifique du compte de " . auth()->user()->name . " " . auth()->user()->firstname . ". Modifications : {$changeDetails}",
+                    null
+                );
+            } else {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_decoration',
+                    "Mise à jour de la distinction honorifique de {$profile->name} {$profile->firstname}. Modifications : {$changeDetails}",
+                    $domainId
+                );
+            }
+
+            return back()->with(['success' => 'Distinction mise à jour avec succès.', 'tab' => 'honorary_distinctions']);
+        }
+
+        return back()->with(['info' => 'Aucune modification détectée.', 'tab' => 'honorary_distinctions']);
     }
 
     public function destroy(Profile $profile, $id)

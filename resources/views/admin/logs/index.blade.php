@@ -12,11 +12,11 @@
         </h2>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6 pb-5">
         <div class="card">
             <div class="card-header">
                 <form action="{{ route('admin.logs.search') }}" method="GET" class="d-flex">
-                    <x-text-input id="search" name="search" class="w-auto" type="text" value="{{ old('search') }}"/>
+                    <x-text-input id="search" name="search" class="w-auto" type="text" placeholder="Entrer mot clé ..." value="{{ $search ?? '' }}"/>
                     <button type="submit" class="mx-2 btn btn-sm btn-primary">Rechercher</button>
                 </form>
             </div>

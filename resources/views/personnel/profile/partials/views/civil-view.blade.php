@@ -10,7 +10,7 @@
             <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="civilDropdown">
                 <li>
                     <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#civilModal"
-                        data-action="{{ route('personnel.update', ['id' => $profile->id]) }}" data-method="PUT"
+                        data-action="{{ route('personnel.update', ['id' => $profile->id, 'auth' => $auth ?? false ]) }}" data-method="PUT"
                         data-title="Modification d'état civil" data-name="{{ $profile->name }}"
                         data-firstname="{{ $profile->firstname }}"
                         data-birth_date="{{ optional($profile->birth_date)->format('Y-m-d') }}"
@@ -38,6 +38,12 @@
     <div class="row g-3">
         <div class="col-md-6">
             <div class="my-2">
+                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Genre') }}
+                </p>
+                <p class="mt-1 text-sm text-gray-600">{{ $profile->gender ?? '-' }}
+                </p>
+            </div>
+            <div class="my-2">
                 <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Nom') }}
                 </p>
                 <p class="mt-1 text-sm text-gray-600">{{ $profile->name ?? '-' }}</p>
@@ -59,12 +65,6 @@
                     {{ __('Lieu de naissance') }}</p>
                 <p class="mt-1 text-sm text-gray-600">
                     {{ $profile->birth_place ?? '-' }}</p>
-            </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Genre') }}
-                </p>
-                <p class="mt-1 text-sm text-gray-600">{{ $profile->gender ?? '-' }}
-                </p>
             </div>
             <div class="my-2">
                 <p class="mt-1 text-sm font-medium text-gray-900">

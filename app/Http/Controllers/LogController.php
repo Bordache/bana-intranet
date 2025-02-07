@@ -9,15 +9,17 @@ class LogController extends Controller
 {
     public function adminLogsIndex()
     {
+        $search = null;
         $logs = Log::with('user', 'domain')
             ->latest()
             ->paginate(20);
 
-        return view('admin.logs.index', compact('logs'));
+        return view('admin.logs.index', compact('logs', 'search'));
     }
 
     public function personnelLogsIndex()
     {
+        $search = null;
         $domainName = 'rh';
         $logs = Log::with('user', 'domain')
             ->whereHas('domain', function ($query) use ($domainName) {
@@ -26,7 +28,7 @@ class LogController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('personnel.logs.index', compact('logs'));
+        return view('personnel.logs.index', compact('logs', 'search'));
     }
 
     public function adminLogsSearch(Request $request)
@@ -40,7 +42,7 @@ class LogController extends Controller
                       ->orWhere('description', 'like', "%{$search}%")
                       ->orWhere('ip_address', 'like', "%{$search}%")
                       ->orWhereHas('user', fn($q) => $q->where('username', 'like', "%{$search}%"))
-                      ->orWhereHas('domain', fn($q) => $q->where('name', 'like', "%{$search}%"));
+                      ->orWhereHas('domain', fn($q) => $q->where('domain_description', 'like', "%{$search}%"));
 
                     // Vérifier si l'entrée correspond à une date sous forme "jour/mois" (ex: "31/01")
                     if (preg_match('/^(\d{1,2})\/(\d{1,2})$/', $search, $matches)) {
@@ -59,10 +61,9 @@ class LogController extends Controller
                     }
                 });
             })
-            ->latest()
-            ->paginate(20);
+            ->latest()->paginate(20)->appends($request->query());
 
-        return view('admin.logs.index', compact('logs'));
+        return view('admin.logs.index', compact('logs', 'search'));
     }
 
 
@@ -89,10 +90,9 @@ class LogController extends Controller
                     ->orWhereHas('domain', fn($q) => $q->where('name', 'like', "%{$search}%"));
                 });
             })
-            ->latest()
-            ->paginate(20);
+            ->latest()->paginate(20)->appends($request->query());
 
-        return view('personnel.logs.index', compact('logs'));
+        return view('personnel.logs.index', compact('logs', 'search'));
         }
     }
 }

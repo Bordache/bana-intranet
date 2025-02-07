@@ -39,6 +39,19 @@ class RankHistory extends Model
         'history_promotion_date' => 'date',
     ];
 
+    // Déclenche l'update du profile lors d'une mise à jour
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($rankHistories) {
+            $rankHistories->profile->touch();
+        });
+        static::created(function ($rankHistories) {
+            $rankHistories->profile->touch();
+        });
+    }
+
 
     public function profile()
     {

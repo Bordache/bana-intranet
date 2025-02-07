@@ -60,16 +60,16 @@
                             <div class="mt-4 text-sm/relaxed">
                                 <ul>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Personnel par unité</a>
+                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Personnel global</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Personnel par grade</a>
+                                        <a href="{{ route('personnel.listByUnit') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Personnel par unité</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('personnel.listByRank') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Personnel par grade</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Congés et permissions</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Demandes d'approbation</a>
                                     </li>
                                 </ul>
                             </div>
@@ -107,6 +107,11 @@
             </main>
         </div>
     </div>
+    <a href="{{ route('personnel.create') }}"
+        class="btn btn-primary position-fixed bottom-3 end-3 rounded-circle shadow d-flex align-items-center justify-content-center" title="Ajouter nouveau"
+        style="width: 46px; height: 46px;">
+            <i class="fas fa-user-plus"></i>
+    </a>
 </x-app-layout>
 
 <!-- Script de recherche personnel -->

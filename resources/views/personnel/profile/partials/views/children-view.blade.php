@@ -86,7 +86,7 @@
                         <li>
                             <button type="button" class="dropdown-item" data-bs-toggle="modal"
                                 data-bs-target="#childModal"
-                                data-action="{{ route('children_details.update', ['profile' => $profile->id, 'id' => $child->id]) }}"
+                                data-action="{{ route('children_details.update', ['profile' => $profile->id, 'id' => $child->id, 'auth' => $auth ?? false]) }}"
                                 data-method="PUT" data-title="Modification d'un enfant"
                                 data-full_name="{{ $child->child_full_name }}"
                                 data-birth_date="{{ $child->child_birth_date->format('Y-m-d') }}"

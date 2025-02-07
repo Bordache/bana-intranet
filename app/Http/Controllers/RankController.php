@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Rank;
 use Illuminate\Http\Request;
+use App\Helpers\LogHelper;
+use App\Models\Domain;
 
 class RankController extends Controller
 {

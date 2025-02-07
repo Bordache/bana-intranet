@@ -38,6 +38,20 @@ class SpouseDetail extends Model
         'spouse_birth_date' => 'date',
     ];
 
+    // Déclenche l'update du profile lors d'une mise à jour
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($spouseDetails) {
+            $spouseDetails->profile->touch();
+        });
+        static::created(function ($spouseDetails) {
+            $spouseDetails->profile->touch();
+        });
+    }
+
+
     public function profile()
     {
         return $this->belongsTo(Profile::class, 'profile_id', 'id');

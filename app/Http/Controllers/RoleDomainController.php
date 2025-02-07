@@ -5,6 +5,7 @@ use App\Models\RoleDomain;
 use App\Models\Domain;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use App\Helpers\LogHelper;
 
 class RoleDomainController extends Controller
 {

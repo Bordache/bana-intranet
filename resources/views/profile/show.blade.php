@@ -6,6 +6,7 @@
     </x-slot>
 
     <div class="py-12">
+        {{ $auth ?? 'aucun' }}
         <div class="border rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] bg-white max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-3">
             <div class="d-flex align-items-center">
                 <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center overflow-hidden"
@@ -43,7 +44,7 @@
                             <li class="nav-item" role="presentation">
                                 <button
                                     class="nav-link @if (!session('tab')) active
-                                            @elseif(session('tab') == 'personnal_information')
+                                            @elseif(session('tab') == 'personal_information')
                                                 active @endif"
                                     id="inform-tab" data-bs-toggle="tab" data-bs-target="#inform" type="button"
                                     role="tab" aria-controls="inform" aria-selected="true">Etat civil</button>
@@ -103,7 +104,7 @@
                             </li>
                         </ul>
                         <div class="tab-content" id="myTabContent" style="margin-top:0.5em;">
-                            <div class="tab-pane fade show bg-white @if (!session('tab')) show active @elseif(session('tab') == 'personnal_information') show active @endif"
+                            <div class="tab-pane fade show bg-white @if (!session('tab')) show active @elseif(session('tab') == 'personal_information') show active @endif"
                                 id="inform" role="tabpanel" aria-labelledby="inform-tab">
                                 @include('personnel.profile.partials.views.civil-view')
                                 @include('personnel.profile.partials.templates.civil-modal')
@@ -164,49 +165,6 @@
                         aria-labelledby="v-pills-settings-tab">...</div>
                 </div>
             </div>
-
-
         </div>
     </div>
-
-    <!-- Toast -->
-    @if (session('success'))
-        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <i class="fas fa-check-circle text-success px-2"></i>
-                    <strong class="me-auto">Bravo !</strong>
-                    <small>A l'instant</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ session('success') }}
-                </div>
-            </div>
-        </div>
-    @endif
-
-    @if (@session('warning'))
-        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <i class="fas fa-exclamation-circle text-warning px-2"></i>
-                    <strong class="me-auto">Attention !</strong>
-                    <small>A l'instant</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ session('warning') }}
-                </div>
-            </div>
-        </div>
-        @endsession
-        <!-- Script to trigger the toast -->
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const toastElement = document.getElementById('liveToast');
-                const toast = new bootstrap.Toast(toastElement);
-                toast.show(); // Automatically display the toast
-            });
-        </script>
 </x-app-layout>

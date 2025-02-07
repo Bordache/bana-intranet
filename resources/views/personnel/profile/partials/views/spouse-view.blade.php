@@ -12,7 +12,7 @@
                     <li>
                         <button type="button" class="dropdown-item" data-bs-toggle="modal"
                             data-bs-target="#spouseModal"
-                            data-action="{{ route('spouse_details.update', ['profile' => $profile->id, 'id' => $spouse->id]) }}"
+                            data-action="{{ route('spouse_details.update', ['profile' => $profile->id, 'id' => $spouse->id, 'auth' => $auth ?? false]) }}"
                             data-method="PUT"
                             data-title="{{ $spouse->spouse_title == 'Monsieur' ? 'Modification renseignements du conjoint' : 'Modification renseignements de la conjointe' }}"
                             data-spouse_title="{{ $spouse->spouse_title }}"

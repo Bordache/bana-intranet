@@ -61,7 +61,7 @@
                             <button type="button" class="dropdown-item"
                                 data-bs-toggle="modal"
                                 data-bs-target="#rankModal"
-                                data-action="{{ route('rank_histories.update', ['profile' => $profile->id, 'id' => $rank->id]) }}"
+                                data-action="{{ route('rank_histories.update', ['profile' => $profile->id, 'id' => $rank->id, 'auth' => $auth ?? false]) }}"
                                 data-method="PUT"
                                 data-title="Modification d'un grade"
                                 data-history_rank="{{ $rank->history_rank }}"

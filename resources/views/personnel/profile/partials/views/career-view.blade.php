@@ -73,7 +73,7 @@
                             <button type="button" class="dropdown-item"
                                 data-bs-toggle="modal"
                                 data-bs-target="#careerModal"
-                                data-action="{{ route('professional_careers.update', ['profile' => $profile->id, 'id' => $professional->id]) }}"
+                                data-action="{{ route('professional_careers.update', ['profile' => $profile->id, 'id' => $professional->id, 'auth' => $auth ?? false]) }}"
                                 data-method="PUT"
                                 data-title="Modification d'un parcours"
                                 data-company_name="{{ $professional->company_name }}"

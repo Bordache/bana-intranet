@@ -31,6 +31,19 @@ class MilitaryPath extends Model
         'academy_diploma',
     ];
 
+     // Déclenche l'update du profile lors d'une mise à jour
+     protected static function boot()
+     {
+         parent::boot();
+
+         static::updated(function ($militaryPaths) {
+             $militaryPaths->profile->touch();
+         });
+         static::created(function ($militaryPaths) {
+            $militaryPaths->profile->touch();
+        });
+     }
+
     /**
      * Relation avec Profile.
      */

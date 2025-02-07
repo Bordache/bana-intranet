@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Profile;
 use App\Models\ProfessionalCareer;
+use App\Helpers\LogHelper;
+use App\Models\Domain;
 
 class ProfessionalCareerController extends Controller
 {
@@ -64,8 +66,9 @@ class ProfessionalCareerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Profile $profile, $id)
+    public function update(Request $request, Profile $profile, $id, bool $auth = false)
     {
+        $auth = $request->query('auth', false);
         $professionalCareers = $profile->professionalCareers()->findOrFail($id);
 
         $validated = $request->validate([
@@ -75,13 +78,54 @@ class ProfessionalCareerController extends Controller
             'end_date' => 'nullable|date',
             'description' => 'nullable|string',
         ]);
+         // Vérification des champs modifiés
+         $changes = [];
+         foreach ($validated as $key => $newValue) {
+             $oldValue = $professionalCareers->$key;
 
-        $professionalCareers->update($validated);
+             // Normalisation des dates pour éviter les fausses modifications
+             if (in_array($key, ['start_date', 'end_date']) && $oldValue) {
+                 $oldValue = \Carbon\Carbon::parse($oldValue)->format('Y-m-d');
+                 $newValue = \Carbon\Carbon::parse($newValue)->format('Y-m-d');
+             }
 
-        return back()->with([
-            'success' => 'Parcours mis à jour avec succès.',
-            'tab' => 'professional_careers',
-        ]);
+             if ($newValue != $oldValue) {
+                 $changes[$key] = [
+                     'old' => $oldValue,
+                     'new' => $newValue
+                 ];
+             }
+         }
+         if (!empty($changes)) {
+            $professionalCareers->update(collect($changes)->mapWithKeys(fn($change, $key) => [$key => $change['new']])->toArray());
+
+            // Récupérer l'ID du domaine "rh"
+            $domainId = Domain::where('name', 'rh')->value('id');
+
+            // Construire un message détaillé pour le log
+            $changeDetails = collect($changes)->map(function ($change, $field) {
+                return "{$field}: '{$change['old']}' → '{$change['new']}'";
+            })->implode(', ');
+
+            if ($auth) {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_account_professional_career',
+                    "Mise à jour du parcours professionnel du compte de " . auth()->user()->name . " " . auth()->user()->firstname . ". Modifications : {$changeDetails}",
+                    null
+                );
+            } else {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_professional_career',
+                    "Mise à jour du parcours professionnel de {$profile->name} {$profile->firstname}. Modifications : {$changeDetails}",
+                    $domainId
+                );
+            }
+
+            return back()->with(['success' => 'Parcours mis à jour avec succès.', 'tab' => 'professional_careers']);
+        }
+        return back()->with(['info' => 'Aucune modification détectée.', 'tab' => 'professional_careers']);
     }
 
     /**

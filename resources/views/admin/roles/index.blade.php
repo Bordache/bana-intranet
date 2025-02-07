@@ -24,7 +24,7 @@
                         </h2>
                         <div id="flush-collapse{{ crc32($key) }}" class="accordion-collapse collapse" aria-labelledby="flush-heading_{{ crc32($key) }}" data-bs-parent="#accordionFlushRole">
                             <div class="accordion-body">
-                                <table class="table table-striped table-hover text-sm">
+                                <table class="table table-striped table-hover align-middle">
                                     <thead>
                                         <tr>
                                             <th scope="col"
@@ -39,13 +39,13 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($domain->roles as $key => $role)
-                                        @php
-                                            $roleDomain = $domain->roleDomains->where('role_id', $role->id)->first();
-                                        @endphp
+                                            @php
+                                                $roleDomain = $domain->roleDomains->where('role_id', $role->id)->first();
+                                            @endphp
                                             <tr>
-                                                <td class="px-6 whitespace-nowrap text-gray-900">{{ $role->name }}</td>
-                                                <td class="px-6 whitespace-nowrap text-gray-900">{{ $roleDomain ? $roleDomain->domain_description : 'Aucune description' }}</td>
-                                                <td class="px-6 whitespace-nowrap text-gray-900">{{ optional($role->updated_at)->format('d/m/Y H:m') }}</td>
+                                                <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $role->name }}</td>
+                                                <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $roleDomain ? $roleDomain->domain_description : 'Aucune description' }}</td>
+                                                <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $rolePermissions->where('role_id', $role->id)->where('domain_id', $domain->id)->first() ? $rolePermissions->where('role_id', $role->id)->where('domain_id', $domain->id)->first()->updated_at->format('d/m/Y H:i') : 'Jamais'}}</td>
                                                 <td class="text-center">
                                                     <a href="{{ route('role-permissions.edit', ['role_id' => $role->id, 'domain_id' => $domain->id]) }}"
                                                         class="fas fa-pen" title="Modifier">
@@ -61,6 +61,9 @@
                 @empty
                     <div class="alert alert-info">Aucune permission trouvée.</div>
                 @endforelse
+            </div>
+            <div>
+                <button class="btn btn-primary">Ajouter un rôle</button>
             </div>
         </div>
     </div>

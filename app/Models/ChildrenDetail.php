@@ -41,6 +41,20 @@ class ChildrenDetail extends Model
         'child_birth_date' => 'date',
     ];
 
+    // Déclenche l'update du profile lors d'une mise à jour
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($childrenDetails) {
+            $childrenDetails->profile->touch();
+        });
+        static::created(function ($childrenDetails) {
+            $childrenDetails->profile->touch();
+        });
+    }
+
+
     /**
      * Récupère le profil associé à l'enfant.
      */

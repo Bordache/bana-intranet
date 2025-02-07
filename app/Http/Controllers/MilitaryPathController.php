@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Profile;
 use App\Models\MilitaryPath;
+use App\Helpers\LogHelper;
+use App\Models\Domain;
 
 class MilitaryPathController extends Controller
 {
@@ -62,9 +64,10 @@ class MilitaryPathController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Profile $profile, $id)
+    public function update(Request $request, Profile $profile, $id, bool $auth = false)
     {
-        $militaryPaths = $profile->militaryPaths()->findOrFail($id);
+        $auth = $request->query('auth', false);
+        $militaryPath = $profile->militaryPaths()->findOrFail($id);
 
         $validated = $request->validate([
             'academy_name' => 'required|string|max:255',
@@ -72,13 +75,47 @@ class MilitaryPathController extends Controller
             'academy_diploma' => 'nullable|string',
         ]);
 
-        $militaryPaths->update($validated);
+        $changes = [];
+        foreach ($validated as $key => $newValue) {
+            $oldValue = $militaryPath->$key;
+            if ($newValue != $oldValue) {
+                $changes[$key] = ['old' => $oldValue, 'new' => $newValue];
+            }
+        }
 
-        return back()->with([
-            'success' => 'Parcours mis à jour avec succès.',
-            'tab' => 'military_paths',
-        ]);
+        if (!empty($changes)) {
+            $militaryPath->update(collect($changes)->mapWithKeys(fn($change, $key) => [$key => $change['new']])->toArray());
+
+            // Récupérer l'ID du domaine "rh"
+            $domainId = Domain::where('name', 'rh')->value('id');
+
+            // Construire un message détaillé pour le log
+            $changeDetails = collect($changes)->map(function ($change, $field) {
+                return "{$field}: '{$change['old']}' → '{$change['new']}'";
+            })->implode(', ');
+
+            if ($auth) {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_account_military_paths',
+                    "Mise à jour du parcours militaire du compte de " . auth()->user()->name . " " . auth()->user()->firstname . ". Modifications : {$changeDetails}",
+                    null
+                );
+            } else {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_military_paths',
+                    "Mise à jour du parcours militaire de {$profile->name} {$profile->firstname}. Modifications : {$changeDetails}",
+                    $domainId
+                );
+            }
+
+            return back()->with(['success' => 'Parcours mis à jour avec succès.', 'tab' => 'military_paths']);
+        }
+
+        return back()->with(['info' => 'Aucune modification détectée.', 'tab' => 'military_paths']);
     }
+
 
     /**
      * Remove the specified resource from storage.

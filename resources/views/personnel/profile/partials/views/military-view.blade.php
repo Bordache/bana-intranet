@@ -11,7 +11,7 @@
             <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="militaryDropdown">
                 <li>
                     <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#militaryModal"
-                        data-action="{{ route('military_details.update', ['profile' => $profile->id, 'id' => $profile->militaryDetail->id]) }}"
+                        data-action="{{ route('military_details.update', ['profile' => $profile->id, 'id' => $profile->militaryDetail->id, 'auth' => $auth ?? false]) }}"
                         data-method="PUT" data-title="Modification de renseignements militaires"
                         data-army="{{ $profile->militaryDetail->army }}"
                         data-position="{{ $profile->militaryDetail->position }}"

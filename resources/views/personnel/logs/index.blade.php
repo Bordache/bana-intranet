@@ -16,7 +16,7 @@
         <div class="card">
             <div class="card-header">
                 <form action="{{ route('personnel.logs.search') }}" method="GET" class="d-flex">
-                    <x-text-input id="search" name="search" class="w-auto" type="text" value="{{ old('search') }}" placeholder="Saisir mot clé ..."/>
+                    <x-text-input id="search" name="search" class="w-auto" type="text" value="{{ $search ?? null }}" placeholder="Saisir mot clé ..."/>
                     <button type="submit" class="mx-2 btn btn-sm btn-primary">Rechercher</button>
                 </form>
             </div>

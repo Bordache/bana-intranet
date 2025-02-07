@@ -113,6 +113,9 @@
             academyForm.removeAttribute('action');
             const methodField = academyForm.querySelector('input[name="_method"]');
             if (methodField) methodField.remove();
+            // Réinitialiser les erreurs
+            academyForm.querySelectorAll('.error-message').forEach(e => e.textContent = '');
+            academyForm.querySelectorAll('.is-invalid').forEach(i => i.classList.remove('is-invalid'));
         });
     });
 </script>

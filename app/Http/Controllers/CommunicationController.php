@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use App\Helpers\LogHelper;
+use App\Models\Domain;
 
 class CommunicationController extends Controller
 {

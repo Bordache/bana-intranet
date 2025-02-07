@@ -9,6 +9,8 @@ use App\Models\Domain;
 use App\Models\Objet;
 use App\Models\UserRole;
 
+use App\Helpers\LogHelper;
+
 class RoleController extends Controller
 {
     public function index()

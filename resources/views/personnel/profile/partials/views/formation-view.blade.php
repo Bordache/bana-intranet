@@ -61,7 +61,7 @@
                             <button type="button" class="dropdown-item"
                                 data-bs-toggle="modal"
                                 data-bs-target="#academyModal"
-                                data-action="{{ route('military_paths.update', ['profile' => $profile->id, 'id' => $military->id]) }}"
+                                data-action="{{ route('military_paths.update', ['profile' => $profile->id, 'id' => $military->id, 'auth' => $auth ?? false]) }}"
                                 data-method="PUT"
                                 data-title="Modification d'un parcours"
                                 data-academy_name="{{ $military->academy_name }}"

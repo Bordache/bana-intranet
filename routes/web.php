@@ -81,23 +81,11 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
     // Admin
     Route::prefix('admin')->group(function () {
         // Roles
-       /*  Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
-        Route::post('/roles/store', [RoleController::class, 'store'])->name('roles.store');
-        Route::post('/roles/update', [RoleController::class, 'update'])->name('roles.update');
-        Route::post('/roles/delete', [RoleController::class, 'destroy'])->name('roles.destroy'); */
-        Route::post('/roles/update-permissions', [RoleController::class, 'updatePermissions'])->name('roles.updatePermissions');
+        Route::get('/roles', [RolePermissionController::class, 'index'])->name('admin.roles.index');
+        Route::get('/roles/edit/{role_id}/{domain_id}', [RolePermissionController::class, 'edit'])->name('role-permissions.edit');
+        Route::get('/roles/get-objects-permissions', [RolePermissionController::class, 'getObjectsAndPermissions']);
+        Route::post('/roles/store', [RolePermissionController::class, 'store'])->name('role-permissions.store');
 
-        /* Route::get('/roles', [RoleDomainController::class, 'index'])->name('admin.roles.index'); */
-        Route::post('/roles/store', [RoleDomainController::class, 'store'])->name('admin.roles.store');
-        Route::post('/roles/update', [RoleDomainController::class, 'update'])->name('admin.roles.update');
-        Route::post('/roles/delete', [RoleDomainController::class, 'destroy'])->name('admin.roles.delete');
-
-        Route::get('/roles', [RolePermissionController::class, 'rolesIndex'])->name('admin.roles.index');
-        Route::get('/role-permissions/edit/{role_id}/{domain_id}', [RolePermissionController::class, 'edit'])->name('role-permissions.edit');
-
-        Route::get('/role-permissions', [RolePermissionController::class, 'index'])->name('role-permissions.index');
-        Route::get('/role-permissions/get-objects-permissions', [RolePermissionController::class, 'getObjectsAndPermissions']);
-        Route::post('/role-permissions/store', [RolePermissionController::class, 'store'])->name('role-permissions.store');
 
         // Users rôles and permissions
         Route::get('/users/manage', [UserController::class, 'manageUsers'])->name('users.manage');
@@ -136,24 +124,27 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
     // Routes pour la documentation
     Route::prefix('documentation')->group(function () {
-        Route::get('/', [DocumentationController::class, 'index'])->name('documentation.index')->middleware('checkPermission:view,doc,file');
-        Route::get('/create', [DocumentationController::class, 'create'])->name('documentation.create')->middleware('checkPermission:create,doc,file');
-        Route::post('/', [DocumentationController::class, 'store'])->name('documentation.store')->middleware('checkPermission:create,doc,file');
-        Route::get('/{id}', [DocumentationController::class, 'show'])->name('documentation.show')->middleware('checkPermission:view,doc,file');
-        Route::get('/{id}/edit', [DocumentationController::class, 'edit'])->name('documentation.edit')->middleware('checkPermission:update,doc,file');
-        Route::put('/{id}', [DocumentationController::class, 'update'])->name('documentation.update')->middleware('checkPermission:update,doc,file');
-        Route::delete('/{id}', [DocumentationController::class, 'destroy'])->name('documentation.destroy')->middleware('checkPermission:destroy,doc,file');
+        Route::get('/', [DocumentController::class, 'index'])->name('documentation.index')->middleware('checkPermission:view,doc,file');
+        Route::get('/create', [DocumentController::class, 'create'])->name('documentation.create')->middleware('checkPermission:create,doc,file');
+        Route::post('/', [DocumentController::class, 'store'])->name('documentation.store')->middleware('checkPermission:create,doc,file');
+        Route::get('/{id}', [DocumentController::class, 'show'])->name('documentation.show')->middleware('checkPermission:view,doc,file');
+        Route::get('/{id}/edit', [DocumentController::class, 'edit'])->name('documentation.edit')->middleware('checkPermission:update,doc,file');
+        Route::put('/{id}', [DocumentController::class, 'update'])->name('documentation.update')->middleware('checkPermission:update,doc,file');
+        Route::delete('/{id}', [DocumentController::class, 'destroy'])->name('documentation.destroy')->middleware('checkPermission:destroy,doc,file');
     });
 
 
     // Routes pour le personnel
     Route::prefix('personnel')->group(function () {
         // Recherche de profil
-        Route::get('/custom-search', [PersonnelController::class, 'customSearch'])->name('personnel.search');
+        Route::get('/search', [PersonnelController::class, 'search'])->name('personnel.search');
+        Route::get('/custom-search', [PersonnelController::class, 'customSearch'])->name('personnel.customSearch');
 
         // Gestion des profils
         Route::get('/', [PersonnelController::class, 'index'])->name('personnel.index')->middleware('checkPermission:view,rh,personnel');
         Route::get('/profile/list', [PersonnelController::class, 'list'])->name('personnel.list')->middleware('checkPermission:view,rh,personnel');
+        Route::get('/profile/list/ByUnit', [PersonnelController::class, 'listByUnit'])->name('personnel.listByUnit')->middleware('checkPermission:view,rh,personnel');
+        Route::get('/profile/list/ByRank', [PersonnelController::class, 'listByRank'])->name('personnel.listByRank')->middleware('checkPermission:view,rh,personnel');
         Route::get('/profile/create', [PersonnelController::class, 'create'])->name('personnel.create')->middleware('checkPermission:create,rh,personnel');
         Route::post('/profile', [PersonnelController::class, 'store'])->name('personnel.store')->middleware('checkPermission:create,rh,personnel');
         Route::get('/profile/{id}', [PersonnelController::class, 'show'])->name('personnel.show')->middleware('checkPermission:view,rh,personnel');

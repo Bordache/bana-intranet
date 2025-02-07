@@ -69,7 +69,7 @@
                         <li>
                             <button type="button" class="dropdown-item" data-bs-toggle="modal"
                                 data-bs-target="#awardModal"
-                                data-action="{{ route('honorary_distinctions.update', ['profile' => $profile->id, 'id' => $award->id]) }}"
+                                data-action="{{ route('honorary_distinctions.update', ['profile' => $profile->id, 'id' => $award->id, 'auth' => $auth ?? false]) }}"
                                 data-method="PUT" data-title="Modification d'une distinction"
                                 data-honorary_title="{{ $award->honorary_title }}"
                                 data-honorary_promotion="{{ $award->honorary_promotion }}"

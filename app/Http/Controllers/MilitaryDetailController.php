@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use App\Helpers\LogHelper;
+use App\Models\Domain;
 
 class MilitaryDetailController extends Controller
 {
@@ -28,8 +30,9 @@ class MilitaryDetailController extends Controller
         //
     }
 
-    public function update(Request $request, Profile $profile, $id)
+    public function update(Request $request, Profile $profile, $id, bool $auth = false)
     {
+        $auth = $request->query('auth', false);
         $militaryDetail = $profile->militaryDetail()->findOrFail($id);
 
         // Validation des données
@@ -56,14 +59,66 @@ class MilitaryDetailController extends Controller
             'military_status'=> 'nullable|string|max:255',
             'military_status_reference'=> 'nullable|string|max:255',
             'military_driver_license'=> 'nullable|string|max:255',
-            'other_information'=> 'nullable|text',
+            'other_information'=> 'nullable|string|max:255',
         ]);
 
-        $militaryDetail->update($validated);
+        // Vérification des champs modifiés
+        $changes = [];
+        foreach ($validated as $key => $newValue) {
+            $oldValue = $militaryDetail->$key;
+
+            // Normalisation des dates pour éviter les fausses modifications
+            if (in_array($key, ['position_date', 'service_entry_date', 'rank_date', 'interruption_start_date', 'interruption_end_date']) && $oldValue) {
+                $oldValue = \Carbon\Carbon::parse($oldValue)->format('Y-m-d');
+                $newValue = \Carbon\Carbon::parse($newValue)->format('Y-m-d');
+            }
+
+            if ($newValue != $oldValue) {
+                $changes[$key] = [
+                    'old' => $oldValue,
+                    'new' => $newValue
+                ];
+            }
+        }
+
+        // Vérifier s'il y a des modifications
+        if (!empty($changes)) {
+            $militaryDetail->update(collect($changes)->mapWithKeys(fn($change, $key) => [$key => $change['new']])->toArray());
+
+            // Récupérer l'ID du domaine "rh"
+            $domainId = Domain::where('name', 'rh')->value('id');
+
+            // Construire un message détaillé pour le log
+            $changeDetails = collect($changes)->map(function ($change, $field) {
+                return "{$field}: '{$change['old']}' → '{$change['new']}'";
+            })->implode(', ');
+
+            if ($auth) {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_account_military_details',
+                    "Mise à jour des renseignements militaires du compte de " . auth()->user()->name . " " . auth()->user()->firstname . ". Modifications : {$changeDetails}",
+                    null
+                );
+            } else {
+                LogHelper::logAction(
+                    auth()->id(),
+                    'Update_military_details',
+                    "Mise à jour des renseignements militaires de {$profile->name} {$profile->firstname}. Modifications : {$changeDetails}",
+                    $domainId
+                );
+            }
+
+            return back()->with([
+                'success' => 'Renseignements militaires mis à jour avec succès.',
+                'tab' => 'military_detail',
+            ]);
+        }
 
         return back()->with([
-            'success' => 'Renseignements militaires mis à jour avec succès.',
+            'info' => 'Aucune modification détectée.',
             'tab' => 'military_detail',
         ]);
     }
 }
+

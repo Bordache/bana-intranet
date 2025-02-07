@@ -25,6 +25,9 @@ use App\Models\SpouseDetail;
 
 use App\Support\ProfileFields;
 
+use App\Helpers\LogHelper;
+use App\Models\Domain;
+
 class ProfileController extends Controller
 {
      /**
@@ -33,6 +36,7 @@ class ProfileController extends Controller
     public function show(Request $request): View
     {
         $id = $request->user()->profile_id;
+        $auth = true;
 
         // Chargement du profil avec toutes les relations nécessaires, y compris 'rank'
         $profile = Profile::with([
@@ -52,7 +56,7 @@ class ProfileController extends Controller
         $selectRanks = Rank::all();
         $selectUnits = Unit::all();
 
-        return view('profile.show', compact('profile', 'profileRank', 'profileUnit', 'selectRanks', 'selectUnits'));
+        return view('profile.show', compact('profile', 'profileRank', 'profileUnit', 'selectRanks', 'selectUnits', 'auth'));
     }
 
     /**
@@ -90,9 +94,42 @@ class ProfileController extends Controller
         $profile = Profile::findOrFail($id);
         $validated = $request->only(array_keys(ProfileFields::getFields()));
 
-        $profile->update($validated);
+        // Vérification des champs modifiés
+        $changes = [];
+        foreach ($validated as $key => $newValue) {
+            $oldValue = $profile->$key;
 
-        return redirect()->route('myprofile.show')->with('success', 'Etat civil mis à jour avec succès.');
+            if (in_array($key, ['birth_date', 'issue_date', 'duplicate_date']) && $oldValue) {
+                $oldValue = \Carbon\Carbon::parse($oldValue)->format('Y-m-d');
+                $newValue = \Carbon\Carbon::parse($newValue)->format('Y-m-d');
+            }
+
+            if ($newValue != $oldValue) {
+                $changes[$key] = [
+                    'old' => $oldValue,
+                    'new' => $newValue
+                ];
+            }
+        }
+        if (!empty($changes)) {
+           $profile->update(collect($changes)->mapWithKeys(fn($change, $key) => [$key => $change['new']])->toArray());
+
+
+           // Construire un message détaillé pour le log
+           $changeDetails = collect($changes)->map(function ($change, $field) {
+               return "{$field}: '{$change['old']}' → '{$change['new']}'";
+           })->implode(', ');
+
+           LogHelper::logAction(
+               auth()->id(),
+               'Update_account_civil_details',
+               "Mise à jour du profile de {$profile->name} {$profile->firstname}. Modifications : {$changeDetails}",
+               null
+           );
+
+           return redirect()->route('myprofile.show')->with('success', 'Parcours mis à jour avec succès.');
+       }
+       return redirect()->route('myprofile.show')->with('info', 'Aucune modification détectée.');
     }
 
     /**
