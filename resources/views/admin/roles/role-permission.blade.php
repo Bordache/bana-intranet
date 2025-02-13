@@ -70,11 +70,6 @@
                                 </td>
                             </tr>
                             @foreach ($permissions as $permission)
-                                @php
-                                    $isChecked =
-                                        isset($existingPermissions[$object->id]) &&
-                                        $existingPermissions[$object->id] == $permission->id;
-                                @endphp
                                 <tr>
                                     <td class="px-6 whitespace-nowrap text-gray-900 col-md-4 text-sm">
                                         <div class="d-flex flex-column">
@@ -85,7 +80,7 @@
                                     <td class="px-6 whitespace-nowrap text-sm text-gray-900 col-md-8">
                                         <input class="form-check-input m-0" type="checkbox"
                                             name="permissions[{{ $object->id }}][]" value="{{ $permission->id }}"
-                                            {{ $isChecked ? 'checked' : '' }}>
+                                            {{ in_array($permission->id, $existingPermissions[$object->id] ?? []) ? 'checked' : '' }}>
                                         <label class="form-check-label">Autorisé</label>
                                     </td>
                                 </tr>
@@ -105,25 +100,23 @@
         document.addEventListener("DOMContentLoaded", function() {
             let domain_id = {{ $domain->id }};
             let role_id = {{ $role->id }};
-            let domain_description = {{ $roleDomain->domain_description }};
+            let domain_description = "{{ $roleDomain->domain_description ?? '' }}";
 
-            fetch(`admin/roles/get-objects-permissions?domain_id=${domain_id}`)
+            fetch(`/admin/roles/get-objects-permissions?domain_id=${domain_id}`)
                 .then(response => response.json())
                 .then(data => {
                     let container = document.getElementById('permissions-container');
+                    if (!container) return;
+
                     container.innerHTML = '';
 
                     data.objects.forEach(object => {
                         let objectDiv = document.createElement('div');
                         objectDiv.classList.add('mb-3', 'p-2', 'border', 'rounded');
-
                         objectDiv.innerHTML = `<strong>${object.name}</strong><br>`;
 
                         data.permissions.forEach(permission => {
-                            let checked = data.existingPermissions.some(
-                                perm => perm.object_id == object.id && perm.permission_id ==
-                                permission.id
-                            ) ? 'checked' : '';
+                            let checked = (data.existingPermissions[object.id] || []).includes(permission.id) ? 'checked' : '';
 
                             objectDiv.innerHTML += `
                                 <div class="form-check form-check-inline">
@@ -135,9 +128,11 @@
 
                         container.appendChild(objectDiv);
                     });
-                });
+                })
+                .catch(error => console.error("Erreur lors de la récupération des permissions :", error));
         });
     </script>
+
 
     <!-- Popover -->
     <script>

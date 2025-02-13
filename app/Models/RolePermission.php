@@ -9,12 +9,8 @@ class RolePermission extends Model
     use HasFactory;
 
     protected $table = 'role_permissions';
-    protected $fillable = ['role_id', 'permission_id', 'domain_id', 'object_id'];
+    protected $fillable = ['role_id', 'permission_id', 'domain_id', 'object_id', 'created_at', 'updated_at'];
 
-    public function permission()
-    {
-        return $this->belongsTo(Permission::class);
-    }
 
     public function objet()
     {
@@ -25,4 +21,11 @@ class RolePermission extends Model
     {
         return $this->belongsTo(Domain::class);
     }
+
+    public function permission()
+    {
+        return $this->belongsTo(Permission::class, 'permission_id');
+    }
+
+
 }
