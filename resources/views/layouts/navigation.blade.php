@@ -15,19 +15,27 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Portail') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('communication.index')" :active="request()->routeIs('communication.index') || request()->is('communication*')">
-                        {{ __('Communication') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('documentation.index')" :active="request()->routeIs('documentation.index') || request()->is('documentation*')">
-                        {{ __('Documentation') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('personnel.index')" :active="request()->routeIs('personnel.index') || request()->is('personnel*')">
-                        {{ __('Personnel') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('stg-formation.index')" :active="request()->routeIs('stg-formation.index') || request()->is('stg-formation*')">
-                        {{ __('Stage et formation') }}
-                    </x-nav-link>
-                    @if(auth()->user() && (auth()->user()->hasRole('Administrateur') || auth()->user()->hasRole('Collaborateur')))
+                    @if(auth()->user() && (auth()->user()->hasRoleInDomain('comm')))
+                        <x-nav-link :href="route('communication.index')" :active="request()->routeIs('communication.index') || request()->is('communication*')">
+                            {{ __('Communication') }}
+                        </x-nav-link>
+                    @endif
+                    @if(auth()->user() && (auth()->user()->hasRoleInDomain('doc')))
+                        <x-nav-link :href="route('documentation.index')" :active="request()->routeIs('documentation.index') || request()->is('documentation*')">
+                            {{ __('Documentation') }}
+                        </x-nav-link>
+                    @endif
+                    @if(auth()->user() && (auth()->user()->hasRoleInDomain('rh')))
+                        <x-nav-link :href="route('personnel.index')" :active="request()->routeIs('personnel.index') || request()->is('personnel*')">
+                            {{ __('Personnel') }}
+                        </x-nav-link>
+                    @endif
+                    @if(auth()->user() && (auth()->user()->hasRoleInDomain('form')))
+                        <x-nav-link :href="route('stg-formation.index')" :active="request()->routeIs('stg-formation.index') || request()->is('stg-formation*')">
+                            {{ __('Stage et formation') }}
+                        </x-nav-link>
+                    @endif
+                    @if(auth()->user() && (auth()->user()->hasRole('Super administrateur')))
                         <x-nav-link :href="route('admin')" :active="request()->routeIs('admin') || request()->is('admin*')">
                             {{ __('Administration du site') }}
                         </x-nav-link>
@@ -92,19 +100,27 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Portail') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('communication.index')" :active="request()->routeIs('communication.index') || request()->is('communication*')">
-                {{ __('Communication') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('documentation.index')" :active="request()->routeIs('documentation.index') || request()->is('documentation*')">
-                {{ __('Documentation') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('personnel.index')" :active="request()->routeIs('personnel.index') || request()->is('personnel*')">
-                {{ __('Personnel') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('stg-formation.index')" :active="request()->routeIs('stg-formation.index') || request()->is('stg-formation*')">
-                {{ __('Stage et formation') }}
-            </x-responsive-nav-link>
-            @if(auth()->user() && (auth()->user()->hasRole('Administrateur') || auth()->user()->hasRole('Collaborateur')))
+            @if(auth()->user() && (auth()->user()->hasRoleInDomain('comm')))
+                <x-responsive-nav-link :href="route('communication.index')" :active="request()->routeIs('communication.index') || request()->is('communication*')">
+                    {{ __('Communication') }}
+                </x-responsive-nav-link>
+            @endif
+            @if(auth()->user() && (auth()->user()->hasRoleInDomain('doc')))
+                <x-responsive-nav-link :href="route('documentation.index')" :active="request()->routeIs('documentation.index') || request()->is('documentation*')">
+                    {{ __('Documentation') }}
+                </x-responsive-nav-link>
+            @endif
+            @if(auth()->user() && (auth()->user()->hasRoleInDomain('rh')))
+                <x-responsive-nav-link :href="route('personnel.index')" :active="request()->routeIs('personnel.index') || request()->is('personnel*')">
+                    {{ __('Personnel') }}
+                </x-responsive-nav-link>
+            @endif
+            @if(auth()->user() && (auth()->user()->hasRoleInDomain('form')))
+                <x-responsive-nav-link :href="route('stg-formation.index')" :active="request()->routeIs('stg-formation.index') || request()->is('stg-formation*')">
+                    {{ __('Stage et formation') }}
+                </x-responsive-nav-link>
+            @endif
+            @if(auth()->user() && (auth()->user()->hasRole('Super administrateur')))
                 <x-responsive-nav-link :href="route('admin')" :active="request()->routeIs('admin') || request()->is('admin*')">
                     {{ __('Administration du site') }}
                 </x-responsive-nav-link>

@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'BANA') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -103,7 +103,6 @@
         </div>
     </div>
     @endsession
-
     </body>
 </html>
 
@@ -161,3 +160,89 @@
         drapeAllBtn.classList.add('d-none');
     });
 </script>
+
+<!-- Export excel and pdf format -->
+<script>
+    document.getElementById('exportButton').addEventListener('click', function () {
+        let selectedProfiles = [];
+        document.querySelectorAll('.profile-checkbox:checked').forEach((checkbox) => {
+            selectedProfiles.push(checkbox.value);
+        });
+
+        if (selectedProfiles.length === 0) {
+            alert("Veuillez sélectionner au moins un profil à exporter.");
+            return;
+        }
+
+        let selectedFields = [];
+        document.querySelectorAll('.export-field:checked').forEach((checkbox) => {
+            selectedFields.push(checkbox.value);
+        });
+
+        if (selectedFields.length === 0) {
+            alert("Aucune colonne n'est cochée.");
+            return;
+        }
+
+        // ✅ Affichage de l'alerte avec trois choix
+        let exportType = prompt("Choisissez le format d'exportation :\n\n1 - Excel 📊\n2 - PDF 📄\n\nAnnuler pour abandonner.");
+
+        if (exportType === null) {
+            return; // L'utilisateur a annulé
+        } else if (exportType === "1") {
+            exportType = "excel";
+        } else if (exportType === "2") {
+            exportType = "pdf";
+        } else {
+            alert("Choix invalide !");
+            return;
+        }
+
+        // ✅ Création et soumission du formulaire POST dynamique
+        let form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{{ route('personnel.export') }}";
+
+        let csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = "{{ csrf_token() }}";
+        form.appendChild(csrfToken);
+
+        let profilesInput = document.createElement('input');
+        profilesInput.type = 'hidden';
+        profilesInput.name = 'profile_ids';
+        profilesInput.value = JSON.stringify(selectedProfiles);
+        form.appendChild(profilesInput);
+
+        let fieldsInput = document.createElement('input');
+        fieldsInput.type = 'hidden';
+        fieldsInput.name = 'fields';
+        fieldsInput.value = JSON.stringify(selectedFields);
+        form.appendChild(fieldsInput);
+
+        let typeInput = document.createElement('input');
+        typeInput.type = 'hidden';
+        typeInput.name = 'export_type';
+        typeInput.value = exportType;
+        form.appendChild(typeInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    });
+</script>
+
+<!-- Coche et décoche des inputs checkbox -->
+<script>
+    function toggleCheckboxes(masterCheckbox) {
+        // Récupère tous les checkboxes de la table
+        const checkboxes = document.querySelectorAll('.checkItem');
+
+        // Pour chaque checkbox, on met son état selon l'état du masterCheckbox
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = masterCheckbox.checked;
+        });
+    }
+</script>
+
+

@@ -48,7 +48,7 @@ class RolePermissionController extends Controller
 
     public function getObjectsAndPermissions(Request $request)
     {
-        $domain = Domain::findOrFail($request->domain_id);
+        $domain = Domain::findOrFail($domainId);
         $objets = Objet::where('domain_id', $domain->id)->get();
         $permissions = Permission::all();
 
@@ -57,57 +57,64 @@ class RolePermissionController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'role_id' => 'required|exists:roles,id',
             'domain_id' => 'required|exists:domains,id',
             'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
             'domain_description' => 'nullable|string|max:255'
         ]);
+
+        $roleId = $validatedData['role_id'];
+        $domainId = $validatedData['domain_id'];
+        $permissions = $validatedData['permissions'] ?? [];
+        $domainDescription = $validatedData['domain_description'];
 
         // Mettre à jour ou créer la description du rôle pour le domaine
         $updateRole = RoleDomain::updateOrCreate(
             [
-                'role_id' => $request->role_id,
-                'domain_id' => $request->domain_id
+                'role_id' => $roleId,
+                'domain_id' => $domainId
             ],
             [
-                'domain_description' => $request->domain_description
+                'domain_description' => $domainDescription
             ]
         );
         // Log de l'action
         if($updateRole) {
-            $roleLog = Role::find($request->role_id);
-            $domainLog = Domain::find($request->domain_id);
-            $domainId = Domain::where('name', 'admin')->value('id');
-            $roleDescription = $request->domain_description;
+            $roleLog = Role::find($roleId);
+            $domainLog = Domain::find($domainId);
+            $userDomainId = Domain::where('name', 'admin')->value('id');
+            $roleDescription = $domainDescription ? $domainDescription : 'Aucune description';
             LogHelper::logAction(
                 auth()->id(),
                 'Update_role',
                 "Mise à jour description du rôle " . $roleLog->name . " dans domaine "  . $domainLog->name . " : " .$roleDescription,
-                $domainId
+                $userDomainId
             );
         }
 
         // Supprimer les anciennes permissions pour éviter les doublons
-        RolePermission::where('role_id', $request->role_id)
-            ->where('domain_id', $request->domain_id)
+        RolePermission::where('role_id', $roleId)
+            ->where('domain_id', $domainId)
             ->delete();
+
 
         // Enregistrer les nouvelles permissions
         if (!empty($request->permissions)) {
-            foreach ($request->permissions as $object_id => $permissionsArray) {
-                foreach ($permissionsArray as $permission_id) {
+            foreach ($permissions as $objectId => $permissionIds) {
+                foreach ($permissionIds as $permissionId) {
                     RolePermission::create([
-                        'role_id' => (int) $request->role_id,
-                        'domain_id' => (int) $request->domain_id,
-                        'object_id' => (int) $object_id,
-                        'permission_id' => (int) $permission_id,
+                        'role_id' => $roleId,
+                        'permission_id' => $permissionId,
+                        'domain_id' => $domainId,
+                        'object_id' => $objectId
                     ]);
                     // Log de l'action
-                    $domainLog = Domain::find($request->domain_id);
-                    $roleLog = Role::find($request->role_id);
-                    $permissionLog = Permission::find($permission_id);
-                    $objectLog = Objet::find($object_id);
+                    $domainLog = Domain::find($domainId);
+                    $roleLog = Role::find($roleId);
+                    $permissionLog = Permission::find($permissionId);
+                    $objectLog = Objet::find($objectId);
                     $domainId = Domain::where('name', 'admin')->value('id');
                     LogHelper::logAction(
                         auth()->id(),

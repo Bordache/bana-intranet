@@ -55,24 +55,23 @@ class User extends Authenticatable
     /**
      * Vérifie si l'utilisateur a une permission dans un domaine et un objet spécifique
      */
-    public function hasPermission($permission, $domainId, $objectId = null)
+
+    public function hasPermission($permissionName, $domainName, $objectName = null)
     {
         if ($this->isSuperAdmin()) {
             return true;
         }
 
-        $hasPermission = $objectId
-            ? UserRole::where('user_id', $this->id)
-                ->where('domain_id', $domainId)
-                ->when($objectId, fn($query) => $query->where('object_id', $objectId))
-                ->whereHas('role.permissions', fn($query) => $query->where('name', $permission))
-                ->exists()
-            : UserRole::where('user_id', $this->id)
-                ->where('domain_id', $domainId)
-                ->whereHas('role.permissions', fn($query) => $query->where('name', $permission))
-                ->exists();
+        return UserRole::where('user_id', $this->id)
+            ->whereHas('role.rolePermissions', function ($query) use ($permissionName, $domainName, $objectName) {
+                $query->whereHas('permission', fn($q) => $q->where('name', $permissionName))
+                      ->whereHas('domain', fn($q) => $q->where('name', $domainName));
 
-        return $hasPermission;
+                if ($objectName) {
+                    $query->whereHas('objet', fn($q) => $q->where('name', $objectName));
+                }
+            })
+            ->exists();
     }
 
     /**
@@ -95,6 +94,18 @@ class User extends Authenticatable
 
         return $userRole;
     }
+
+    /**
+     * Vérifie si l'utilisateur appartient à un domaine spécifique
+     */
+    public function hasRoleInDomain($domainName)
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        return $this->userRoles()->whereHas('domain', fn($q) => $q->where('name', $domainName))->exists();
+    }
+
 
     /**
      * Vérifie si l'utilisateur est un Super Administrateur
@@ -138,6 +149,11 @@ class User extends Authenticatable
     public function domains()
     {
         return $this->hasManyThrough(Domain::class, UserRole::class, 'user_id', 'id', 'id', 'domain_id');
+    }
+
+    public function passwordInit()
+    {
+        return $this->hasOne(PasswordInit::class, 'user_id', 'id');
     }
 
 }

@@ -1,23 +1,25 @@
 <?php
-
 namespace App\Observers;
 
 use Illuminate\Support\Facades\Hash;
 use App\Models\Profile;
 use App\Models\User;
 use App\Models\PasswordInit;
+use App\Models\UserRole;
+use App\Models\Role;
+use App\Models\Domain;
 use App\Services\UsernameGeneratorService;
 use App\Services\PasswordGeneratorService;
 
 class ProfileObserver
 {
     public static $disable = false;
-    
+
     protected $usernameGenerator;
     protected $passwordGenerator;
 
     /**
-     * Injecte le service de génération de username.
+     * Injecte les services de génération de username et password.
      */
     public function __construct()
     {
@@ -33,62 +35,43 @@ class ProfileObserver
         if (self::$disable) {
             return;
         }
-        
-         $username = $this->usernameGenerator->generateUniqueUsername($profile->name, $profile->firstname);
-         $passwordRandom = $this->passwordGenerator->passwordGenerator(8);
 
-         $domain = '@emmn.mg';
+        // Génération du username et du mot de passe aléatoire
+        $username = $this->usernameGenerator->generateUniqueUsername($profile->name, $profile->firstname);
+        $passwordRandom = $this->passwordGenerator->passwordGenerator(8);
+        $domainEmail = '@emmn.mg';
 
-         $user = User::create([
+        // Création de l'utilisateur
+        $user = User::create([
             'profile_id' => $profile->id,
             'name' => $profile->name,
             'firstname' => $profile->firstname,
             'username' => $username,
             'password' => Hash::make($passwordRandom),
-            'email' => $username . $domain,
+            'email' => $username . $domainEmail,
             'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),
-
         ]);
 
+        // Stockage du mot de passe initial
         PasswordInit::create([
             'user_id' => $user->id,
             'password' => $passwordRandom,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-    }
 
-    /**
-     * Handle the Profile "updated" event.
-     */
-    public function updated(Profile $profile): void
-    {
-        //
-    }
+        // 🔹 Assignation automatique du rôle "Utilisateur standard" au domaine "Comm"
+        $role = Role::where('name', 'Utilisateur standard')->first();
+        $domain = Domain::where('name', 'comm')->first();
 
-    /**
-     * Handle the Profile "deleted" event.
-     */
-    public function deleted(Profile $profile): void
-    {
-        $profile->user()->delete();
-    }
-
-    /**
-     * Handle the Profile "restored" event.
-     */
-    public function restored(Profile $profile): void
-    {
-        //
-    }
-
-    /**
-     * Handle the Profile "force deleted" event.
-     */
-    public function forceDeleted(Profile $profile): void
-    {
-        //
+        if ($role && $domain) {
+            UserRole::create([
+                'user_id' => $user->id,
+                'role_id' => $role->id,
+                'domain_id' => $domain->id,
+            ]);
+        }
     }
 }

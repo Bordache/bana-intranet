@@ -22,4 +22,10 @@ class Role extends Model
                     ->withTimestamps();
     }
 
+    public function rolePermissions()
+    {
+        return $this->hasMany(RolePermission::class, 'role_id');
+    }
+
+
 }

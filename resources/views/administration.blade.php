@@ -112,10 +112,13 @@
                                         <a href="{{ route('admin.roles.index') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rôles et permissions</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('users.manage') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Utilisateurs</a>
+                                        <a href="{{ route('users.manage') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rôles d'utilisateurs</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('users.admins') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Super administrateurs du site</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('users.password.init') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Mots de passe initiaux</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('admin.logs') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rapport</a>

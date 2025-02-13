@@ -8,84 +8,77 @@
             </ol>
         </nav>
         <h2 class="pt-3 font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Utilisateurs') }}
+            {{ __('Rôles d\'utilisateurs') }}
         </h2>
     </x-slot>
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
-        <!-- Formulaire pour assigner un rôle à un utilisateur -->
-        <div class="card mb-4">
-            <div class="card-header">Attribuer un Rôle</div>
-            <div class="card-body">
-                <form action="{{ route('personnel.users.assignRole') }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="user_id" class="form-label">Utilisateur</label>
-                        <select name="user_id" class="form-control" required>
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="role_id" class="form-label">Rôle</label>
-                        <select name="role_id" class="form-control" required>
-                            @foreach($roles as $role)
-                                <option value="{{ $role->id }}">{{ $role->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Assigner Rôle</button>
-                </form>
-            </div>
-        </div>
 
         <!-- Liste des utilisateurs et de leurs rôles -->
-        <div class="card">
-            <div class="card-header">Utilisateurs et leurs Rôles</div>
+        @include('admin.users.manage-modal')
+        <div class="card d-flex space-between">
+            <div class="card-header d-flex justify-content-between">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignRoleModal">
+                    <i class="fas fa-plus me-2"></i>Assigner un rôle
+                </button>
+                <form action="{{ route('users.manage.search') }}" method="GET" class="d-flex">
+                    <x-text-input id="search" name="search" class="w-auto" type="text"
+                        value="{{ $search }}" placeholder="Entrer un mot clé ..."/>
+                    <button type="submit" class="mx-2 btn btn-sm btn-primary">Rechercher</button>
+                </form>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="assignRoleModal" tabindex="-1" aria-labelledby="assignRoleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ route('users.assignRole') }}" method="POST">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="assignRoleModalLabel">Nouvelle attribution</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="user_id" class="form-label">Utilisateur</label>
+                                    <select name="user_id" class="form-control" required>
+                                        @foreach ($allUsers as $allUser)
+                                            <option value="{{ $allUser->id }}">{{ $allUser->grade }} {{ $allUser->name }} {{ $allUser->firstname }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="domain_id" class="form-label">Domaine</label>
+                                    <select name="domain_id" class="form-control" required>
+                                        @foreach ($domains as $domain)
+                                            <option value="{{ $domain->id }}">{{ $domain->domain_description }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="role_id" class="form-label">Rôle</label>
+                                    <select name="role_id" class="form-control" required>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="card-body">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Utilisateur</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Identifiant</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rôle</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dernier accès au site</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($users as $user)
-                            @foreach ($domains as $domain)
-                                @php
-                                    $userRole = $user->roles->firstWhere('pivot.domain_id', $domain->id);
-                                @endphp
-                                <tr>
-                                    <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $user->militaryDetail?->rank?->rank_abbreviate ?? 'Aucun' }}</td>
-                                    <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $user->name. ' '.$user->firstname }}</td>
-                                    <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $user->username }}</td>
-                                    <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $userRole ? $userRole->name : 'Aucun' }}</td>
-                                    <td class="px-6 whitespace-nowrap text-sm text-gray-900">
-                                        @if ($userRole)
-                                            <form action="{{ route('personnel.users.removeRole') }}" method="POST" class="d-inline">
-                                                @csrf
-                                                <input type="hidden" name="user_id" value="{{ $user->id }}">
-                                                <input type="hidden" name="domain_id" value="{{ $domain->id }}">
-                                                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                                            </form>
-                                        @else
-                                            <span class="text-muted">Aucun rôle</span>
-                                        @endif
-                                    </td>
-                                    <td></td>
-                                </tr>
-                            @endforeach
-                        @endforeach
-                    </tbody>
-                </table>
+                @include('components.manage-users-table')
             </div>
         </div>
     </div>

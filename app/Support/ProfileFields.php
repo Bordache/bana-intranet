@@ -71,7 +71,7 @@ class ProfileFields
             'national_id.required' => 'Ce champ est obligatoire.',
             'national_id.numeric' => 'Ce champ doit être un nombre.',
             'national_id.digits' => 'Ce champ doit contenir exactement 12 chiffres.',
-            'national_id.unique' => 'Ce champ doit être unique.',
+            'national_id.unique' => 'Cette valeur existe déjà.',
 
             'issue_date.date' => 'Ce champ doit être une date valide.',
 

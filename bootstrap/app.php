@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'password.changed' => \App\Http\Middleware\CheckPasswordChanged::class,
             'checkPermission' => \App\Http\Middleware\CheckPermission::class,
             'checkRole' => \App\Http\Middleware\CheckRole::class,
+            'PDF' => Barryvdh\DomPDF\Facade::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

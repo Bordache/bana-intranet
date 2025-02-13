@@ -330,6 +330,11 @@
             </div>
         </div>
     </div>
+    <a href="{{ route('personnel.create') }}"
+        class="btn btn-primary position-fixed bottom-3 end-3 rounded-circle shadow d-flex align-items-center justify-content-center" title="Ajouter nouveau"
+        style="width: 46px; height: 46px;">
+            <i class="fas fa-user-plus"></i>
+    </a>
 </x-app-layout>
 
 <script>

@@ -347,7 +347,9 @@
                     </div>
                 </div>
                 <div class="text-center p-4">
-                    <x-primary-button>{{ __('Créer le profil') }}</x-primary-button>
+                    {{-- <x-primary-button>{{ __('Créer le profil') }}</x-primary-button> --}}
+                    <button type="submit" class="btn btn-primary">{{ __('Créer le profil') }}</button>
+                    <button type="reset" class="btn btn-secondary">{{ __('Réinitialiser') }}</button>
                 </div>
             </form>
         </div>

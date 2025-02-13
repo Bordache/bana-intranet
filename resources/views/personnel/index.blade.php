@@ -85,16 +85,19 @@
                             <div class="mt-4 text-sm/relaxed">
                                 <ul>
                                     <li>
-                                        <a href="{{ route('personnel.create') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Gestion des grades</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Gestion des grades</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Gestion des unités</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Gestion des unités</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('personnel.users.manage') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Utilisateurs</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rôles et permissions</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rôles et permissions</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('personnel.users.password.init') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Mots de passe initiaux</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('personnel.logs') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rapport</a>

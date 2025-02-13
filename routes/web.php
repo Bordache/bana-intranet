@@ -88,17 +88,21 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
 
         // Users rôles and permissions
-        Route::get('/users/manage', [UserController::class, 'manageUsers'])->name('users.manage');
-        Route::get('/users/manage/search', [UserController::class, 'manageUsersSearch'])->name('users.manage.search');
-        Route::post('/users/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
-        Route::post('/users/remove-role', [UserController::class, 'removeRole'])->name('users.removeRole');
+        Route::get('/users/manage', [UserController::class, 'adminManageUsers'])->name('users.manage');
+        Route::get('/users/manage/search', [UserController::class, 'adminManageUsersSearch'])->name('users.manage.search');
+        Route::post('/users/assign-role', [UserController::class, 'adminAssignRole'])->name('users.assignRole');
+        Route::post('/users/remove-role', [UserController::class, 'adminRemoveRole'])->name('users.removeRole');
         Route::get('/users/admins', [UserController::class, 'manageAdmins'])->name('users.admins');
         Route::post('/users/assign-super-admin', [UserController::class, 'assignSuperAdmin'])->name('users.assignSuperAdmin');
         Route::post('/users/remove-super-admin', [UserController::class, 'removeSuperAdmin'])->name('users.removeSuperAdmin');
 
+        // Users password init
+        Route::get('users/password/init', [UserController::class, 'adminUserPasswordInitView'])->name('users.password.init');
+
         // Admin Logs
         Route::get('/logs', [LogController::class, 'adminLogsIndex'])->name('admin.logs');
         Route::get('/logs/search', [LogController::class, 'adminLogsSearch'])->name('admin.logs.search');
+
     });
 
     // Users account and profile
@@ -112,13 +116,13 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
     // Routes pour la communication
     Route::prefix('communication')->group(function () {
-        Route::get('/', [CommunicationController::class, 'index'])->name('communication.index')->middleware('checkPermission:view,comm,post');
-        Route::get('/create', [CommunicationController::class, 'create'])->name('communication.create')->middleware('checkPermission:create,comm,post');
-        Route::post('/', [CommunicationController::class, 'store'])->name('communication.store')->middleware('checkPermission:create,comm,post');
-        Route::get('/{id}', [CommunicationController::class, 'show'])->name('communication.show')->middleware('checkPermission:view,comm,post');
-        Route::get('/{id}/edit', [CommunicationController::class, 'edit'])->name('communication.edit')->middleware('checkPermission:update,comm,post');
-        Route::put('/{id}', [CommunicationController::class, 'update'])->name('communication.update')->middleware('checkPermission:update,comm,post');
-        Route::delete('/{id}', [CommunicationController::class, 'destroy'])->name('communication.destroy')->middleware('checkPermission:destroy,comm,post');
+        Route::get('/', [CommunicationController::class, 'index'])->name('communication.index')->middleware('checkPermission:view,comm,posts');
+        Route::get('/create', [CommunicationController::class, 'create'])->name('communication.create')->middleware('checkPermission:create,comm,posts');
+        Route::post('/', [CommunicationController::class, 'store'])->name('communication.store')->middleware('checkPermission:create,comm,posts');
+        Route::get('/{id}', [CommunicationController::class, 'show'])->name('communication.show')->middleware('checkPermission:view,comm,posts');
+        Route::get('/{id}/edit', [CommunicationController::class, 'edit'])->name('communication.edit')->middleware('checkPermission:update,comm,posts');
+        Route::put('/{id}', [CommunicationController::class, 'update'])->name('communication.update')->middleware('checkPermission:update,comm,posts');
+        Route::delete('/{id}', [CommunicationController::class, 'destroy'])->name('communication.destroy')->middleware('checkPermission:destroy,comm,posts');
     });
 
 
@@ -139,6 +143,10 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         // Recherche de profil
         Route::get('/search', [PersonnelController::class, 'search'])->name('personnel.search');
         Route::get('/custom-search', [PersonnelController::class, 'customSearch'])->name('personnel.customSearch');
+
+        // Exportation excel et pdf
+        Route::post('/export', [PersonnelController::class, 'export'])->name('personnel.export');
+
 
         // Gestion des profils
         Route::get('/', [PersonnelController::class, 'index'])->name('personnel.index')->middleware('checkPermission:view,rh,personnel');
@@ -265,11 +273,13 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
             Route::get('/search', [LogController::class, 'personnelLogsSearch'])->name('personnel.logs.search');
         });
 
-        // Roles et permissions du personnel
+        // Users
         Route::prefix('/users')->group(function () {
             Route::get('/manage', [UserController::class, 'personnelManageUsers'])->name('personnel.users.manage');
             Route::post('/assign-role', [UserController::class, 'personnelAssignRole'])->name('personnel.users.assignRole');
             Route::post('/remove-role', [UserController::class, 'personnelRemoveRole'])->name('personnel.users.removeRole');
+            Route::get('/password/init', [UserController::class, 'personnelUserPasswordInitView'])->name('personnel.users.password.init');
+
         });
     });
 });

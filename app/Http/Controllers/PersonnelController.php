@@ -11,6 +11,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Arr;
+
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -46,6 +48,11 @@ use App\Support\ProfileFields;
 use App\Support\RankFields;
 use App\Support\SchoolFields;
 use App\Support\SpouseFields;
+
+use App\Exports\ProfilesExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 
 class PersonnelController extends Controller
@@ -122,9 +129,9 @@ class PersonnelController extends Controller
             'units.unit_abbreviate',
             'profiles.updated_at as profile_updated_at'
         ])
-        ->orderBy('rank_id', 'asc')
-        ->orderBy('rank_date', 'desc')
-        ->orderBy('service_entry_date', 'desc')
+        ->orderBy('rank_id')
+        ->orderBy('rank_date')
+        ->orderBy('service_entry_date')
         ->paginate($perPage);
 
         return view("personnel.profile.list", compact('militaryDetails', 'expand', 'perPage'));
@@ -163,9 +170,9 @@ class PersonnelController extends Controller
             'units.unit_abbreviate',
             'profiles.updated_at as profile_updated_at'
         ])
-        ->orderBy('military_details.rank_id', 'asc')
-        ->orderBy('military_details.rank_date', 'desc')
-        ->orderBy('military_details.service_entry_date', 'desc')
+        ->orderBy('military_details.rank_id')
+        ->orderBy('military_details.rank_date')
+        ->orderBy('military_details.service_entry_date')
         ->get()
         ->groupBy('unit_id'); // Regroupement par unité
 
@@ -204,9 +211,9 @@ class PersonnelController extends Controller
             'units.unit_abbreviate',
             'profiles.updated_at as profile_updated_at'
         ])
-        ->orderBy('military_details.rank_id', 'asc')
-        ->orderBy('military_details.rank_date', 'desc')
-        ->orderBy('military_details.service_entry_date', 'desc')
+        ->orderBy('military_details.rank_id')
+        ->orderBy('military_details.rank_date')
+        ->orderBy('military_details.service_entry_date')
         ->get()
         ->groupBy('rank_id');
 
@@ -252,7 +259,10 @@ class PersonnelController extends Controller
                    ->orWhere('ranks.rank_abbreviate', 'like', "%{$search}%")
                    ->orWhere('units.unit_abbreviate', 'like', "%{$search}%")
                    ->orWhere('military_details.military_registration_number', 'like', "%{$search}%")
-                   ->orWhere('military_details.current_function', 'like', "%{$search}%");
+                   ->orWhere('military_details.current_function', 'like', "%{$search}%")
+                   ->orWhereHas('academicPaths', function ($q) use ($search) {
+                    $q->where('diploma', 'like', "%{$search}%");
+                    });
 
                  // Vérifier si l'entrée correspond à une date sous forme "jour/mois"
                  if (preg_match('/^(\d{1,2})\/(\d{1,2})$/', $search, $matches)) {
@@ -313,71 +323,196 @@ class PersonnelController extends Controller
             'profiles.updated_at as profile_updated_at'
         ]);
 
-        // Filtrage par grade
+        $searchField = [];
+
         if ($request->filled('rank_abbreviate')) {
             $rank = trim(strip_tags($request->rank_abbreviate));
             $query->where('ranks.rank_abbreviate', 'like', "%{$rank}%");
+            $searchField[] = $rank;
         }
 
-        // Filtrage par unité
         if ($request->filled('unit_abbreviate')) {
             $unit = trim(strip_tags($request->unit_abbreviate));
             $query->where('units.unit_abbreviate', 'like', "%{$unit}%");
+            $searchField[] = $unit;
         }
 
-        // Filtrage par date d'entrée en service (Vérification correcte)
         if ($request->filled('service_entry_date_before') && $request->filled('service_entry_date_after')) {
             $before = trim(strip_tags($request->service_entry_date_before));
             $after = trim(strip_tags($request->service_entry_date_after));
 
-            if (strtotime($before) && strtotime($after)) { // Vérification des dates valides
+            if (strtotime($before) && strtotime($after)) {
                 $query->whereBetween('military_details.service_entry_date', [$before, $after]);
+                $searchField[] = "Entre $before et $after";
             }
         }
 
-        // Filtrage par diplôme académique
         if ($request->filled('academic_diploma')) {
             $diploma = trim(strip_tags($request->academic_diploma));
             $query->whereHas('academicPaths', function ($q) use ($diploma) {
                 $q->where('diploma', 'like', "%{$diploma}%");
             });
+            $searchField[] = $diploma;
         }
 
-        // Filtrage par diplôme militaire
         if ($request->filled('military_diploma')) {
             $militaryDiploma = trim(strip_tags($request->military_diploma));
             $query->whereHas('militaryPaths', function ($q) use ($militaryDiploma) {
                 $q->where('academy_diploma', 'like', "%{$militaryDiploma}%");
             });
+            $searchField[] = $militaryDiploma;
         }
 
-        // Filtrage par distinctions honorifiques
         if ($request->filled('honorary_title')) {
             $honoraryTitle = trim(strip_tags($request->honorary_title));
             $query->whereHas('honoraryDistinctions', function ($q) use ($honoraryTitle) {
                 $q->where('honorary_title', 'like', "%{$honoraryTitle}%");
             });
+            $searchField[] = $honoraryTitle;
         }
 
-        // Filtrage par campagnes militaires (Correction de l'erreur dans ta version)
         if ($request->filled('campaign_title')) {
             $campaignTitle = trim(strip_tags($request->campaign_title));
             $query->whereHas('militaryCampaigns', function ($q) use ($campaignTitle) {
                 $q->where('campaign_title', 'like', "%{$campaignTitle}%");
             });
+            $searchField[] = $campaignTitle;
         }
+
+        // Transformer le tableau en chaîne avec une virgule
+        $search = implode(', ', $searchField);
+
 
         // Appliquer le tri après le filtrage
         $query->orderBy('military_details.rank_id')
-            ->orderBy('military_details.rank_date', 'desc')
-            ->orderBy('military_details.service_entry_date', 'desc')
-            ->orderBy('profiles.birth_date', 'asc');
+            ->orderBy('military_details.rank_date')
+            ->orderBy('military_details.service_entry_date')
+            ->orderBy('profiles.birth_date');
 
         $results = $query->paginate($perPage)->appends($request->query());
 
-        return view("personnel.profile.result", compact('results', 'expand', 'perPage'));
+        return view("personnel.profile.result", compact('results', 'search', 'expand', 'perPage'));
     }
 
+
+    public function export(Request $request)
+    {
+        $profileIds = json_decode($request->profile_ids, true);
+        $selectedFields = json_decode($request->fields, true);
+        $exportType = $request->export_type;
+
+        if (!$profileIds || !$selectedFields) {
+            return redirect()->back()->with('error', 'Veuillez sélectionner au moins un profil et un champ.');
+        }
+
+        // Liste des noms de colonnes correspondants
+        $availableFields = [
+            'rank_abbreviate' => 'Grade',
+            'name' => 'Nom',
+            'firstname' => 'Prénoms',
+            'military_registration_number' => 'Matricule',
+            'finance_registration_number' => 'Matricule finance',
+            'unit_abbreviate' => 'Unité',
+            'current_function' => 'Fonction',
+            'specialty' => 'Spécialité',
+            'birth_date' => 'Date de naissance',
+            'rank_date' => 'Date de nomination',
+            'service_entry_date' => 'Date d’entrée en service',
+            'recruitment_promotion' => 'Classe/promotion',
+            'national_id' => 'Numéro CIN',
+            'issue_date' => 'Date CIN',
+            'issue_place' => 'Lieu CIN',
+            'academicPaths.diploma' => 'Diplômes académiques',
+            'militaryPaths.academy_diploma' => 'Diplômes militaires',
+            'honoraryDistinctions.honorary_title' => 'Distinctions honorifiques',
+            'militaryCampaigns.campaign_title' => 'Campagnes militaires'
+        ];
+
+        // Filtrer uniquement les champs sélectionnés
+        $filteredFields = array_intersect_key($availableFields, array_flip($selectedFields));
+
+        if (empty($filteredFields)) {
+            return redirect()->back()->with('error', 'Aucune colonne sélectionnée.');
+        }
+
+        // Détecter l'orientation du PDF en fonction du nombre de colonnes
+        $orientation = count($filteredFields) > 6 ? 'landscape' : 'portrait';
+
+        // Récupérer les profils avec les relations nécessaires
+        $profiles = Profile::with([
+            'militaryDetail',
+            'academicPaths',
+            'militaryPaths',
+            'honoraryDistinctions',
+            'militaryCampaigns',
+        ])
+        ->leftJoin('military_details', 'profiles.id', '=', 'military_details.profile_id')
+        ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->select([
+            'profiles.id',  // Ajout pour éviter les erreurs
+            'profiles.name',
+            'profiles.firstname',
+            'profiles.birth_date',
+            'profiles.national_id',
+            'profiles.issue_date',
+            'profiles.issue_place',
+            'ranks.rank_abbreviate as rank_abbreviate',
+            'military_details.rank_id as rank_id',
+            'military_details.military_registration_number as military_registration_number',
+            'military_details.finance_registration_number as finance_registration_number',
+            'units.unit_abbreviate as unit_abbreviate',
+            'military_details.current_function as current_function',
+            'military_details.specialty as specialty',
+            'military_details.rank_date as rank_date',
+            'military_details.service_entry_date as service_entry_date',
+            'military_details.recruitment_promotion as recruitment_promotion'
+        ])
+        ->orderBy('rank_id')
+        ->orderBy('rank_date')
+        ->orderBy('service_entry_date')
+        ->whereIn('profiles.id', $profileIds)
+        ->get();
+
+        // Transformer les profils en tableau avec les bons noms de colonnes
+        $data = $profiles->map(function ($profile) use ($selectedFields, $filteredFields) {
+            $formattedProfile = [];
+
+            foreach ($selectedFields as $field) {
+                if (str_contains($field, '.')) {
+                    [$relation, $attribute] = explode('.', $field, 2);
+
+                    // Vérifier si c'est une relation hasMany et transformer en texte
+                    if ($profile->$relation && method_exists($profile->$relation, 'pluck')) {
+                        $formattedProfile[$filteredFields[$field]] = $profile->$relation->pluck($attribute)->join(', ') ?: '';
+                    } else {
+                        $formattedProfile[$filteredFields[$field]] = '';
+                    }
+                } else {
+                    // 🔥 Vérifier si le champ est une date et la formater en `d/m/Y`
+                    if (in_array($field, ['birth_date', 'rank_date', 'service_entry_date', 'issue_date']) && !empty($profile->$field)) {
+                        $formattedProfile[$filteredFields[$field]] = Carbon::parse($profile->$field)->format('d/m/Y');
+                    } else {
+                        $formattedProfile[$filteredFields[$field]] = $profile->$field ?? '';
+                    }
+                }
+            }
+            return $formattedProfile;
+        });
+
+
+        // Exporter selon le format choisi
+        if ($exportType === 'excel') {
+            return Excel::download(new ProfilesExport($data->toArray(), $filteredFields), 'Etat renseigné.xlsx');
+        }
+         else {
+            $pdf = Pdf::loadView('personnel.profile.pdf', [
+                'profiles' => $data,
+                'fields' => $filteredFields
+                ])->setPaper('a4', $orientation);
+            return $pdf->download('Etat renseigné_'.now().'.pdf');
+        }
+    }
 
 
     /**
@@ -399,162 +534,172 @@ class PersonnelController extends Controller
 
         $domainId = Domain::where('name', 'rh')->value('id');
 
-        $validated = $request->validate(
-             // Fusionner les règles des deux classes
-                array_merge(
-                    ProfileFields::getFields(),
-                    MilitaryFields::getFields(),
-                    $request->has('spouse_name') ? SpouseFields::getFields() : [],
-                    $request->has('child_full_name') ? ChildrenFields::getFields() : [],
-                    $request->has('school_name') ? SchoolFields::getFields() : [],
-                    $request->has('academy_name') ? AcademyFields::getFields() : [],
-                    $request->has('company_name') ? CareerFields::getFields() : [],
-                    $request->has('history_rank') ? RankFields::getFields() : [],
-                    $request->has('honorary_title') ? HonoraryFields::getFields() : [],
-                    $request->has('campaign_title') ? CampaignFields::getFields() : []
-                ),
+        /* try { */
 
-                // Fusionner les messages personnalisés des deux classes
+            $validated = $request->validate(
+                // Fusionner les règles des deux classes
+                    array_merge(
+                        ProfileFields::getFields(),
+                        MilitaryFields::getFields(),
+                        $request->has('spouse_name') ? SpouseFields::getFields() : [],
+                        $request->has('child_full_name') ? ChildrenFields::getFields() : [],
+                        $request->has('school_name') ? SchoolFields::getFields() : [],
+                        $request->has('academy_name') ? AcademyFields::getFields() : [],
+                        $request->has('company_name') ? CareerFields::getFields() : [],
+                        $request->has('history_rank') ? RankFields::getFields() : [],
+                        $request->has('honorary_title') ? HonoraryFields::getFields() : [],
+                        $request->has('campaign_title') ? CampaignFields::getFields() : []
+                    ),
+
+                    // Fusionner les messages personnalisés des deux classes
+                    array_merge(
+                        ProfileFields::getMessages(),
+                        MilitaryFields::getMessages(),
+                        $request->has('spouse_name') ? SpouseFields::getMessages() : [],
+                        $request->has('child_full_name') ? ChildrenFields::getMessages() : [],
+                        $request->has('school_name') ? SchoolFields::getMessages() : [],
+                        $request->has('academy_name') ? AcademyFields::getMessages() : [],
+                        $request->has('company_name') ? CareerFields::getMessages() : [],
+                        $request->has('history_rank') ? RankFields::getMessages() : [],
+                        $request->has('honorary_title') ? HonoraryFields::getMessages() : [],
+                        $request->has('campaign_title') ? CampaignFields::getMessages() : []
+                    )
+            );
+
+            // **Étape 1 : Création du profil**
+            /* $Profile = Profile::create($validated(only(ProfileFields::getFieldNames()))); */
+            $Profile = Profile::create(Arr::only($validated, ProfileFields::getFieldNames()));
+
+
+
+            // **Étape 2 : Création des détails militaires**
+            $Profile->militaryDetail()->create(
                 array_merge(
-                    ProfileFields::getMessages(),
-                    MilitaryFields::getMessages(),
-                    $request->has('spouse_name') ? SpouseFields::getMessages() : [],
-                    $request->has('child_full_name') ? ChildrenFields::getMessages() : [],
-                    $request->has('school_name') ? SchoolFields::getMessages() : [],
-                    $request->has('academy_name') ? AcademyFields::getMessages() : [],
-                    $request->has('company_name') ? CareerFields::getMessages() : [],
-                    $request->has('history_rank') ? RankFields::getMessages() : [],
-                    $request->has('honorary_title') ? HonoraryFields::getMessages() : [],
-                    $request->has('campaign_title') ? CampaignFields::getMessages() : []
+                    $request->only(MilitaryFields::getFieldNames()),
+                    ['profile_id' => $Profile->id]
                 )
-        );
+            );
 
-        // **Étape 1 : Création du profil**
-        $Profile = Profile::create($validated(only(ProfileFields::getFieldNames())));
-
-
-        // **Étape 2 : Création des détails militaires**
-        $Profile->militaryDetail()->create(
-            array_merge(
-                $request->only(MilitaryFields::getFieldNames()),
-                ['profile_id' => $Profile->id]
-            )
-        );
-
-        // **Étape 3 : Création du conjoint**
-        if ($request->has('spouse_name')) {
-            foreach ($request->spouse_name as $key => $spouse) {
-                $Profile->spouseDetails()->create([
-                    'profile_id' => $Profile->id,
-                    'spouse_title' => $request->spouse_title[$key],
-                    'spouse_name' => $spouse,
-                    'spouse_maiden_name' => $request->spouse_maiden_name[$key],
-                    'spouse_firstname' => $request->spouse_firstname[$key],
-                    'spouse_birth_date' => $request->spouse_birth_date[$key],
-                    'spouse_birth_place' => $request->spouse_birth_place[$key],
-                    'spouse_profession' => $request->spouse_profession[$key],
-                    'marriage_authorization' => $request->marriage_authorization[$key],
-                ]);
+            // **Étape 3 : Création du conjoint**
+            if ($request->has('spouse_name')) {
+                foreach ($request->spouse_name as $key => $spouse) {
+                    $Profile->spouseDetails()->create([
+                        'profile_id' => $Profile->id,
+                        'spouse_title' => $request->spouse_title[$key],
+                        'spouse_name' => $spouse,
+                        'spouse_maiden_name' => $request->spouse_maiden_name[$key],
+                        'spouse_firstname' => $request->spouse_firstname[$key],
+                        'spouse_birth_date' => $request->spouse_birth_date[$key],
+                        'spouse_birth_place' => $request->spouse_birth_place[$key],
+                        'spouse_profession' => $request->spouse_profession[$key],
+                        'marriage_authorization' => $request->marriage_authorization[$key],
+                    ]);
+                }
             }
-        }
 
-        // **Étape 4 : Création des enfants**
-        if ($request->has('child_full_name')) {
-            foreach ($request->child_full_name as $key => $child) {
-                $Profile->childrenDetails()->create([
-                    'profile_id' => $Profile->id,
-                    'child_full_name' => $child,
-                    'child_birth_date' => $request->child_birth_date[$key],
-                    'child_birth_place' => $request->child_birth_place[$key],
-                    'child_gender' => $request->child_gender[$key],
-                    'child_status' => $request->child_status[$key],
-                ]);
+            // **Étape 4 : Création des enfants**
+            if ($request->has('child_full_name')) {
+                foreach ($request->child_full_name as $key => $child) {
+                    $Profile->childrenDetails()->create([
+                        'profile_id' => $Profile->id,
+                        'child_full_name' => $child,
+                        'child_birth_date' => $request->child_birth_date[$key],
+                        'child_birth_place' => $request->child_birth_place[$key],
+                        'child_gender' => $request->child_gender[$key],
+                        'child_status' => $request->child_status[$key],
+                    ]);
+                }
             }
-        }
 
-        // **Étape 5 : Création des parcours académiques**
-        if ($request->has('school_name')) {
-            foreach ($request->school_name as $key => $school) {
-                $Profile->academicPaths()->create([
-                    'profile_id' => $Profile->id,
-                    'school_name' => $school,
-                    'duration' => $request->duration[$key],
-                    'diploma' => $request->diploma[$key],
-                ]);
+            // **Étape 5 : Création des parcours académiques**
+            if ($request->has('school_name')) {
+                foreach ($request->school_name as $key => $school) {
+                    $Profile->academicPaths()->create([
+                        'profile_id' => $Profile->id,
+                        'school_name' => $school,
+                        'duration' => $request->duration[$key],
+                        'diploma' => $request->diploma[$key],
+                    ]);
+                }
             }
-        }
 
-        // **Étape 6 : Création des parcours militaire**
-        if ($request->has('academy_name')) {
-            foreach ($request->academy_name as $key => $academy) {
-                $Profile->militaryPaths()->create([
-                    'profile_id' => $Profile->id,
-                    'academy_name' => $academy,
-                    'academy_duration' => $request->academy_duration[$key],
-                    'academy_diploma' => $request->academy_diploma[$key],
-                ]);
+            // **Étape 6 : Création des parcours militaire**
+            if ($request->has('academy_name')) {
+                foreach ($request->academy_name as $key => $academy) {
+                    $Profile->militaryPaths()->create([
+                        'profile_id' => $Profile->id,
+                        'academy_name' => $academy,
+                        'academy_duration' => $request->academy_duration[$key],
+                        'academy_diploma' => $request->academy_diploma[$key],
+                    ]);
+                }
             }
-        }
 
-        // **Étape 7 : Parcours professionnels**
-        if ($request->has('company_name')) {
-            foreach ($request->company_name as $key => $company) {
-                $Profile->professionalCareers()->create([
-                    'profile_id' => $Profile->id,
-                    'company_name' => $company,
-                    'job_title' => $request->job_title[$key],
-                    'start_date' => $request->start_date[$key],
-                    'end_date' => $request->end_date[$key],
-                    'description' => $request->description[$key],
-                ]);
+            // **Étape 7 : Parcours professionnels**
+            if ($request->has('company_name')) {
+                foreach ($request->company_name as $key => $company) {
+                    $Profile->professionalCareers()->create([
+                        'profile_id' => $Profile->id,
+                        'company_name' => $company,
+                        'job_title' => $request->job_title[$key],
+                        'start_date' => $request->start_date[$key],
+                        'end_date' => $request->end_date[$key],
+                        'description' => $request->description[$key],
+                    ]);
+                }
             }
-        }
 
-        // **Étape 8 : Grades**
-        if ($request->has('history_rank')) {
-            foreach ($request->history_rank as $key => $rank) {
-                $Profile->rankHistories()->create([
-                    'profile_id' => $Profile->id,
-                    'history_rank' => $rank,
-                    'history_promotion_date' => $request->history_promotion_date[$key],
-                    'history_rank_reference' => $request->history_rank_reference[$key],
-                ]);
+            // **Étape 8 : Grades**
+            if ($request->has('history_rank')) {
+                foreach ($request->history_rank as $key => $rank) {
+                    $Profile->rankHistories()->create([
+                        'profile_id' => $Profile->id,
+                        'history_rank' => $rank,
+                        'history_promotion_date' => $request->history_promotion_date[$key],
+                        'history_rank_reference' => $request->history_rank_reference[$key],
+                    ]);
+                }
             }
-        }
 
-        // **Étape 9 : Distinctions honorifiques**
-        if ($request->has('honorary_title')) {
-            foreach ($request->honorary_title as $key => $title) {
-                $Profile->honoraryDistinctions()->create([
-                    'profile_id' => $Profile->id,
-                    'honorary_title' => $title,
-                    'honorary_promotion' => $request->honorary_promotion[$key],
-                    'honorary_reference' => $request->honorary_reference[$key],
-                ]);
+            // **Étape 9 : Distinctions honorifiques**
+            if ($request->has('honorary_title')) {
+                foreach ($request->honorary_title as $key => $title) {
+                    $Profile->honoraryDistinctions()->create([
+                        'profile_id' => $Profile->id,
+                        'honorary_title' => $title,
+                        'honorary_promotion' => $request->honorary_promotion[$key],
+                        'honorary_reference' => $request->honorary_reference[$key],
+                    ]);
+                }
             }
-        }
 
-        // **Étape 10 : Campagnes militaires**
-        if ($request->has('campaign_title')) {
-            foreach ($request->campaign_title as $key => $title) {
-                $Profile->militaryCampaigns()->create([
-                    'profile_id' => $Profile->id,
-                    'campaign_title' => $title,
-                    'campaign_period' => $request->campaign_period[$key],
-                    'campaign_locations' => $request->campaign_locations[$key],
-                ]);
+            // **Étape 10 : Campagnes militaires**
+            if ($request->has('campaign_title')) {
+                foreach ($request->campaign_title as $key => $title) {
+                    $Profile->militaryCampaigns()->create([
+                        'profile_id' => $Profile->id,
+                        'campaign_title' => $title,
+                        'campaign_period' => $request->campaign_period[$key],
+                        'campaign_locations' => $request->campaign_locations[$key],
+                    ]);
+                }
             }
-        }
 
-        // Log de l'action
-        LogHelper::logAction(
-            auth()->id(),
-            'Create_profile',
-            "Ajout de nouveau profil {$profile->name} {$profile->firstname}",
-            $domainId
-        );
+            // Log de l'action
+            LogHelper::logAction(
+                auth()->id(),
+                'Create_profile',
+                "Ajout de nouveau profil {$Profile->name} {$Profile->firstname}",
+                $domainId
+            );
 
-        return redirect()->route('personnel.index');
+            return redirect()->route('personnel.list')->with('success', 'Profil ajouté avec succès.');
+       /*  } catch (\Exception $e) {
+            // Gérer les exceptions et retourner un message d'erreur
+            return redirect()
+                ->back()
+                ->with('error', __('Une erreur s\'est produite lors de la création du profil.'));
+        } */
     }
 
     /**
@@ -796,12 +941,12 @@ class PersonnelController extends Controller
 
             // Retourne une réponse ou redirection avec un message de succès
             return redirect()
-                ->route('personnel.index')
+                ->back()
                 ->with('success', __('Le profil a été supprimé avec succès.'));
         } catch (\Exception $e) {
             // Gérer les exceptions et retourner un message d'erreur
             return redirect()
-                ->route('personnel.index')
+                ->back()
                 ->with('error', __('Une erreur s\'est produite lors de la suppression du profil.'));
         }
     }

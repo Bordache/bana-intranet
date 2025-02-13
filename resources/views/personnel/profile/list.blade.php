@@ -25,7 +25,7 @@
                     <table class="table table-striped table-hover table-sm text-sm align-middle mb-0">
                         <thead>
                             <tr class="align-middle">
-                                <th><input class="form-check-input ms-1 mb-1" type="checkbox"></th>
+                                <th><input class="form-check-input ms-1 mb-1" type="checkbox" id="checkAll" onclick="toggleCheckboxes(this)"></th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     NR</th>
@@ -55,7 +55,7 @@
                         <tbody>
                             @foreach ($militaryDetails as $detail)
                                 <tr>
-                                    <td><input class="form-check-input ms-1 mb-1" type="checkbox"></td>
+                                    <td><input class="form-check-input profile-checkbox checkItem ms-1 mb-1" type="checkbox" value="{{ $detail->id }}"></td>
                                     <td class="px-6 whitespace-nowrap text-sm text-gray-900">
                                         {{ $loop->iteration }}</td>
                                     <td class="px-6 whitespace-nowrap text-sm text-gray-900">

@@ -27,6 +27,51 @@
             <button class="btn btn-secondary" id="expandAllBtn">Tout déplier</button>
             <button class="btn btn-secondary d-none" id="drapeAllBtn">Tout replier</button>
         </div>
+    @else
+        <div class="btn-group ms-2" role="group" aria-label="Button group with nested dropdown">
+            <button id="exportButton" class="btn btn-success"><i class="fas fa-file-export"></i> Exporter</button>
+            <div class="btn-group" role="group">
+                <button id="btnGroupDropExport" type="button" class="btn btn-success dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                </button>
+                <ul class="dropdown-menu p-3 w-max-content" aria-labelledby="btnGroupDropExport">
+                    @php
+                    $availableFields = [
+                        'rank_abbreviate' => 'Grade',
+                        'name' => 'Nom',
+                        'firstname' => 'Prénoms',
+                        'military_registration_number' => 'Matricule',
+                        'finance_registration_number' => 'Matricule finance',
+                        'unit_abbreviate' => 'Unité',
+                        'current_function' => 'Fonction',
+                        'specialty' => 'Spécialité',
+                        'birth_date' => 'Date de naissance',
+                        'rank_date' => 'Date de nomination',
+                        'service_entry_date' => 'Date d’entrée en service',
+                        'recruitment_promotion' => 'Classe/promotion',
+                        'national_id' => 'Numéro CIN',
+                        'issue_date' => 'Date CIN',
+                        'issue_place' => 'Lieu CIN',
+                        'academicPaths.diploma' => 'Diplômes Académiques',
+                        'militaryPaths.academy_diploma' => 'Diplômes Militaires',
+                        'honoraryDistinctions.honorary_title' => 'Distinctions Honorifiques',
+                        'militaryCampaigns.campaign_title' => 'Campagnes Militaires'
+                    ];
+                @endphp
+                    <li class="d-flex">
+                        <input type="checkbox" class="form-check-input mb-1" onclick="toggleFieldsCheckboxes(this)">
+                        <label class="form-check-label ps-1"> Cocher/décocher toutes<br>les colonnes</label>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    @foreach ($availableFields as $field => $label)
+                    <li class="align-middle">
+                        <input type="checkbox" class="form-check-input mb-1 export-field" value="{{ $field }}">
+                        <label class="form-check-label">{{ $label }}</label>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
     @endif
 
 </div>
@@ -150,3 +195,16 @@
         </div>
     </div>
 </div>
+
+<!-- Coche et décoche des inputs checkbox de la liste -->
+<script>
+    function toggleFieldsCheckboxes(masterCheckbox) {
+        // Récupère tous les checkboxes de la table
+        const checkboxes = document.querySelectorAll('.export-field');
+
+        // Pour chaque checkbox, on met son état selon l'état du masterCheckbox
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = masterCheckbox.checked;
+        });
+    }
+</script>

@@ -26,7 +26,7 @@ class UserRole extends Model
 
     public function object()
     {
-        return $this->belongsTo(Object::class);
+        return $this->belongsTo(Objet::class);
     }
 
     public static function hasRole($userId, $roleName, $domainId = null)
