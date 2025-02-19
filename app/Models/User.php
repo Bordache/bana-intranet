@@ -56,23 +56,25 @@ class User extends Authenticatable
      * Vérifie si l'utilisateur a une permission dans un domaine et un objet spécifique
      */
 
-    public function hasPermission($permissionName, $domainName, $objectName = null)
-    {
-        if ($this->isSuperAdmin()) {
-            return true;
-        }
+     public function hasPermission($permission, $domain, $objet = null): bool
+     {
+         // Si l'utilisateur est super admin, il a tous les droits
+         if ($this->isSuperAdmin()) {
+             return true;
+         }
 
-        return UserRole::where('user_id', $this->id)
-            ->whereHas('role.rolePermissions', function ($query) use ($permissionName, $domainName, $objectName) {
-                $query->whereHas('permission', fn($q) => $q->where('name', $permissionName))
-                      ->whereHas('domain', fn($q) => $q->where('name', $domainName));
+         return UserRole::where('user_id', $this->id)
+             ->whereHas('role.rolePermissions', function ($query) use ($permission, $domain, $objet) {
+                 $query->whereHas('permission', fn($q) => $q->where('name', $permission))
+                       ->whereHas('domain', fn($q) => $q->where('name', $domain));
 
-                if ($objectName) {
-                    $query->whereHas('objet', fn($q) => $q->where('name', $objectName));
-                }
-            })
-            ->exists();
-    }
+                 if ($objet) {
+                     $query->whereHas('objet', fn($q) => $q->where('name', $objet));
+                 }
+             })
+             ->exists();
+     }
+
 
     /**
      * Vérifie si l'utilisateur a un rôle spécifique dans un domaine et un objet
@@ -154,6 +156,11 @@ class User extends Authenticatable
     public function passwordInit()
     {
         return $this->hasOne(PasswordInit::class, 'user_id', 'id');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(Log::class, 'user_id');
     }
 
 }

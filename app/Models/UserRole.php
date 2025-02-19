@@ -31,11 +31,7 @@ class UserRole extends Model
 
     public static function hasRole($userId, $roleName, $domainId = null)
     {
-        $isSuperAdmin = self::where('user_id', $userId)
-            ->whereHas('role', fn($query) => $query->where('name', 'Super administrateur'))
-            ->exists();
-
-        if ($isSuperAdmin) {
+        if ($this->isSuperAdmin()) {
             return true;
         }
 
@@ -57,4 +53,5 @@ class UserRole extends Model
             ->whereHas('role', fn($query) => $query->where('name', 'Super administrateur'))
             ->exists();
     }
+
 }

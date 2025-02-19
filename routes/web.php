@@ -39,23 +39,6 @@ Route::get('/api/check-national-id/{national_id}', function ($national_id) {
 });
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified', 'password.changed'])->name('dashboard');
-
-/*
-* Administrator index
-*/
-Route::get('/admin', function () {
-    return view('administration');
-})->middleware([
-    'auth',
-    'password.changed',
-    'checkRole:Administrateur',
-    'checkRole:Collaborateur'
-])->name('admin');
-
-
 /*
 * Website Blades
 */
@@ -77,27 +60,42 @@ Route::middleware(['auth'])->group(function () {
 * All Blades
 */
 Route::middleware(['auth', 'password.changed'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', function () {return view('dashboard');})->name('dashboard');
+
+    // Get objets - permissions
+    Route::get('/roles/get-objects-permissions', [RolePermissionController::class, 'getObjectsAndPermissions']);
 
     // Admin
-    Route::prefix('admin')->group(function () {
+    Route::prefix('admin')->middleware('IsSuperAdmin')->group(function () {
+        Route::get('/', function () {return view('administration');})->name('admin');
+
         // Roles
-        Route::get('/roles', [RolePermissionController::class, 'index'])->name('admin.roles.index');
-        Route::get('/roles/edit/{role_id}/{domain_id}', [RolePermissionController::class, 'edit'])->name('role-permissions.edit');
-        Route::get('/roles/get-objects-permissions', [RolePermissionController::class, 'getObjectsAndPermissions']);
-        Route::post('/roles/store', [RolePermissionController::class, 'store'])->name('role-permissions.store');
+        Route::get('/roles', [RolePermissionController::class, 'indexAdmin'])->name('admin.roles.index');
+        Route::get('/roles/edit/{role_id}/{domain_id}', [RolePermissionController::class, 'editPermissionAdmin'])->name('admin.role-permissions.edit');
+        Route::post('/roles/store', [RolePermissionController::class, 'storePermissionAdmin'])->name('admin.role-permissions.store');
 
+        // Users
+        Route::prefix('users')->group(function () {
+            Route::get('/', [UserController::class, 'adminIndex'])->name('admin.users.index');
+            Route::put('/reset-password', [UserController::class, 'adminResetPassword'])->name('admin.users.reset-password');
+            Route::post('/user-suspend', [UserController::class, 'adminSuspend'])->name('admin.users.suspend');
+            Route::delete('/user-delete', [UserController::class, 'adminDestroy'])->name('admin.users.destroy');
 
-        // Users rôles and permissions
-        Route::get('/users/manage', [UserController::class, 'adminManageUsers'])->name('users.manage');
-        Route::get('/users/manage/search', [UserController::class, 'adminManageUsersSearch'])->name('users.manage.search');
-        Route::post('/users/assign-role', [UserController::class, 'adminAssignRole'])->name('users.assignRole');
-        Route::post('/users/remove-role', [UserController::class, 'adminRemoveRole'])->name('users.removeRole');
-        Route::get('/users/admins', [UserController::class, 'manageAdmins'])->name('users.admins');
-        Route::post('/users/assign-super-admin', [UserController::class, 'assignSuperAdmin'])->name('users.assignSuperAdmin');
-        Route::post('/users/remove-super-admin', [UserController::class, 'removeSuperAdmin'])->name('users.removeSuperAdmin');
+             // Users rôles and permissions
+            Route::get('/manage', [UserController::class, 'adminManageUsers'])->name('users.manage');
+            Route::get('/manage/search', [UserController::class, 'adminManageUsersSearch'])->name('users.manage.search');
+            Route::post('/assign-role', [UserController::class, 'adminAssignRole'])->name('users.assignRole');
+            Route::post('/remove-role', [UserController::class, 'adminRemoveRole'])->name('users.removeRole');
+            Route::get('/admins', [UserController::class, 'manageAdmins'])->name('users.admins');
+            Route::post('/assign-super-admin', [UserController::class, 'assignSuperAdmin'])->name('users.assignSuperAdmin');
+            Route::post('/remove-super-admin', [UserController::class, 'removeSuperAdmin'])->name('users.removeSuperAdmin');
 
-        // Users password init
-        Route::get('users/password/init', [UserController::class, 'adminUserPasswordInitView'])->name('users.password.init');
+            // Users password init
+            Route::get('users/password/init', [UserController::class, 'adminUserPasswordInitView'])->name('users.password.init');
+            Route::post('users/password/reset', [UserController::class, 'adminUserPasswordReset'])->name('users.password.reset');
+        });
+
 
         // Admin Logs
         Route::get('/logs', [LogController::class, 'adminLogsIndex'])->name('admin.logs');
@@ -115,8 +113,8 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
     });
 
     // Routes pour la communication
-    Route::prefix('communication')->group(function () {
-        Route::get('/', [CommunicationController::class, 'index'])->name('communication.index')->middleware('checkPermission:view,comm,posts');
+    Route::prefix('communication')->middleware('checkRoleInDomain:comm')->group(function () {
+        Route::get('/', [CommunicationController::class, 'index'])->name('communication.index')->middleware('checkPermission:view|manage,comm,posts');
         Route::get('/create', [CommunicationController::class, 'create'])->name('communication.create')->middleware('checkPermission:create,comm,posts');
         Route::post('/', [CommunicationController::class, 'store'])->name('communication.store')->middleware('checkPermission:create,comm,posts');
         Route::get('/{id}', [CommunicationController::class, 'show'])->name('communication.show')->middleware('checkPermission:view,comm,posts');
@@ -127,7 +125,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
 
     // Routes pour la documentation
-    Route::prefix('documentation')->group(function () {
+    Route::prefix('documentation')->middleware('checkRoleInDomain:doc')->group(function () {
         Route::get('/', [DocumentController::class, 'index'])->name('documentation.index')->middleware('checkPermission:view,doc,file');
         Route::get('/create', [DocumentController::class, 'create'])->name('documentation.create')->middleware('checkPermission:create,doc,file');
         Route::post('/', [DocumentController::class, 'store'])->name('documentation.store')->middleware('checkPermission:create,doc,file');
@@ -139,7 +137,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
 
     // Routes pour le personnel
-    Route::prefix('personnel')->group(function () {
+    Route::prefix('personnel')->middleware('checkRoleInDomain:rh')->group(function () {
         // Recherche de profil
         Route::get('/search', [PersonnelController::class, 'search'])->name('personnel.search');
         Route::get('/custom-search', [PersonnelController::class, 'customSearch'])->name('personnel.customSearch');
@@ -149,136 +147,145 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
 
         // Gestion des profils
-        Route::get('/', [PersonnelController::class, 'index'])->name('personnel.index')->middleware('checkPermission:view,rh,personnel');
-        Route::get('/profile/list', [PersonnelController::class, 'list'])->name('personnel.list')->middleware('checkPermission:view,rh,personnel');
-        Route::get('/profile/list/ByUnit', [PersonnelController::class, 'listByUnit'])->name('personnel.listByUnit')->middleware('checkPermission:view,rh,personnel');
-        Route::get('/profile/list/ByRank', [PersonnelController::class, 'listByRank'])->name('personnel.listByRank')->middleware('checkPermission:view,rh,personnel');
-        Route::get('/profile/create', [PersonnelController::class, 'create'])->name('personnel.create')->middleware('checkPermission:create,rh,personnel');
-        Route::post('/profile', [PersonnelController::class, 'store'])->name('personnel.store')->middleware('checkPermission:create,rh,personnel');
-        Route::get('/profile/{id}', [PersonnelController::class, 'show'])->name('personnel.show')->middleware('checkPermission:view,rh,personnel');
-        Route::get('/profile/{id}/edit', [PersonnelController::class, 'edit'])->name('personnel.edit')->middleware('checkPermission:update,rh,personnel');
-        Route::put('/profile/{id}', [PersonnelController::class, 'update'])->name('personnel.update')->middleware('checkPermission:update,rh,personnel');
-        Route::delete('/profile/{id}', [PersonnelController::class, 'destroy'])->name('personnel.destroy')->middleware('checkPermission:destroy,rh,personnel');
+        Route::get('/', [PersonnelController::class, 'index'])->name('personnel.index')->middleware(['checkPermission:view|manage,rh,pers']);
+        Route::get('/profile/list', [PersonnelController::class, 'list'])->name('personnel.list')->middleware(['checkPermission:view|manage,rh,pers']);
+        Route::get('/profile/list/ByUnit', [PersonnelController::class, 'listByUnit'])->name('personnel.listByUnit')->middleware(['checkPermission:view|manage,rh,pers']);
+        Route::get('/profile/list/ByRank', [PersonnelController::class, 'listByRank'])->name('personnel.listByRank')->middleware(['checkPermission:view|manage,rh,pers']);
+        Route::get('/profile/create', [PersonnelController::class, 'create'])->name('personnel.create')->middleware(['checkPermission:create|manage,rh,pers']);
+        Route::post('/profile', [PersonnelController::class, 'store'])->name('personnel.store')->middleware(['checkPermission:create|manage,rh,pers']);
+        Route::get('/profile/{id}', [PersonnelController::class, 'show'])->name('personnel.show')->middleware(['checkPermission:view|manage,rh,pers']);
+        Route::get('/profile/{id}/edit', [PersonnelController::class, 'edit'])->name('personnel.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+        Route::put('/profile/{id}', [PersonnelController::class, 'update'])->name('personnel.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+        Route::delete('/profile/{id}', [PersonnelController::class, 'destroy'])->name('personnel.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
         Route::post('/profile/{id}/update-calculations', [PersonnelController::class, 'updateCalculations'])->name('personnel.update.calculations');
 
         // Routes pour les renseignements militaires
         Route::prefix('/profile/{profile}/military_details')->group(function () {
-            Route::get('/', [MilitaryDetailController::class, 'index'])->name('military_details.index')->middleware('checkPermission:view,rh,personnel');
-            Route::get('/create', [MilitaryDetailController::class, 'create'])->name('military_details.create')->middleware('checkPermission:create,rh,personnel');
-            Route::post('/', [MilitaryDetailController::class, 'store'])->name('military_details.store')->middleware('checkPermission:create,rh,personnel');
-            Route::get('/{id}', [MilitaryDetailController::class, 'show'])->name('military_details.show')->middleware('checkPermission:view,rh,personnel');
-            Route::get('/{id}/edit', [MilitaryDetailController::class, 'edit'])->name('military_details.edit')->middleware('checkPermission:update,rh,personnel');
-            Route::put('/{id}', [MilitaryDetailController::class, 'update'])->name('military_details.update')->middleware('checkPermission:update,rh,personnel');
-            Route::delete('/{id}', [MilitaryDetailController::class, 'destroy'])->name('military_details.destroy')->middleware('checkPermission:destroy,rh,personnel');
+            Route::get('/', [MilitaryDetailController::class, 'index'])->name('military_details.index')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/create', [MilitaryDetailController::class, 'create'])->name('military_details.create')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::post('/', [MilitaryDetailController::class, 'store'])->name('military_details.store')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::get('/{id}', [MilitaryDetailController::class, 'show'])->name('military_details.show')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/{id}/edit', [MilitaryDetailController::class, 'edit'])->name('military_details.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::put('/{id}', [MilitaryDetailController::class, 'update'])->name('military_details.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::delete('/{id}', [MilitaryDetailController::class, 'destroy'])->name('military_details.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
         });
 
         // Routes pour le conjoint
         Route::prefix('/profile/{profile}/spouse_details')->group(function () {
-            Route::get('/', [SpouseDetailController::class, 'index'])->name('spouse_details.index');
-            Route::get('/create', [SpouseDetailController::class, 'create'])->name('spouse_details.create');
-            Route::post('/', [SpouseDetailController::class, 'store'])->name('spouse_details.store');
-            Route::get('/{id}', [SpouseDetailController::class, 'show'])->name('spouse_details.show');
-            Route::get('/{id}/edit', [SpouseDetailController::class, 'edit'])->name('spouse_details.edit');
-            Route::put('/{id}', [SpouseDetailController::class, 'update'])->name('spouse_details.update');
-            Route::delete('/{id}', [SpouseDetailController::class, 'destroy'])->name('spouse_details.destroy');
+            Route::get('/', [SpouseDetailController::class, 'index'])->name('spouse_details.index')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/create', [SpouseDetailController::class, 'create'])->name('spouse_details.create')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::post('/', [SpouseDetailController::class, 'store'])->name('spouse_details.store')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::get('/{id}', [SpouseDetailController::class, 'show'])->name('spouse_details.show')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/{id}/edit', [SpouseDetailController::class, 'edit'])->name('spouse_details.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::put('/{id}', [SpouseDetailController::class, 'update'])->name('spouse_details.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::delete('/{id}', [SpouseDetailController::class, 'destroy'])->name('spouse_details.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
         });
 
         // Routes pour les renseignements des enfants
         Route::prefix('/profile/{profile}/children_details')->group(function () {
-            Route::get('/', [ChildrenDetailController::class, 'index'])->name('children_details.index');
-            Route::get('/create', [ChildrenDetailController::class, 'create'])->name('children_details.create');
-            Route::post('/', [ChildrenDetailController::class, 'store'])->name('children_details.store');
-            Route::get('/{id}', [ChildrenDetailController::class, 'show'])->name('children_details.show');
-            Route::get('/{id}/edit', [ChildrenDetailController::class, 'edit'])->name('children_details.edit');
-            Route::put('/{id}', [ChildrenDetailController::class, 'update'])->name('children_details.update');
-            Route::delete('/{id}', [ChildrenDetailController::class, 'destroy'])->name('children_details.destroy');
-            Route::delete('/', [ChildrenDetailController::class, 'destroyAll'])->name('children_details.destroyAll');
+            Route::get('/', [ChildrenDetailController::class, 'index'])->name('children_details.index')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/create', [ChildrenDetailController::class, 'create'])->name('children_details.create')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::post('/', [ChildrenDetailController::class, 'store'])->name('children_details.store')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::get('/{id}', [ChildrenDetailController::class, 'show'])->name('children_details.show')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/{id}/edit', [ChildrenDetailController::class, 'edit'])->name('children_details.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::put('/{id}', [ChildrenDetailController::class, 'update'])->name('children_details.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::delete('/{id}', [ChildrenDetailController::class, 'destroy'])->name('children_details.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
+            Route::delete('/', [ChildrenDetailController::class, 'destroyAll'])->name('children_details.destroyAll')->middleware(['checkPermission:destroy|manage,rh,pers']);
         });
 
         // Routes pour les parcours scolaires liés à un profil
         Route::prefix('/profile/{profile}/academic_paths')->group(function () {
-            Route::get('/', [AcademicPathController::class, 'index'])->name('academic_paths.index');
-            Route::get('/create', [AcademicPathController::class, 'create'])->name('academic_paths.create');
-            Route::post('/', [AcademicPathController::class, 'store'])->name('academic_paths.store');
-            Route::get('/{id}', [AcademicPathController::class, 'show'])->name('academic_paths.show');
-            Route::get('/{id}/edit', [AcademicPathController::class, 'edit'])->name('academic_paths.edit');
-            Route::put('/{id}', [AcademicPathController::class, 'update'])->name('academic_paths.update');
-            Route::delete('/{id}', [AcademicPathController::class, 'destroy'])->name('academic_paths.destroy');
-            Route::delete('/', [AcademicPathController::class, 'destroyAll'])->name('academic_paths.destroyAll');
+            Route::get('/', [AcademicPathController::class, 'index'])->name('academic_paths.index')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/create', [AcademicPathController::class, 'create'])->name('academic_paths.create')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::post('/', [AcademicPathController::class, 'store'])->name('academic_paths.store')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::get('/{id}', [AcademicPathController::class, 'show'])->name('academic_paths.show')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/{id}/edit', [AcademicPathController::class, 'edit'])->name('academic_paths.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::put('/{id}', [AcademicPathController::class, 'update'])->name('academic_paths.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::delete('/{id}', [AcademicPathController::class, 'destroy'])->name('academic_paths.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
+            Route::delete('/', [AcademicPathController::class, 'destroyAll'])->name('academic_paths.destroyAll')->middleware(['checkPermission:destroy|manage,rh,pers']);
         });
 
         // Routes pour les parcours militaire liés à un profil
         Route::prefix('/profile/{profile}/military_paths')->group(function () {
-            Route::get('/', [MilitaryPathController::class, 'index'])->name('military_paths.index');
-            Route::get('/create', [MilitaryPathController::class, 'create'])->name('military_paths.create');
-            Route::post('/', [MilitaryPathController::class, 'store'])->name('military_paths.store');
-            Route::get('/{id}', [MilitaryPathController::class, 'show'])->name('military_paths.show');
-            Route::get('/{id}/edit', [MilitaryPathController::class, 'edit'])->name('military_paths.edit');
-            Route::put('/{id}', [MilitaryPathController::class, 'update'])->name('military_paths.update');
-            Route::delete('/{id}', [MilitaryPathController::class, 'destroy'])->name('military_paths.destroy');
-            Route::delete('/', [MilitaryPathController::class, 'destroyAll'])->name('military_paths.destroyAll');
+            Route::get('/', [MilitaryPathController::class, 'index'])->name('military_paths.index')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/create', [MilitaryPathController::class, 'create'])->name('military_paths.create')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::post('/', [MilitaryPathController::class, 'store'])->name('military_paths.store')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::get('/{id}', [MilitaryPathController::class, 'show'])->name('military_paths.show')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/{id}/edit', [MilitaryPathController::class, 'edit'])->name('military_paths.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::put('/{id}', [MilitaryPathController::class, 'update'])->name('military_paths.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::delete('/{id}', [MilitaryPathController::class, 'destroy'])->name('military_paths.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
+            Route::delete('/', [MilitaryPathController::class, 'destroyAll'])->name('military_paths.destroyAll')->middleware(['checkPermission:destroy|manage,rh,pers']);
         });
 
          // Routes pour les parcours professionnel liés à un profil
          Route::prefix('/profile/{profile}/professional_careers')->group(function () {
-            Route::get('/', [ProfessionalCareerController::class, 'index'])->name('professional_careers.index');
-            Route::get('/create', [ProfessionalCareerController::class, 'create'])->name('professional_careers.create');
-            Route::post('/', [ProfessionalCareerController::class, 'store'])->name('professional_careers.store');
-            Route::get('/{id}', [ProfessionalCareerController::class, 'show'])->name('professional_careers.show');
-            Route::get('/{id}/edit', [ProfessionalCareerController::class, 'edit'])->name('professional_careers.edit');
-            Route::put('/{id}', [ProfessionalCareerController::class, 'update'])->name('professional_careers.update');
-            Route::delete('/{id}', [ProfessionalCareerController::class, 'destroy'])->name('professional_careers.destroy');
-            Route::delete('/', [ProfessionalCareerController::class, 'destroyAll'])->name('professional_careers.destroyAll');
+            Route::get('/', [ProfessionalCareerController::class, 'index'])->name('professional_careers.index')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/create', [ProfessionalCareerController::class, 'create'])->name('professional_careers.create')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::post('/', [ProfessionalCareerController::class, 'store'])->name('professional_careers.store')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::get('/{id}', [ProfessionalCareerController::class, 'show'])->name('professional_careers.show')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/{id}/edit', [ProfessionalCareerController::class, 'edit'])->name('professional_careers.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::put('/{id}', [ProfessionalCareerController::class, 'update'])->name('professional_careers.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::delete('/{id}', [ProfessionalCareerController::class, 'destroy'])->name('professional_careers.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
+            Route::delete('/', [ProfessionalCareerController::class, 'destroyAll'])->name('professional_careers.destroyAll')->middleware(['checkPermission:destroy|manage,rh,pers']);
         });
 
         // Routes pour les historiques de grades
         Route::prefix('/profile/{profile}/rank_histories')->group(function () {
-            Route::get('/', [RankHistoryController::class, 'index'])->name('rank_histories.index');
-            Route::get('/create', [RankHistoryController::class, 'create'])->name('rank_histories.create');
-            Route::post('/', [RankHistoryController::class, 'store'])->name('rank_histories.store');
-            Route::get('/{id}', [RankHistoryController::class, 'show'])->name('rank_histories.show');
-            Route::get('/{id}/edit', [RankHistoryController::class, 'edit'])->name('rank_histories.edit');
-            Route::put('/{id}', [RankHistoryController::class, 'update'])->name('rank_histories.update');
-            Route::delete('/{id}', [RankHistoryController::class, 'destroy'])->name('rank_histories.destroy');
-            Route::delete('/', [RankHistoryController::class, 'destroyAll'])->name('rank_histories.destroyAll');
+            Route::get('/', [RankHistoryController::class, 'index'])->name('rank_histories.index')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/create', [RankHistoryController::class, 'create'])->name('rank_histories.create')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::post('/', [RankHistoryController::class, 'store'])->name('rank_histories.store')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::get('/{id}', [RankHistoryController::class, 'show'])->name('rank_histories.show')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/{id}/edit', [RankHistoryController::class, 'edit'])->name('rank_histories.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::put('/{id}', [RankHistoryController::class, 'update'])->name('rank_histories.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::delete('/{id}', [RankHistoryController::class, 'destroy'])->name('rank_histories.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
+            Route::delete('/', [RankHistoryController::class, 'destroyAll'])->name('rank_histories.destroyAll')->middleware(['checkPermission:destroy|manage,rh,pers']);
         });
 
         // Routes pour les distinctions honorifiques
         Route::prefix('/profile/{profile}/honorary_distinctions')->group(function () {
-            Route::get('/', [HonoraryDistinctionController::class, 'index'])->name('honorary_distinctions.index');
-            Route::get('/create', [HonoraryDistinctionController::class, 'create'])->name('honorary_distinctions.create');
-            Route::post('/', [HonoraryDistinctionController::class, 'store'])->name('honorary_distinctions.store');
-            Route::get('/{id}', [HonoraryDistinctionController::class, 'show'])->name('honorary_distinctions.show');
-            Route::get('/{id}/edit', [HonoraryDistinctionController::class, 'edit'])->name('honorary_distinctions.edit');
-            Route::put('/{id}', [HonoraryDistinctionController::class, 'update'])->name('honorary_distinctions.update');
-            Route::delete('/{id}', [HonoraryDistinctionController::class, 'destroy'])->name('honorary_distinctions.destroy');
-            Route::delete('/', [HonoraryDistinctionController::class, 'destroyAll'])->name('honorary_distinctions.destroyAll');
+            Route::get('/', [HonoraryDistinctionController::class, 'index'])->name('honorary_distinctions.index')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/create', [HonoraryDistinctionController::class, 'create'])->name('honorary_distinctions.create')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::post('/', [HonoraryDistinctionController::class, 'store'])->name('honorary_distinctions.store')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::get('/{id}', [HonoraryDistinctionController::class, 'show'])->name('honorary_distinctions.show')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/{id}/edit', [HonoraryDistinctionController::class, 'edit'])->name('honorary_distinctions.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::put('/{id}', [HonoraryDistinctionController::class, 'update'])->name('honorary_distinctions.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::delete('/{id}', [HonoraryDistinctionController::class, 'destroy'])->name('honorary_distinctions.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
+            Route::delete('/', [HonoraryDistinctionController::class, 'destroyAll'])->name('honorary_distinctions.destroyAll')->middleware(['checkPermission:destroy|manage,rh,pers']);
         });
 
         // Routes pour les campagnes militaires
         Route::prefix('/profile/{profile}/campaign_histories')->group(function () {
-            Route::get('/', [MilitaryCampaignController::class, 'index'])->name('campaign_histories.index');
-            Route::get('/create', [MilitaryCampaignController::class, 'create'])->name('campaign_histories.create');
-            Route::post('/', [MilitaryCampaignController::class, 'store'])->name('campaign_histories.store');
-            Route::get('/{id}', [MilitaryCampaignController::class, 'show'])->name('campaign_histories.show');
-            Route::get('/{id}/edit', [MilitaryCampaignController::class, 'edit'])->name('campaign_histories.edit');
-            Route::put('/{id}', [MilitaryCampaignController::class, 'update'])->name('campaign_histories.update');
-            Route::delete('/{id}', [MilitaryCampaignController::class, 'destroy'])->name('campaign_histories.destroy');
-            Route::delete('/', [MilitaryCampaignController::class, 'destroyAll'])->name('campaign_histories.destroyAll');
+            Route::get('/', [MilitaryCampaignController::class, 'index'])->name('campaign_histories.index')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/create', [MilitaryCampaignController::class, 'create'])->name('campaign_histories.create')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::post('/', [MilitaryCampaignController::class, 'store'])->name('campaign_histories.store')->middleware(['checkPermission:create|manage,rh,pers']);
+            Route::get('/{id}', [MilitaryCampaignController::class, 'show'])->name('campaign_histories.show')->middleware(['checkPermission:view|manage,rh,pers']);
+            Route::get('/{id}/edit', [MilitaryCampaignController::class, 'edit'])->name('campaign_histories.edit')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::put('/{id}', [MilitaryCampaignController::class, 'update'])->name('campaign_histories.update')->middleware(['checkPermission:edit|manage,rh,pers']);
+            Route::delete('/{id}', [MilitaryCampaignController::class, 'destroy'])->name('campaign_histories.destroy')->middleware(['checkPermission:destroy|manage,rh,pers']);
+            Route::delete('/', [MilitaryCampaignController::class, 'destroyAll'])->name('campaign_histories.destroyAll')->middleware(['checkPermission:destroy|manage,rh,pers']);
         });
 
         //Logs
         Route::prefix('/logs')->group(function () {
-            Route::get('/', [LogController::class, 'personnelLogsIndex'])->name('personnel.logs');
-            Route::get('/search', [LogController::class, 'personnelLogsSearch'])->name('personnel.logs.search');
+            Route::get('/', [LogController::class, 'personnelLogsIndex'])->name('personnel.logs')->middleware(['checkPermission:view|manage,rh,logs']);
+            Route::get('/search', [LogController::class, 'personnelLogsSearch'])->name('personnel.logs.search')->middleware(['checkPermission:view|manage,rh,logs']);
         });
 
         // Users
         Route::prefix('/users')->group(function () {
-            Route::get('/manage', [UserController::class, 'personnelManageUsers'])->name('personnel.users.manage');
-            Route::post('/assign-role', [UserController::class, 'personnelAssignRole'])->name('personnel.users.assignRole');
-            Route::post('/remove-role', [UserController::class, 'personnelRemoveRole'])->name('personnel.users.removeRole');
-            Route::get('/password/init', [UserController::class, 'personnelUserPasswordInitView'])->name('personnel.users.password.init');
+            Route::get('/', [UserController::class, 'personnelIndex'])->name('personnel.users')->middleware(['checkPermission:view|manage,rh,users']);
+            Route::get('/password/init', [UserController::class, 'personnelUserPasswordInitView'])->name('personnel.users.password.init')->middleware(['checkPermission:view|manage,rh,users']);
+
+            // Roles et permissions
+            Route::get('/roles', [RolePermissionController::class, 'indexRh'])->name('personnel.roles.index')->middleware(['checkPermission:view|manage,rh,roles']);
+            Route::get('/roles/edit/{role_id}/{domain_id}', [RolePermissionController::class, 'editPermissionRh'])->name('personnel.role-permissions.edit')->middleware(['checkPermission:edit|manage,rh,role-permission']);
+            Route::post('/roles/store', [RolePermissionController::class, 'storePermissionRh'])->name('personnel.role-permissions.store')->middleware(['checkPermission:edit|manage,rh,role-permission']);
+
+            // Users rôles and permissions
+            Route::get('/manage', [UserController::class, 'personnelManageUsers'])->name('personnel.users.manage')->middleware(['checkPermission:view|manage,rh,role-permission']);
+            Route::get('/search', [UserController::class, 'personnelManageUsersSearch'])->name('personnel.users.search')->middleware(['checkPermission:view|manage,rh,role-permission']);
+            Route::post('/assign-role', [UserController::class, 'personnelAssignRole'])->name('personnel.users.assignRole')->middleware(['checkPermission:create|edit|manage,rh,role-permission']);
+            Route::post('/remove-role', [UserController::class, 'personnelRemoveRole'])->name('personnel.users.removeRole')->middleware(['checkPermission:destroy|manage,rh,role-permission']);
 
         });
     });

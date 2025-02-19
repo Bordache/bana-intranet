@@ -2,7 +2,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
+use App\Services\PasswordGeneratorService;
+
 use App\Models\User;
+use App\Models\Rank;
+use App\Models\Unit;
 use App\Models\Role;
 use App\Models\UserRole;
 use App\Models\Domain;
@@ -10,21 +18,103 @@ use App\Models\Profile;
 use App\Models\PasswordInit;
 use App\Models\Objet;
 use App\Models\MilitaryDetail;
+use App\Models\Logs;
 use App\Helpers\LogHelper;
 
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->passwordGenerator = new PasswordGeneratorService();
+    }
+
+    /**
+     * Liste des utilisateurs
+     */
+    public function index($domainName = null)
+    {
+        $users = User::with([
+            'militaryDetail.rank',
+            'militaryDetail.unit',
+            'logs',
+            'userRoles.domain',
+        ])
+        ->leftJoin('military_details', 'users.profile_id', '=', 'military_details.profile_id')
+        ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->leftJoin('user_roles', 'users.id', '=', 'user_roles.user_id')
+        ->leftJoin('domains', 'user_roles.domain_id', '=', 'domains.id')
+        ->select([
+            'users.*',
+            'military_details.rank_id',
+            'military_details.rank_date',
+            'military_details.unit_id',
+            'military_details.service_entry_date',
+            'ranks.rank_abbreviate as rank_abbreviate',
+            'units.unit_abbreviate as unit_abbreviate',
+            'domains.id as domain_id',
+            'domains.domain_description as domain_description'
+        ]);
+
+        if (auth()->check() && auth()->user()->roles()->whereIn('name', ['Administrateur', 'Auditeur', 'Super administrateur'])->doesntExist()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $users->where('military_details.unit_id', '=', $unitId);
+            }
+        }
+
+        if ($domainName) {
+            $domainId = Domain::where('name', $domainName)->value('id');
+
+            if (!$domainId) {
+                return redirect()->back()->with('error', "Le domaine '$domainName' n'existe pas.");
+            }
+
+            $users->where('domains.id', '=', $domainId);
+        }
+
+        $users = $users
+            ->orderBy('military_details.rank_id')
+            ->orderBy('military_details.rank_date')
+            ->orderBy('military_details.service_entry_date')
+            ->paginate(50);
+
+            return compact('users');
+    }
+
+
+    /**
+     * Liste des utilisateurs pour admin
+     */
+    public function adminIndex()
+    {
+        $data = $this->index();
+        $search = null;
+        return view('admin.users.index', array_merge($data, compact('search')));
+    }
+
+    /**
+     * Liste des utilisateurs pour rh
+     */
+    public function personnelIndex()
+    {
+        $data = $this->index('rh');
+        $search = null;
+        return view('personnel.users.index', array_merge($data, compact('search')));
+    }
+
     /**
      * Afficher la liste des utilisateurs et leurs rôles
      */
-    public function manageUsers($domainName = null)
+    public function manageUsers(Request $request, $domainName = null)
     {
-        if ($domainName) {
-            $domain = Domain::where('name', $domainName)->first();
-            if (!$domain) {
-                return redirect()->back()->with('error', "Le domaine '$domainName' n'existe pas.");
-            }
+        // Récupération des paramètres
+        $domain_id = $domainName ? Domain::where('name', $domainName)->value('id') : null;
+        $search = $request->has('search') ? trim($request->search) : null;
+
+        if ($domainName && !$domain_id) {
+            return redirect()->back()->with('error', "Le domaine '$domainName' n'existe pas.");
         }
 
         // Liste de tous les utilisateurs
@@ -34,10 +124,20 @@ class UserController extends Controller
             ->select([
                 'users.*',
                 'military_details.rank_id',
+                'military_details.unit_id',
                 'military_details.rank_date',
                 'military_details.service_entry_date',
                 'ranks.rank_abbreviate as grade'
             ])
+            ->when(auth()->check() && !auth()->user()->hasRole('Administrateur')
+                && !auth()->user()->hasRole('Auditeur') && !auth()->user()->isSuperAdmin(),
+                function ($query) {
+                    $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+                    if ($unitId) {
+                        $query->where('military_details.unit_id', $unitId);
+                    }
+                }
+            )
             ->orderBy('military_details.rank_id')
             ->orderBy('military_details.rank_date')
             ->orderBy('military_details.service_entry_date')
@@ -46,39 +146,49 @@ class UserController extends Controller
 
         // Liste rôles et domaines
         $roles = Role::where('name', '!=', 'Super administrateur')->get();
-        $domains = $domainName
-        ? Domain::where('name', $domainName)
-            ->where('name', '!=', 'admin')
+        $domains = Domain::whereNot('name', 'admin')
             ->with('objets')
-            ->get()
-        : Domain::where('name', '!=', 'admin')
-            ->with('objets')
+            ->when($domain_id, fn($query) => $query->where('id', $domain_id))
             ->get();
-
 
         // Liste des utilisateurs avec rôles et domaines
         $usersQuery = User::with([
-            'profile',
-            'militaryDetail.rank',
-            'userRoles.role',
-            'userRoles.domain'
-        ])
-        ->whereHas('userRoles.role', function ($q) {
-            $q->where('name', '!=', 'Super administrateur');
-        });
-
-        if ($domainName) {
-            $usersQuery->whereHas('userRoles', function ($query) use ($domain) {
-                $query->where('domain_id', $domain->id);
-            });
-        }
-
-        if (auth()->user() && !auth()->user()->hasRole(['Administrateur', 'Super administrateur'])) {
-            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
-            if ($unitId) {
-                $usersQuery->where('military_details.unit_id', '=', $unitId);
-            }
-        }
+                'profile',
+                'militaryDetail.rank',
+                'userRoles' => function ($query) use ($domain_id) {
+                    if ($domain_id) {
+                        $query->whereHas('domain', fn($q) => $q->where('id', $domain_id));
+                    }
+                },
+                'userRoles.role',
+                'userRoles.domain'
+            ])
+            ->whereHas('userRoles.role', fn($q) => $q->where('name', '!=', 'Super administrateur'))
+            ->when($domain_id, fn($query) =>
+                $query->whereHas('userRoles.domain', fn($q) => $q->where('id', $domain_id))
+            )
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('users.name', 'like', "%{$search}%")
+                    ->orWhere('users.firstname', 'like', "%{$search}%")
+                    ->orWhere('users.username', 'like', "%{$search}%")
+                    ->orWhereHas('militaryDetail.rank', fn($q) =>
+                        $q->where('rank_abbreviate', 'like', "%{$search}%"))
+                    ->orWhereHas('userRoles.role', fn($q) =>
+                        $q->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('userRoles.domain', fn($q) =>
+                        $q->where('domain_description', 'like', "%{$search}%"));
+                });
+            })
+            ->when(auth()->user() && !auth()->user()->hasRole('Administrateur')
+                && !auth()->user()->hasRole('Auditeur') && !auth()->user()->isSuperAdmin(),
+                function ($query) {
+                    $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+                    if ($unitId) {
+                        $query->where('military_details.unit_id', $unitId);
+                    }
+                }
+            );
 
         $users = $usersQuery
             ->leftJoin('military_details', 'users.profile_id', '=', 'military_details.profile_id')
@@ -92,121 +202,26 @@ class UserController extends Controller
             ->orderBy('military_details.rank_id')
             ->orderBy('military_details.rank_date')
             ->orderBy('military_details.service_entry_date')
-            ->paginate(20);
-
-        return compact('allUsers', 'users', 'roles', 'domains');
-    }
-
-    /**
-     * Afficher la liste des utilisateurs et leurs rôles pour admin
-     */
-    public function adminManageUsers()
-    {
-        $data = $this->manageUsers();
-        $search = null;
-        $isAdmin = true;
-        return view('admin.users.manage', array_merge($data, compact('search' ,'isAdmin')));
-    }
-
-    /**
-     * Afficher la liste des utilisateurs et leurs rôles pour RH
-     */
-    public function personnelManageUsers()
-    {
-        $data = $this->manageUsers('rh');
-        $search = null;
-        $isAdmin = false;
-        return view('personnel.users.manage', array_merge($data, compact('search', 'isAdmin')));
-    }
-
-
-
-    /**
-     *  Afficher le resultat de recherche utilisateurs
-     */
-    public function manageUsersSearch(Request $request)
-    {
-        $search = trim(strip_tags($request->input('search')));
-        $allUsers = User::with(['profile', 'militaryDetail.rank'])
-        ->leftJoin('military_details', 'users.profile_id', '=', 'military_details.profile_id')
-        ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
-        ->select([
-            'users.*',
-            'military_details.rank_id',
-            'military_details.rank_date',
-            'military_details.service_entry_date',
-            'ranks.rank_abbreviate as grade'
-        ])
-        ->orderBy('military_details.rank_id')
-        ->orderBy('military_details.rank_date')
-        ->orderBy('military_details.service_entry_date')
-        ->distinct()
-        ->get();
-        $roles = Role::where('name', '!=', 'Super administrateur' )->get();
-        $domains = Domain::with('objets')->get();
-
-        $users = User::with([
-            'militaryDetail.rank',
-            'userRoles.role',
-            'userRoles.domain'
-        ])
-        ->whereHas('userRoles.role', function ($query) {
-            $query->where('name', '!=', 'Super administrateur'); // Exclure les super administrateurs
-        })
-        ->when($search, function ($query) use ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('users.name', 'like', "%{$search}%")
-                ->orWhere('users.firstname', 'like', "%{$search}%")
-                ->orWhere('users.username', 'like', "%{$search}%")
-                ->orWhereHas('militaryDetail.rank', fn($q) =>
-                    $q->where('rank_abbreviate', 'like', "%{$search}%"))
-                ->orWhereHas('userRoles.role', fn($q) =>
-                    $q->where('name', 'like', "%{$search}%"))
-                ->orWhereHas('userRoles.domain', fn($q) =>
-                    $q->where('domain_description', 'like', "%{$search}%"));
-            });
-        })->leftJoin('military_details', 'users.profile_id', '=', 'military_details.profile_id')
-        ->select([
-            'users.*',
-            'military_details.rank_id',
-            'military_details.rank_date',
-            'military_details.service_entry_date'
-        ])
-        ->distinct()
-        ->orderBy('military_details.rank_id')
-        ->orderBy('military_details.rank_date')
-        ->orderBy('military_details.service_entry_date')
-        ->paginate(20);
-
-        $users->getCollection()->transform(function ($user) {
-            $validRoles = $user->userRoles->filter(fn($r) => $r->role->name !== 'Super administrateur' || $r->domain_id !== null);
-
-            if ($validRoles->isEmpty()) {
-                return null;
-            }
-
-            $user->userRoles = $validRoles;
-            return $user;
-        })->filter();
+            ->paginate(20)->appends($request->query());
 
         return compact('allUsers', 'users', 'roles', 'domains', 'search');
     }
 
     /**
-     * Afficher le resultat de recherche utilisateurs pour admin
+     * Afficher la liste des utilisateurs et leurs rôles pour l'administrateur
      */
-    public function adminManageUsersSearch(Request $request)
+    public function adminManageUsers()
     {
-        $data = $this->manageUsersSearch($request);
+        $data = $this->manageUsers(request());
         return view('admin.users.manage', $data);
     }
 
     /**
-     * Afficher le resultat de recherche utilisateurs pour rh
+     * Afficher la liste des utilisateurs et leurs rôles pour le service RH
      */
-    public function personnelManageUsersSearch(Request $request)
+    public function personnelManageUsers()
     {
-        $data = $this->manageUsersSearch($request);
+        $data = $this->manageUsers(request(), 'rh');
         return view('personnel.users.manage', $data);
     }
 
@@ -295,62 +310,72 @@ class UserController extends Controller
     /**
      * Supprimer un rôle d'un utilisateur pour un domaine et un objet
      */
-    public function removeRole(Request $request, $domainName = null)
-{
-    $user = User::find($request->user_id);
-    if (!$user) {
-        return redirect()->back()->with('error', "L'utilisateur n'existe pas.");
-    }
+    public function removeRole(Request $request, $domainName = null): RedirectResponse
+    {
+        $user = User::find($request->user_id);
+        if (!$user) {
+            return redirect()->back()->with('error', "L'utilisateur n'existe pas.");
+        }
 
-    $domainId = $domainName
-        ? Domain::where('name', $domainName)->value('id')
-        : Domain::where('name', 'admin')->value('id');
+        $domainId = $domainName
+            ? Domain::where('name', $domainName)->value('id')
+            : Domain::where('name', 'admin')->value('id');
 
-    if ($domainName && !$domainId) {
-        return redirect()->back()->with('error', "Le domaine '$domainName' n'existe pas.");
-    }
+        if ($domainName && !$domainId) {
+            return redirect()->back()->with('error', "Le domaine '$domainName' n'existe pas.");
+        }
 
-    $request->validate([
-        'user_id'   => 'required|exists:user_roles,user_id',
-        'domain_id' => 'required|exists:domains,id',
-    ]);
+        $validated = $request->validate([
+            'user_id'   => 'required|exists:user_roles,user_id',
+            'role_id'  => 'required|exists:user_roles,role_id',
+            'domain_id' => 'required|exists:domains,id',
+        ]);
+        $user_id = $validated['user_id'];
+        $role_id = $validated['role_id'];
+        $domain_id = $validated['domain_id'];
 
-    $userRole = UserRole::where('user_id', $user->id)
-        ->where('domain_id', $domainId)
-        ->first();
+        $userRole = UserRole::where('user_id', $user->id)->where('role_id', $role_id)->where('domain_id', $domain_id)
+            ->first();
 
-    if (!$userRole) {
-        return redirect()->back()->with('error', 'Rôle non supprimé.');
-    }
+        if (!$userRole) {
+            return redirect()->back()->with('error', 'Rôle non supprimé.');
+        }
 
-    $roleName = optional(Role::find($userRole->role_id))->name;
-    $userRole->delete();
+        $roleName = optional(Role::find($userRole->role_id))->name;
 
-    LogHelper::logAction(
-        auth()->id(),
-        'Destroy_role',
-        "Suppression du rôle {$roleName} assigné à {$user->username}.",
-        $domainId
-    );
+        // Suppression
+        $deleted = $userRole->delete();
+
+        if (!$deleted) {
+            return redirect()->back()->with('error', 'Échec de la suppression du rôle.');
+        }
+
+        LogHelper::logAction(
+            auth()->id(),
+            'Destroy_role',
+            "Suppression du rôle {$roleName} assigné à {$user->username}.",
+            $domainId
+        );
 
     return redirect()->back()->with('success', 'Rôle supprimé avec succès.');
-}
+    }
 
     /**
      * Supprimer un rôle utilisateur pour admin
      */
-    public function adminRemoveRole(Request $request)
+    public function adminRemoveRole(Request $request): RedirectResponse
     {
-        $this->removeRole($request);
+        return $this->removeRole($request);
     }
 
     /**
      * Supprimer un rôle utilisateur pour rh
      */
-    public function personnelRemoveRole(Request $request)
+    public function personnelRemoveRole(Request $request): RedirectResponse
     {
-        $this->removeRole($request, 'rh');
+        return $this->removeRole($request, 'rh');
     }
+
 
 
     /**
@@ -358,7 +383,22 @@ class UserController extends Controller
      */
     public function manageAdmins()
     {
-        $users = User::all();
+        $users = User::with(['profile', 'militaryDetail.rank'])
+        ->leftJoin('military_details', 'users.profile_id', '=', 'military_details.profile_id')
+        ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->select([
+            'users.*',
+            'military_details.rank_id',
+            'military_details.rank_date',
+            'military_details.service_entry_date',
+            'ranks.rank_abbreviate as grade',
+            'units.unit_abbreviate as unit'
+        ])
+        ->orderBy('military_details.rank_id')
+        ->orderBy('military_details.rank_date')
+        ->orderBy('military_details.service_entry_date')
+        ->get();
         $superAdminRole = Role::where('name', 'Super administrateur')->first();
         $superAdmins = UserRole::where('role_id', $superAdminRole->id)->pluck('user_id')->toArray();
 
@@ -434,11 +474,10 @@ class UserController extends Controller
             'military_details.rank_date as rank_date',
             'military_details.service_entry_date as service_entry_date',
             'ranks.rank_abbreviate as grade',
-            'units.unit_abbreviate as unit_name'
+            'units.unit_abbreviate as unit'
         ]);
-        /* ->distinct(); */ // pour éviter les doublons.
 
-        if (auth()->check() && auth()->user()->hasRole('Collaborateur') && !auth()->user()->hasRole('Super administrateur')) {
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->hasRole('Auditeur') && !auth()->user()->hasRole('Super administrateur')) {
             $unitId = auth()->user()->militaryDetail->unit_id ?? null;
             if ($unitId) {
                 $usersPassword->where('military_details.unit_id', '=', $unitId);
@@ -468,6 +507,61 @@ class UserController extends Controller
     {
         $usersPassword = $this->userPasswordInitView();
         return view('personnel.users.password-init', compact('usersPassword'));
+    }
+
+    /**
+     * Initialiser le mot de passe d'un utilisateur
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $user = User::find($request->user_id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', "L'utilisateur n'existe pas.");
+        }
+
+        $passwordRandom = $this->passwordGenerator->passwordGenerator(8);
+
+        DB::beginTransaction();
+        try {
+            // Mise à jour du mot de passe de l'utilisateur
+            $user->update([
+                'password' => Hash::make($passwordRandom),
+                'password_changed_at' => null,
+            ]);
+
+            // Stockage du mot de passe temporaire
+            PasswordInit::create([
+                'user_id' => $user->id,
+                'password' => $passwordRandom,
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Mot de passe initialisé avec succès.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Échec de l\'initialisation du mot de passe.');
+        }
+    }
+
+    /**
+     * Initialiser le mot de passe d'un utilisateur pour admin
+     */
+    public function adminResetPassword(Request $request)
+    {
+        return $this->resetPassword($request);
+    }
+
+    /**
+     * Initialiser le mot de passe d'un utilisateur pour RH
+     */
+    public function personnelResetPassword(Request $request)
+    {
+        return $this->resetPassword($request);
     }
 
 }

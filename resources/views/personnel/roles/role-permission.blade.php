@@ -3,9 +3,9 @@
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"
             class="d-flex justify-content-between align-items-center text-sm">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('admin') }}">Administration</a></li>
-                <li class="breadcrumb-item" aria-current="page">Paramètres globaux</li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('admin.roles.index') }}">Rôles et permissions</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('personnel.index') }}">Personnel</a></li>
+                <li class="breadcrumb-item" aria-current="page">Paramètres</li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('personnel.roles.index') }}">Rôles et permissions</a></li>
             </ol>
         </nav>
         <h2 class="pt-3 font-semibold text-xl text-gray-800 leading-tight">
@@ -18,7 +18,7 @@
     </x-slot>
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 bg-white p-4">
-            <form action="{{ route('admin.role-permissions.store') }}" method="POST" class="row g-3">
+            <form action="{{ route('personnel.role-permissions.store') }}" method="POST" class="row g-3">
                 @csrf
                 <input type="hidden" name="role_id" value="{{ $role->id }}">
                 <input type="hidden" name="domain_id" value="{{ $domain->id }}">
@@ -89,46 +89,7 @@
                     </table>
                 @endforeach
                 <div class="container-fluid sticky-bottom bg-white py-3">
-                    <button type="button" class="btn btn-secondary mt-3 w-auto" data-bs-toggle="modal"
-                        data-bs-target="#modalBloc">Ajouter un objet</button>
                     <button type="submit" class="btn btn-primary mt-3 w-auto">Enregistrer</button>
-                </div>
-                <!-- Modal -->
-                <div class="modal fade" id="modalBloc" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel">Ajouter un objet <a tabindex="0" class="fas fa-info-circle" role="button" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="Un objet représente une entité spécifique du domaine sélectionné sur laquelle des permissions peuvent être appliquées. Il peut s'agir, par exemple, d'un module, d'une ressource ou d'un élément structurant (exemple : un utilisateur, une unité, un document, une publication). Ajouter un objet permet d'associer des permissions précises à une entité bien définie."></a></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="{{-- {{ route('objet.store') }} --}}" method="POST">
-                                @csrf
-                                <input type="hidden" name="role_id" value="{{ $role->id }}">
-                                <input type="hidden" name="domain_id" value="{{ $domain->id }}">
-                                <div class="row g-3">
-                                    <!-- Name abbrege-->
-                                    <div class="col-md-4 d-flex pt-2">
-                                        <x-input-label for="name" :value="__('Nom abbrégé')" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <x-text-input id="name" name="name" type="text" :value="old('name')" placeholder="Entrer nom abbrégé" />
-                                    </div>
-                                    <!-- Name -->
-                                    <div class="col-md-4 d-flex pt-2">
-                                        <x-input-label for="name" :value="__('Nom complet')" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <x-text-input id="name" name="name" type="text" :value="old('name')" placeholder="Entrer nom complet" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </form>
         </div>

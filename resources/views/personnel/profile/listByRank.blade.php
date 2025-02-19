@@ -8,7 +8,7 @@
             </ol>
         </nav>
         <h2 class="pt-3 font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Personnel par grade') }}
+            {{ __('Liste par grade') }}
         </h2>
     </x-slot>
 
@@ -31,6 +31,7 @@
                                     data-bs-target="#collapse{{ $key }}" aria-expanded="false"
                                     aria-controls="collapse{{ $key }}">
                                     {{ $rank->rank_abbreviate ?? 'Non spécifié' }}
+                                    <span class="badge {{ $rankProfiles->count()>0 ? ' bg-primary' : ' bg-secondary' }} ms-1">{{$rankProfiles->count()}}</span>
                                 </button>
                             </h2>
                             <div id="collapse{{ $key }}" class="accordion-collapse collapse"

@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'password.changed' => \App\Http\Middleware\CheckPasswordChanged::class,
             'checkPermission' => \App\Http\Middleware\CheckPermission::class,
             'checkRole' => \App\Http\Middleware\CheckRole::class,
+            'checkRoleInDomain' => \App\Http\Middleware\CheckRoleInDomain::class,
+            'IsSuperAdmin' => \App\Http\Middleware\IsSuperAdmin::class,
             'PDF' => Barryvdh\DomPDF\Facade::class,
         ]);
     })

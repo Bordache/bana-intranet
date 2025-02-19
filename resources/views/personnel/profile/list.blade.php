@@ -8,7 +8,7 @@
             </ol>
         </nav>
         <h2 class="pt-3 font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Personnel global') }}
+            {{ __('Liste intégrale') }}
         </h2>
     </x-slot>
 

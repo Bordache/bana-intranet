@@ -53,4 +53,12 @@ class Role extends Model
             ->exists();
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_roles')
+                    ->withPivot('domain_id', 'object_id')
+                    ->withTimestamps();
+    }
+
+
 }

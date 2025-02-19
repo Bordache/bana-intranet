@@ -1,7 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Gestion des utilisateurs') }}
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"
+            class="d-flex justify-content-between align-items-center text-sm">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ route('admin') }}">Administration</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Paramètres globaux</li>
+            </ol>
+        </nav>
+        <h2 class="pt-3 font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Super administrateurs du site') }}
         </h2>
     </x-slot>
 
@@ -17,7 +24,7 @@
                         <select name="user_id" class="form-control" required>
                             @foreach ($users as $user)
                                 @if (!in_array($user->id, $superAdmins))
-                                    <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})
+                                    <option value="{{ $user->id }}">{{ $user->grade }} {{ $user->name }} {{ $user->firstname }} ({{ $user->username }})
                                     </option>
                                 @endif
                             @endforeach
@@ -35,8 +42,9 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Utilisateur</th>
-                            <th>Email</th>
+                            <th>Grade</th>
+                            <th>Nom et prénoms</th>
+                            <th>Identifiant</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -44,8 +52,9 @@
                         @foreach ($users as $user)
                             @if (in_array($user->id, $superAdmins))
                                 <tr>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $user->grade }}</td>
+                                    <td>{{ $user->name }} {{ $user->firstname }}</td>
+                                    <td>{{ $user->username }}</td>
                                     <td>
                                         <form action="{{ route('users.removeSuperAdmin') }}" method="POST"
                                             class="d-inline">

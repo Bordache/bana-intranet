@@ -93,5 +93,10 @@ class MilitaryDetail extends Model
         return $this->belongsTo(Rank::class, 'rank_id', 'id'); // 'rank_id' est la clé étrangère dans military_details
     }
 
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'unit_id', 'id'); // 'unit_id' est la clé étrangère dans military_details
+    }
+
 }
 

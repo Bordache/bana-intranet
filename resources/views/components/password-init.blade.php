@@ -1,10 +1,7 @@
-<table class="table table-striped table-hover">
+<table class="table table-striped table-hover" id="dataTable">
     <thead>
         <tr>
-            <th scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <input type="checkbox" wire:model="selectAll" class="form-checkbox h-5 w-5 text-indigo-600 border-gray-300 rounded" />
-            </th>
+            <th><input class="form-check-input ms-1 mb-1" type="checkbox" id="checkAll" onclick="toggleCheckboxes(this)"></th>
             <th scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Grade</th>
@@ -17,6 +14,9 @@
             <th scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Identifiant</th>
+                <th scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Unité</th>
             <th scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Mot de passe initial</th>
@@ -25,9 +25,7 @@
     <tbody>
         @foreach ($usersPassword as $user)
             <tr>
-                <td class="px-6 whitespace-nowrap text-sm text-gray-900">
-                    <input type="checkbox" wire:model="selectedUsers" value="{{ $user->id }}" class="form-checkbox h-5 w-5 text-indigo-600 border-gray-300 rounded" />
-                </td>
+                <td><input class="form-check-input profile-checkbox checkItem ms-1 mb-1" type="checkbox" value="{{ $user->id }}"></td>
                 <td class="px-6 whitespace-nowrap text-sm text-gray-900">
                     {!! highlight($user->grade ?? '', $search ?? '') !!}
                 </td>
@@ -39,6 +37,9 @@
                 </td>
                 <td class="px-6 whitespace-nowrap text-sm text-gray-900">
                     {!! highlight($user->user_username ?? '', $search ?? '') !!}
+                </td>
+                <td class="px-6 whitespace-nowrap text-sm text-gray-900">
+                    {!! highlight($user->unit ?? '', $search ?? '') !!}
                 </td>
                 <td class="px-6 whitespace-nowrap text-sm text-gray-900">
                     {{ $user->password }}

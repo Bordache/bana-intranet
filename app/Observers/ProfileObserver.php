@@ -49,17 +49,13 @@ class ProfileObserver
             'username' => $username,
             'password' => Hash::make($passwordRandom),
             'email' => $username . $domainEmail,
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'email_verified_at' => now()
         ]);
 
         // Stockage du mot de passe initial
         PasswordInit::create([
             'user_id' => $user->id,
-            'password' => $passwordRandom,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'password' => $passwordRandom
         ]);
 
         // 🔹 Assignation automatique du rôle "Utilisateur standard" au domaine "Comm"

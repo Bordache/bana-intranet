@@ -3,8 +3,8 @@
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"
             class="d-flex justify-content-between align-items-center text-sm">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('admin') }}">Administration</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Paramètres globaux</li>
+                <li class="breadcrumb-item"><a href="{{ route('personnel.index') }}">Personnel</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Paramètres</li>
             </ol>
         </nav>
         <h2 class="pt-3 font-semibold text-xl text-gray-800 leading-tight">
@@ -47,7 +47,7 @@
                                                 <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $roleDomain ? $roleDomain->domain_description : 'Aucune description' }}</td>
                                                 <td class="px-6 whitespace-nowrap text-sm text-gray-900">{{ $rolePermissions->where('role_id', $role->id)->where('domain_id', $domain->id)->first() ? $rolePermissions->where('role_id', $role->id)->where('domain_id', $domain->id)->first()->updated_at->format('d/m/Y H:i') : 'Jamais'}}</td>
                                                 <td class="text-center">
-                                                    <a href="{{ route('admin.role-permissions.edit', ['role_id' => $role->id, 'domain_id' => $domain->id]) }}"
+                                                    <a href="{{ route('personnel.role-permissions.edit', ['role_id' => $role->id, 'domain_id' => $domain->id]) }}"
                                                         class="fas fa-pen" title="Modifier">
                                                     </a>
                                                 </td>
@@ -61,9 +61,6 @@
                 @empty
                     <div class="alert alert-info">Aucune permission trouvée.</div>
                 @endforelse
-            </div>
-            <div>
-                <button class="btn btn-primary">Ajouter un rôle</button>
             </div>
         </div>
     </div>

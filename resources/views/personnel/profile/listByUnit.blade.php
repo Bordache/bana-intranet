@@ -8,7 +8,7 @@
             </ol>
         </nav>
         <h2 class="pt-3 font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Personnel par unite') }}
+            {{ __('Liste par unite') }}
         </h2>
     </x-slot>
 
@@ -24,16 +24,16 @@
                         @php
                             $unitProfiles = $profilesByUnit[$unit->id] ?? collect();
                         @endphp
-
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="heading_{{ $key }}">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            <h2 class="accordion-header d-flex" id="heading_{{ $key }}">
+                                <button class="accordion-button {{ $expand ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapse{{ $key }}" aria-expanded="false"
                                     aria-controls="collapse{{ $key }}">
                                     {{ $unit->unit_abbreviate ?? 'Non spécifié' }}
+                                    <span class="badge {{ $unitProfiles->count()>0 ? ' bg-primary' : ' bg-secondary' }} ms-1">{{$unitProfiles->count()}}</span>
                                 </button>
                             </h2>
-                            <div id="collapse{{ $key }}" class="accordion-collapse collapse"
+                            <div id="collapse{{ $key }}" class="accordion-collapse collapse {{ $expand ? '' : 'show' }}"
                                 aria-labelledby="heading_{{ $key }}" data-bs-parent="#accordionList">
                                 <div class="accordion-body p-0">
                                     @if ($unitProfiles->isNotEmpty())

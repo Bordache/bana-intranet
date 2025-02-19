@@ -12,11 +12,21 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+        <style>
+            @media print {
+                input[type="checkbox"] {
+                    display: none;
+                }
+            }
+        </style>
 
 
         <!-- Scripts -->
         <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -41,7 +51,7 @@
 
         <!-- Toast -->
     @if(session('success'))
-        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000">
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <i class="fas fa-check-circle text-success px-2"></i>
@@ -57,7 +67,7 @@
     @endif
 
     @if (@session('danger'))
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <i class="fas fa-exclamation-circle text-danger px-2"></i>
@@ -73,7 +83,7 @@
     @endsession
 
     @if (@session('warning'))
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <i class="fas fa-exclamation-circle text-warning px-2"></i>
@@ -89,7 +99,7 @@
     @endsession
 
     @if (@session('info'))
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <i class="fas fa-circle-info text-info px-2"></i>

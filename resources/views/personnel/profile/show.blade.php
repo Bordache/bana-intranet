@@ -38,17 +38,17 @@
                             @if(auth()->user()->profile_id !== $profile->id)
                                 <div>
                                     <ul>
-                                        <li class="mb-2">
+                                        {{-- <li class="mb-2">
                                             <a href="{{ route('personnel.create', ['recipient' => $profile->id]) }}"
                                                 class="btn btn-sm btn-light d-flex align-items-center">
                                                 <i class="fas fa-envelope me-2"></i> Envoyer message
                                             </a>
-                                        </li>
+                                        </li> --}}
 
                                         <li>
                                             <form action="{{ route('personnel.destroy', $profile->id) }}" method="POST"
                                                 class="d-inline"
-                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce détail ?')">
+                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer {{ $profileRank->rank_abbreviate .' '. $profile->name .' '. $profile->firstname }} ?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" title="Supprimer"
@@ -68,12 +68,12 @@
                                 <button class="nav-link" id="nav-perm-tab" data-bs-toggle="tab"
                                     data-bs-target="#nav-perm" type="button" role="tab" aria-controls="nav-perm"
                                     aria-selected="false">Congés et permissions</button>
-                                <button class="nav-link" id="nav-role-tab" data-bs-toggle="tab"
-                                    data-bs-target="#nav-role" type="button" role="tab" aria-controls="nav-role"
-                                    aria-selected="false">Paramètres</button>
-                                <button class="nav-link" id="nav-service-status-tab" data-bs-toggle="tab"
+                                    <button class="nav-link" id="nav-service-status-tab" data-bs-toggle="tab"
                                     data-bs-target="#nav-service-status" type="button" role="tab" aria-controls="nav-service-status"
                                     aria-selected="false">Décompte</button>
+                                <button class="nav-link" id="nav-role-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-role" type="button" role="tab" aria-controls="nav-role"
+                                    aria-selected="false">Pièces jointes</button>
                             </div>
                         </nav>
 
@@ -228,9 +228,9 @@
                                 Congés et permissions
                             </div>
 
-                            <!-- Paramètres -->
+                            <!-- PJ -->
                             <div class="tab-pane fade" id="nav-role" role="tabpanel"
-                                aria-labelledby="nav-role-tab">Parametres</div>
+                                aria-labelledby="nav-role-tab">Aucune pièce jointe</div>
 
                             <!-- Décompte -->
                             <div class="tab-pane fade" id="nav-service-status" role="tabpanel"
@@ -241,8 +241,6 @@
                                             <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                               <button class="nav-link active text-start" id="v-pills-serv-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-serv-stat" type="button" role="tab" aria-controls="v-pills-serv-stat" aria-selected="true">Etat de service</button>
                                               <button class="nav-link text-start" id="v-pills-perm-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-perm-stat" type="button" role="tab" aria-controls="v-pills-perm-stat" aria-selected="false">Congés et permissions</button>
-                                              <button class="nav-link text-start" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
-                                              <button class="nav-link text-start" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
                                             </div>
                                             <div class="tab-content w-100" id="v-pills-tabContent">
                                                 <!-- Etat de service -->
@@ -305,12 +303,6 @@
 
                                                 <!-- Congés et permissions -->
                                                 <div class="tab-pane fade" id="v-pills-perm-stat" role="tabpanel" aria-labelledby="v-pills-perm-stat-tab">...</div>
-
-                                                <!-- Messages -->
-                                                <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
-
-                                                <!-- Settings -->
-                                                <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
                                             </div>
                                         </div>
                                     </div>

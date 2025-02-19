@@ -75,7 +75,14 @@ class PersonnelController extends Controller
     {
         $profiles = MilitaryDetail::with(['profile', 'rank'])
         ->join('profiles', 'military_details.profile_id', '=', 'profiles.id')
-        ->join('ranks', 'military_details.rank_id', '=', 'ranks.id')
+        ->join('ranks', 'military_details.rank_id', '=', 'ranks.id');
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $profiles->where('unit_id', '=', $unitId);
+            }
+        }
+        $profiles = $profiles
         ->orderBy('profiles.updated_at', 'desc')
         ->limit(5)
         ->get();
@@ -116,7 +123,14 @@ class PersonnelController extends Controller
         ])
         ->leftJoin('military_details', 'profiles.id', '=', 'military_details.profile_id')
         ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
-        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id');
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $militaryDetails->where('unit_id', '=', $unitId);
+            }
+        }
+        $militaryDetails = $militaryDetails
         ->select([
             'profiles.*',
             'military_details.unit_id',
@@ -145,7 +159,16 @@ class PersonnelController extends Controller
         $expand = true;
 
         // Récupération des unités
-        $units = Unit::orderBy('unit_abbreviate')->get();
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $units = Unit::where('id', '=', $unitId)->get();
+                $expand = false;
+
+            }
+        } else {
+            $units = Unit::orderBy('unit_abbreviate')->get();
+        }
 
         // Récupération des profils avec regroupement par unité
         $profilesByUnit = Profile::with([
@@ -157,7 +180,14 @@ class PersonnelController extends Controller
         ])
         ->leftJoin('military_details', 'profiles.id', '=', 'military_details.profile_id')
         ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
-        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id');
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $profilesByUnit->where('unit_id', '=', $unitId);
+            }
+        }
+        $profilesByUnit = $profilesByUnit
         ->select([
             'profiles.*',
             'military_details.unit_id',
@@ -210,7 +240,14 @@ class PersonnelController extends Controller
             'ranks.rank_abbreviate',
             'units.unit_abbreviate',
             'profiles.updated_at as profile_updated_at'
-        ])
+        ]);
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $profilesByRank->where('unit_id', '=', $unitId);
+            }
+        }
+        $profilesByRank = $profilesByRank
         ->orderBy('military_details.rank_id')
         ->orderBy('military_details.rank_date')
         ->orderBy('military_details.service_entry_date')
@@ -251,7 +288,14 @@ class PersonnelController extends Controller
              'ranks.rank_abbreviate',
              'units.unit_abbreviate',
              'profiles.updated_at as profile_updated_at'
-         ])
+         ]);
+         if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $query->where('unit_id', '=', $unitId);
+            }
+        }
+        $query = $query
          ->when($search, function ($query) use ($search) {
              $query->where(function ($q) use ($search) {
                  $q->where('profiles.name', 'like', "%{$search}%")
@@ -322,6 +366,12 @@ class PersonnelController extends Controller
             'units.unit_abbreviate',
             'profiles.updated_at as profile_updated_at'
         ]);
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $query->where('unit_id', '=', $unitId);
+            }
+        }
 
         $searchField = [];
 
@@ -448,7 +498,14 @@ class PersonnelController extends Controller
         ])
         ->leftJoin('military_details', 'profiles.id', '=', 'military_details.profile_id')
         ->leftJoin('ranks', 'military_details.rank_id', '=', 'ranks.id')
-        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id')
+        ->leftJoin('units', 'military_details.unit_id', '=', 'units.id');
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $profiles->where('unit_id', '=', $unitId);
+            }
+        }
+        $profiles = $profiles
         ->select([
             'profiles.id',  // Ajout pour éviter les erreurs
             'profiles.name',
@@ -522,6 +579,14 @@ class PersonnelController extends Controller
     {
 
         $ranks = Rank::all();
+
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $unitId = auth()->user()->militaryDetail->unit_id ?? null;
+            if ($unitId) {
+                $units = collect([Unit::findOrFail($unitId)]);
+                return view("personnel.profile.create", compact('ranks', 'units'));
+            }
+        }
         $units = Unit::all();
         return view("personnel.profile.create", compact('ranks', 'units'));
     }
@@ -719,6 +784,15 @@ class PersonnelController extends Controller
             'honoraryDistinctions',
             'militaryCampaigns',
         ])->findOrFail($id);
+
+        // Vérification des permissions d'accès
+        if (auth()->check() && !auth()->user()->hasRole('Administrateur') && !auth()->user()->isSuperAdmin()) {
+            $userUnitId = auth()->user()->militaryDetail->unit_id ?? null;
+
+            if ($profile->militaryDetail->unit_id !== $userUnitId) {
+                abort(403, 'Accès refusé : Vous n\'avez pas la permission de voir cette page.');
+            }
+        }
 
         $profileRank = Rank::findOrFail($profile->militaryDetail->rank_id);
         $profileUnit = Unit::findOrFail($profile->militaryDetail->unit_id);

@@ -22,9 +22,9 @@
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignRoleModal">
                     <i class="fas fa-plus me-2"></i>Assigner un rôle
                 </button>
-                <form action="{{ route('users.manage.search') }}" method="GET" class="d-flex">
+                <form action="{{ route('personnel.users.manage') }}" method="GET" class="d-flex">
                     <x-text-input id="search" name="search" class="w-auto" type="text"
-                        value="{{ $search }}" placeholder="Entrer un mot clé ..."/>
+                        value="{{ $search }}" placeholder="Entrer un mot clé ..." />
                     <button type="submit" class="mx-2 btn btn-sm btn-primary">Rechercher</button>
                 </form>
             </div>
@@ -33,7 +33,7 @@
                 aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form action="{{ route('users.assignRole') }}" method="POST">
+                        <form action="{{ route('personnel.users.assignRole') }}" method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="assignRoleModalLabel">Nouvelle attribution</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -45,7 +45,8 @@
                                     <label for="user_id" class="form-label">Utilisateur</label>
                                     <select name="user_id" class="form-control" required>
                                         @foreach ($allUsers as $allUser)
-                                            <option value="{{ $allUser->id }}">{{ $allUser->grade }} {{ $allUser->name }} {{ $allUser->firstname }}</option>
+                                            <option value="{{ $allUser->id }}">{{ $allUser->grade }}
+                                                {{ $allUser->name }} {{ $allUser->firstname }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -78,7 +79,150 @@
                 </div>
             </div>
             <div class="card-body">
-                @include('components.manage-users-table')
+                @if (!$users->isEmpty())
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Grade</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Utilisateur</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Identifiant</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Domaine</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Rôle</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Modifié le</th>
+
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $user)
+                                @php
+                                    $validRoles = optional($user->userRoles)->filter(
+                                        fn($r) => optional($r->role)->name !== 'Super administrateur' ||
+                                            optional($user->userRoles)->count() === 1,
+                                    );
+                                    $userDomains = $validRoles->pluck('domain_id')->unique();
+
+                                    if (
+                                        auth()->check() &&
+                                        !auth()->user()->hasRole('Administrateur') &&
+                                        !auth()->user()->hasRole('Auditeur') &&
+                                        !auth()->user()->hasRole('Super administrateur')
+                                    ) {
+                                        if (isset($domain)) {
+                                            $userDomains = $userDomains->filter(fn($d) => $d === $domain->id);
+                                            $validRoles = $validRoles->filter(fn($r) => $r->domain_id === $domain->id);
+                                        }
+                                    }
+
+                                    $rowspan = count($userDomains);
+                                    $firstRow = true;
+                                @endphp
+
+                                @foreach ($userDomains as $domain_id)
+                                    @php
+                                        $domain = $domains->firstWhere('id', $domain_id);
+                                        $userRole = $validRoles->firstWhere('domain_id', $domain_id);
+                                    @endphp
+
+                                    <tr>
+                                        @if ($firstRow)
+                                            <td class="px-6 whitespace-nowrap text-sm text-gray-900"
+                                                rowspan="{{ $rowspan }}">
+                                                {!! highlight($user->militaryDetail?->rank?->rank_abbreviate ?? 'Aucun', $search) !!}
+                                            </td>
+                                            <td class="px-6 whitespace-nowrap text-sm text-gray-900"
+                                                rowspan="{{ $rowspan }}">
+                                                {!! highlight($user->name, $search) !!} {!! highlight($user->firstname, $search) !!}
+                                            </td>
+                                            <td class="px-6 whitespace-nowrap text-sm text-gray-900"
+                                                rowspan="{{ $rowspan }}">
+                                                {!! highlight($user->username, $search) !!}
+                                            </td>
+                                        @endif
+
+                                        <td class="px-6 whitespace-nowrap text-sm text-gray-900">
+                                            {!! highlight($domain?->domain_description ?? 'Aucun', $search) !!}
+                                        </td>
+                                        <td class="px-6 whitespace-nowrap text-sm text-gray-900">
+                                            {!! highlight($userRole ? $userRole->role->name : 'Aucun', $search) !!}
+                                        </td>
+                                        <td class="px-6 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $userRole ? $userRole->updated_at->format('d/m/Y H:i') : null }}
+                                        </td>
+
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn" type="button"
+                                                    id="userMenuDropdown{{ $user->id }}" data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                                    style="border: none; background: transparent;">
+                                                    <i class="fas fa-ellipsis-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-lg-end"
+                                                    aria-labelledby="userMenuDropdown{{ $user->id }}">
+                                                    <li>
+                                                        <button type="button" class="dropdown-item"
+                                                            data-bs-toggle="modal" data-bs-target="#userRoleModal"
+                                                            data-action="{{ route('personnel.users.assignRole') }}"
+                                                            data-method="POST" data-title="Attribution de rôle"
+                                                            data-user_id="{{ $user->id }}"
+                                                            data-role_id="{{ $userRole->role->id }}"
+                                                            data-user_username="{{ $user->username }}"
+                                                            data-domain_id="{{ $domain->id ?? null }}"
+                                                            data-domain_name="{{ $domain->domain_description ?? null }}">
+                                                            Modifier ce rôle
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        @if ($userRole)
+                                                            <form action="{{ route('personnel.users.removeRole') }}"
+                                                                method="POST" class="d-inline"
+                                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer le rôle {{ $userRole->role->name }} de {{ $user->username }} ?')">
+                                                                @csrf
+                                                                <input type="hidden" name="user_id"
+                                                                    value="{{ $user->id }}">
+                                                                <input type="hidden" name="role_id"
+                                                                    value="{{ $userRole->role->id }}">
+                                                                <input type="hidden" name="domain_id"
+                                                                    value="{{ $domain->id ?? null }}">
+                                                                <button type="submit"
+                                                                    class="dropdown-item text-danger">
+                                                                    Supprimer ce rôle
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @php $firstRow = false; @endphp
+                                @endforeach
+                            @endforeach
+                        </tbody>
+                    </table>
+                    {{ $users->links() }}
+                @else
+                    <div class="alert alert-info">
+                        Aucun utilisateur trouvé.
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>

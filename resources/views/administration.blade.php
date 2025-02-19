@@ -109,6 +109,9 @@
                             <div class="mt-4 text-sm/relaxed">
                                 <ul>
                                     <li>
+                                        <a href="{{ route('admin.users.index') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Utilisateurs</a>
+                                    </li>
+                                    <li>
                                         <a href="{{ route('admin.roles.index') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rôles et permissions</a>
                                     </li>
                                     <li>

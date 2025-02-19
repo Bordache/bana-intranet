@@ -12,7 +12,7 @@ class LogController extends Controller
         $search = null;
         $logs = Log::with('user', 'domain')
             ->latest()
-            ->paginate(20);
+            ->paginate(50);
 
         return view('admin.logs.index', compact('logs', 'search'));
     }
@@ -26,7 +26,7 @@ class LogController extends Controller
                 $query->where('name', $domainName);
             })
             ->latest()
-            ->paginate(20);
+            ->paginate(50);
 
         return view('personnel.logs.index', compact('logs', 'search'));
     }
@@ -61,7 +61,7 @@ class LogController extends Controller
                     }
                 });
             })
-            ->latest()->paginate(20)->appends($request->query());
+            ->latest()->paginate(50)->appends($request->query());
 
         return view('admin.logs.index', compact('logs', 'search'));
     }
@@ -90,7 +90,7 @@ class LogController extends Controller
                     ->orWhereHas('domain', fn($q) => $q->where('name', 'like', "%{$search}%"));
                 });
             })
-            ->latest()->paginate(20)->appends($request->query());
+            ->latest()->paginate(50)->appends($request->query());
 
         return view('personnel.logs.index', compact('logs', 'search'));
         }

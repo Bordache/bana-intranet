@@ -60,13 +60,13 @@
                             <div class="mt-4 text-sm/relaxed">
                                 <ul>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Personnel global</a>
+                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Liste intégrale</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.listByUnit') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Personnel par unité</a>
+                                        <a href="{{ route('personnel.listByUnit') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Liste par unité</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.listByRank') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Personnel par grade</a>
+                                        <a href="{{ route('personnel.listByRank') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Liste par grade</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Congés et permissions</a>
@@ -85,16 +85,16 @@
                             <div class="mt-4 text-sm/relaxed">
                                 <ul>
                                     <li>
-                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Gestion des grades</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Grades</a>
                                     </li>
                                     <li>
-                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Gestion des unités</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Unités et détachements</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.users.manage') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Utilisateurs</a>
+                                        <a href="{{ route('personnel.users.manage') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rôles d'utilisateurs</a>
                                     </li>
                                     <li>
-                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rôles et permissions</a>
+                                        <a href="{{ route('personnel.roles.index') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rôles et permissions</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('personnel.users.password.init') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Mots de passe initiaux</a>

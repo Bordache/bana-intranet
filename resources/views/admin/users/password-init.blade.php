@@ -15,10 +15,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6 pb-5">
         <div class="card">
             <div class="card-header">
-                <form action="{{ route('admin.logs.search') }}" method="GET" class="d-flex">
-                    <x-text-input id="search" name="search" class="w-auto" type="text" placeholder="Entrer mot clé ..." value="{{ $search ?? '' }}"/>
-                    <button type="submit" class="mx-2 btn btn-sm btn-primary">Rechercher</button>
-                </form>
+                <button class="btn btn-success" onclick="exportTableToPDF()"><i class="fas fa-file-export"></i> Exporter en pdf</button>
             </div>
             <div class="card-body">
                 @include('components.password-init')
@@ -26,3 +23,53 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+    function exportTableToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.text("Liste des utilisateurs", 14, 10);
+
+        const table = document.getElementById('dataTable');
+        const headers = [];
+        const data = [];
+
+        // Récupérer les en-têtes (sans la colonne des checkboxes)
+        const headerCells = table.querySelectorAll('thead th');
+        for (let i = 1; i < headerCells.length; i++) {
+            headers.push(headerCells[i].innerText);
+        }
+
+        // Récupérer les lignes sélectionnées
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const checkbox = row.querySelector('.profile-checkbox');
+            if (checkbox.checked) {
+                const rowData = [];
+                const cells = row.querySelectorAll('td');
+                for (let i = 1; i < cells.length; i++) {
+                    rowData.push(cells[i].innerText);
+                }
+                data.push(rowData);
+            }
+        });
+
+        if (data.length === 0) {
+            alert("Veuillez sélectionner au moins une ligne !");
+            return;
+        }
+
+        // Générer le tableau PDF avec les lignes sélectionnées
+        doc.autoTable({
+            head: [headers],
+            body: data,
+            startY: 20,
+            theme: 'grid'
+        });
+
+        doc.save("tableau.pdf");
+    }
+</script>
+
+

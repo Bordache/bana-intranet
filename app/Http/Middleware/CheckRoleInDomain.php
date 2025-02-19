@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UserRole;
 
-class CheckRole
+class CheckRoleInDomain
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,10 @@ class CheckRole
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
      * @param  string  $role
-     * @param  string|null  $domain
+     * @param  string  $domain
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure $next, $role, $domain = null): Response
+    public function handle(Request $request, Closure $next, $domainName): Response
     {
         $user = Auth::user();
 
@@ -27,16 +27,10 @@ class CheckRole
             return $next($request);
         }
 
-        if ($domain) {
-            if (!$user || (!$user->hasRole($role, $domain) && !$user->isSuperAdmin())) {
-                abort(403, 'Accès refusé : Vous n\'avez pas la permission de voir cette page');
-            }
-        } else {
-            if (!$user || (!$user->hasRole($role) && !$user->isSuperAdmin())) {
-                abort(403, 'Accès refusé : Vous n\'avez pas la permission de voir cette page');
-            }
+        if (!$user || (!$user->hasRoleInDomain($domainName) && !$user->isSuperAdmin())) {
+            abort(403, 'Accès refusé : Vous n\'avez pas la permission de voir cette page');
         }
-
         return $next($request);
     }
 }
+
