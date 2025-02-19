@@ -19,11 +19,15 @@
         <div class="mt-4">
             <x-input-label for="password" :value="__('Mot de passe')" />
 
-            <x-text-input id="password" class="block mt-1 w-full {{ $errors->has('password') ? 'is-invalid' : '' }}"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
+            <div class="input-group">
+                <x-text-input id="password" class="block mt-1 w-full {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                                type="password"
+                                name="password"
+                                required autocomplete="current-password" />
+                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()" style="margin-top: 4px;">
+                    <i class="fas fa-eye" id="eyeIcon"></i>
+                </button>
+            </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
@@ -53,6 +57,22 @@
             const username = document.getElementById('username').value.trim();
             const email = username ? `${username}@emmn.mg` : '';
             document.getElementById('email').value = email;
+        }
+    </script>
+
+    <script>
+        function togglePassword() {
+            let passwordInput = document.getElementById("password");
+            let eyeIcon = document.getElementById("eyeIcon");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
         }
     </script>
 </x-guest-layout>

@@ -19,20 +19,12 @@
                             <div class="mt-4 text-sm/relaxed">
                                 <ul>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Priorités</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Priorités</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Fichiers et pièces jointes</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Fichiers et pièces jointes</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Utilisateurs - Comptes</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Utilisateurs - Rôles et permissions</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rapport d'évènements</a>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -48,22 +40,13 @@
                             <div class="mt-4 text-sm/relaxed">
                                 <ul>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Enregistrements et classifications</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Enregistrements et classifications</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Types de document</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Types de document</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Accréditations</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Utilisateurs - Comptes</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Utilisateurs - Rôles et permissions</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Rapport d'évènements</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Accréditations</a>
                                     </li>
                                 </ul>
                             </div>
@@ -80,19 +63,19 @@
                             <div class="mt-4 text-sm/relaxed">
                                 <ul>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Grades et limites d'age</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Grades et limites d'age</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Unités et détachements</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Unités et détachements</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Situation mensuel des effectifs (SME)</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Situation mensuel des effectifs (SME)</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Congés et permissions</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Congés et permissions</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('personnel.list') }}" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Approbations</a>
+                                        <a href="#" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Approbations</a>
                                     </li>
                                 </ul>
                             </div>
