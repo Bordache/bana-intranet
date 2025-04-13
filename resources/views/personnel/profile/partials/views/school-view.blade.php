@@ -35,20 +35,20 @@
         <div class="row g-3">
             <div class="col-md-3">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Établissement fréquenté') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ $education->school_name ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Établissement fréquenté') }}</p>
+                    <p class="text-gray-600">{{ $education->school_name ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Période') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ $education->duration ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Période') }}</p>
+                    <p class="text-gray-600">{{ $education->duration ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-5">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Diplômes, certificats ou attestations obtenus') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ $education->diploma ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Diplômes, certificats ou attestations obtenus') }}</p>
+                    <p class="text-gray-600">{{ $education->diploma ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-1 text-end">
@@ -83,10 +83,10 @@
                 </div>
             </div>
         </div>
-        <hr class="my-2">
+        <hr class="my-3">
     @empty
         <div class="my-2">
-            <p class="mt-1 text-sm text-gray-600">{{ __('Aucune information académique enregistrée') }}</p>
+            <p class="text-sm text-gray-600">{{ __('Aucune information académique enregistrée') }}</p>
         </div>
     @endforelse
 </div>

@@ -83,10 +83,10 @@
                 </div>
             </div>
         </div>
-        <hr class="my-2">
+        <hr class="my-3">
     @empty
         <div class="my-2">
-            <p class="mt-1 text-sm text-gray-600">{{ __('Aucun parcours enregistré') }}</p>
+            <p class="text-sm text-gray-600">{{ __('Aucun parcours enregistré') }}</p>
         </div>
     @endforelse
 </div>

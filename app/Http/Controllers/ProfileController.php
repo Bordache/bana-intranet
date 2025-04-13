@@ -56,7 +56,32 @@ class ProfileController extends Controller
         $selectRanks = Rank::all();
         $selectUnits = Unit::all();
 
-        return view('profile.show', compact('profile', 'profileRank', 'profileUnit', 'selectRanks', 'selectUnits', 'auth'));
+        // Calculs pour l'état des services
+        $referenceDate = now();
+
+        // Calcul de l'âge
+        $age = $profile->birth_date ? $profile->birth_date->diffInYears($referenceDate) : null;
+
+        // Calcul de l'ancienneté
+        $serviceStartDate = $profile->militaryDetail->service_entry_date;
+        $interruptionDuration = 0;
+
+        if ($profile->militaryDetail->interruption_start_date && $profile->militaryDetail->interruption_end_date) {
+            $interruptionDuration = $profile->militaryDetail->interruption_start_date->diffInDays($profile->militaryDetail->interruption_end_date);
+        }
+
+        $serviceSeniority = $serviceStartDate ? $serviceStartDate->diffInDays($referenceDate) - $interruptionDuration : null;
+
+         // Calcul de l'ancienneté de port de grade
+        $rankSeniority = $profile->militaryDetail->rank_date ? $profile->militaryDetail->rank_date->diffInDays($referenceDate) : null;
+
+        // Calcul de la date de fin de carrière
+        $careerEndDate = null;
+        if ($profile->birth_date && $profile->militaryDetail->rank_id && $profileRank->rank_age_limit) {
+            $careerEndDate = $profile->birth_date->addYears($profileRank->rank_age_limit);
+        }
+
+        return view('profile.show', compact('profile', 'profileRank', 'profileUnit', 'selectRanks', 'selectUnits', 'referenceDate', 'age', 'serviceSeniority', 'rankSeniority', 'careerEndDate', 'auth'));
     }
 
     /**

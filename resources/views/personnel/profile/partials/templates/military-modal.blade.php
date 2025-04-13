@@ -217,7 +217,7 @@
 
                             <!-- Recruitment origin -->
                             <div class="col-md-4 d-flex pt-2">
-                                <x-input-label for="recruitment_origin" :value="__('Origine de recrutement')" />
+                                <x-input-label for="recruitment_origin" :value="__('Origine')" />
                             </div>
                             <div class="col-md-1 d-flex pt-2">
                                 <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Lieu d'origine de recrutement" role="img" aria-label="Lieu d'origine de recrutement"></i>
@@ -229,7 +229,7 @@
 
                             <!-- Recruitment_promotion -->
                             <div class="col-md-4 d-flex pt-2">
-                                <x-input-label for="recruitment_promotion" :value="__('Classe d\'âge ou promotion')" />
+                                <x-input-label for="recruitment_promotion" :value="__('Promotion')" />
                             </div>
                             <div class="col-md-1 d-flex pt-2">
                                 <i class="icon fa fa-info-circle text-secondary fa-fw p-1" title="Classe d'âge ou promotion" role="img" aria-label="Classe d'âge ou promotion"></i>

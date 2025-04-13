@@ -6,8 +6,8 @@
     </x-slot>
 
     <div class="py-12">
-        {{ $auth ?? 'aucun' }}
-        <div class="border rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] bg-white max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-3">
+        <div
+            class="border rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] bg-white max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-3">
             <div class="d-flex align-items-center">
                 <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center overflow-hidden"
                     style="width: 100px; height: 100px; font-size: 36px; font-weight: bold; flex-shrink: 0;">
@@ -27,17 +27,11 @@
                     <button class="nav-link active text-start w-max" id="v-pills-informations-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-informations" type="button" role="tab"
                         aria-controls="v-pills-informations" aria-selected="true">Mes informations</button>
-                    <button class="nav-link text-start w-max" id="v-pills-files-tab" data-bs-toggle="pill"
-                        data-bs-target="#v-pills-files" type="button" role="tab" aria-controls="v-pills-files"
-                        aria-selected="false">Mes fichiers</button>
                     <button class="nav-link text-start w-max" id="v-pills-MilitaryStatus-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-MilitaryStatus" type="button" role="tab"
                         aria-controls="v-pills-MilitaryStatus" aria-selected="false">Mes états de service</button>
-                    <button class="nav-link text-start w-max" id="v-pills-settings-tab" data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings" type="button" role="tab"
-                        aria-controls="v-pills-settings" aria-selected="false">Settings</button>
                 </div>
-                <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-content w-100" id="v-pills-tabContent">
                     <div class="tab-pane fade show active" id="v-pills-informations" role="tabpanel"
                         aria-labelledby="v-pills-informations-tab">
                         <ul class="nav nav-tabs text-sm" id="myTab" role="tablist">
@@ -78,7 +72,8 @@
                                     aria-selected="false">Parcours militaire</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link {{ session('tab') == 'professional_careers' ? 'active' : '' }}"
+                                <button
+                                    class="nav-link {{ session('tab') == 'professional_careers' ? 'active' : '' }}"
                                     id="career-tab" data-bs-toggle="tab" data-bs-target="#career" type="button"
                                     role="tab" aria-controls="career" aria-selected="false">Parcours
                                     professionnel</button>
@@ -157,14 +152,115 @@
                         </div>
 
                     </div>
-                    <div class="tab-pane fade" id="v-pills-files" role="tabpanel"
-                        aria-labelledby="v-pills-files-tab">...</div>
                     <div class="tab-pane fade" id="v-pills-MilitaryStatus" role="tabpanel"
-                        aria-labelledby="v-pills-MilitaryStatus-tab">...</div>
-                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab">...</div>
+                        aria-labelledby="v-pills-MilitaryStatus-tab">
+                        <div class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
+                            <h3 class="text-lg font-medium text-gray-900">
+                                {{ __('Etats de service') }}</h3>
+                            <hr class="my-3">
+                            <div class="my-2">
+                                <form id="referenceDateForm">
+                                    <div class="mb-3">
+                                        <x-input-label for="reference_date" :value="__('Date de référence')" />
+                                        <x-text-input id="reference_date" name="reference_date"
+                                            type="date" :value="now()->format('Y-m-d')" />
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="my-2">
+                                <p class="text-sm font-medium text-gray-900">
+                                    {{ __('Age') }}</p>
+                                <p id="age" class="text-gray-600">
+                                    {{ $age ? floor($age) . ' ans' : '-' }}</p>
+                            </div>
+                            <div class="my-2">
+                                <p class="text-sm font-medium text-gray-900">
+                                    {{ __('Ancienneté de service') }}</p>
+                                <p id="serviceSeniority" class="text-gray-600">
+                                    @if ($serviceSeniority)
+                                        {{ floor($serviceSeniority / 365) }}
+                                        {{ __('an' . (floor($serviceSeniority / 365) > 1 ? 's' : '')) }},
+                                        {{ floor(($serviceSeniority % 365) / 30) }}
+                                        {{ __('mois' . (floor(($serviceSeniority % 365) / 30) > 1 ? '' : '')) }},
+                                        {{ ($serviceSeniority % 365) % 30 }}
+                                        {{ __('jour' . (($serviceSeniority % 365) % 30 > 1 ? 's' : '')) }}
+                                    @else
+                                        -
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="my-2">
+                                <p class="text-sm font-medium text-gray-900">
+                                    {{ __('Ancienneté de port de grade actuel') }}</p>
+                                <p id="rankSeniority" class="text-gray-600">
+                                    @if ($rankSeniority)
+                                        {{ floor($rankSeniority / 365) }}
+                                        {{ __('an' . (floor($rankSeniority / 365) > 1 ? 's' : '')) }},
+                                        {{ floor(($rankSeniority % 365) / 30) }}
+                                        {{ __('mois' . (floor(($rankSeniority % 365) / 30) > 1 ? '' : '')) }},
+                                        {{ ($rankSeniority % 365) % 30 }}
+                                        {{ __('jour' . (($rankSeniority % 365) % 30 > 1 ? 's' : '')) }}
+                                    @else
+                                        -
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="my-2">
+                                <p class="text-sm font-medium text-gray-900">
+                                    {{ __('Date de fin de carrière') }}</p>
+                                <p id="careerEndDate" class="text-gray-600">
+                                    {{ $careerEndDate ? $careerEndDate->format('d/m/Y') : '-' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </x-app-layout>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const profileId = {{ $profile->id }};
+        const referenceDateInput = document.getElementById('reference_date');
+
+        referenceDateInput.addEventListener('change', function() {
+            updateEtatService(profileId);
+        });
+
+        function updateEtatService(profileId) {
+            const referenceDate = referenceDateInput.value;
+
+            if (!referenceDate) {
+                alert('Veuillez sélectionner une date de référence.');
+                return;
+            }
+
+            fetch(`/personnel/profile/${profileId}/update-calculations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                    },
+                    body: JSON.stringify({
+                        reference_date: referenceDate
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('age').textContent = data.age ?
+                        `${Math.floor(data.age)} an${Math.floor(data.age) > 1 ? 's' : '-'}` :
+                        '-';
+                    document.getElementById('serviceSeniority').textContent = data.serviceSeniority ?
+                        `${Math.floor(data.serviceSeniority / 365)} an${Math.floor(data.serviceSeniority / 365) > 1 ? 's' : ''}, ${Math.floor((data.serviceSeniority % 365) / 30)} mois, ${data.serviceSeniority % 365 % 30} jour${data.serviceSeniority % 365 % 30 > 1 ? 's' : ''}` :
+                        '-';
+                    document.getElementById('rankSeniority').textContent = data.rankSeniority ?
+                        `${Math.floor(data.rankSeniority / 365)} an${Math.floor(data.rankSeniority / 365) > 1 ? 's' : ''}, ${Math.floor((data.rankSeniority % 365) / 30)} mois, ${data.rankSeniority % 365 % 30} jour${data.rankSeniority % 365 % 30 > 1 ? 's' : ''}` :
+                        '-';
+                    document.getElementById('careerEndDate').textContent = data.careerEndDate ?? '-';
+                })
+                .catch(error => console.error('Erreur lors de la mise à jour :', error));
+        }
+    });
+</script>

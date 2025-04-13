@@ -36,42 +36,42 @@
         <div class="row g-3">
             <div class="col-md-4">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">
+                    <p class="text-sm font-medium text-gray-900">
                         {{ __('Nom et prénoms') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">
+                    <p class="text-gray-600">
                         {{ $child->child_full_name ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">
+                    <p class="text-sm font-medium text-gray-900">
                         {{ __('Date de naissance') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">
+                    <p class="text-gray-600">
                         {{ optional($child->child_birth_date)->format('d/m/Y') ?? '-' }}
                     </p>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">
+                    <p class="text-sm font-medium text-gray-900">
                         {{ __('Lieu de naissance') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">
+                    <p class="text-gray-600">
                         {{ $child->child_birth_place ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-1">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">
+                    <p class="text-sm font-medium text-gray-900">
                         {{ __('Genre') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">
+                    <p class="text-gray-600">
                         {{ $child->child_gender ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">
+                    <p class="text-sm font-medium text-gray-900">
                         {{ __('Situation de l\'enfant') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">
+                    <p class="text-gray-600">
                         {{ $child->child_status ?? '-' }}</p>
                 </div>
             </div>
@@ -111,10 +111,10 @@
                 </div>
             </div>
         </div>
-        <hr class="my-2">
+        <hr class="my-3">
     @empty
         <div class="my-2">
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="text-sm text-gray-600">
                 {{ __('Aucun enfant enregistré') }}</p>
         </div>
     @endforelse

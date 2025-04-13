@@ -5,14 +5,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'BANA') }}</title>
+        <title>Authentification | BANA</title>
 
         <!-- Fonts -->
          <!-- Fonts -->
+         <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
          <link rel="preconnect" href="https://fonts.bunny.net">
          <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-         <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
          <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+
+         <style>
+            #authent-page {
+                background-image: url('{{ asset('images/background.png') }}');
+                background-size: cover;
+                background-position: center;
+            }
+        </style>
 
 
          <!-- Scripts -->
@@ -25,7 +33,7 @@
          @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+        <div id="authent-page" class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div>
                 <a href="/">
                     <x-application-logo class="w-20 h-20 fill-current text-gray-500" />

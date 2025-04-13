@@ -35,32 +35,32 @@
         <div class="row g-3">
             <div class="col-md-2">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Lieu d\'emploi') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ $professional->company_name ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Lieu d\'emploi') }}</p>
+                    <p class="text-gray-600">{{ $professional->company_name ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Emploi tenu') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ $professional->job_title ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Emploi tenu') }}</p>
+                    <p class="text-gray-600">{{ $professional->job_title ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Début d\'affectation') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ optional($professional->start_date)->format('d/m/Y') ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Début d\'affectation') }}</p>
+                    <p class="text-gray-600">{{ optional($professional->start_date)->format('d/m/Y') ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Fin d\'affectation') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ optional($professional->end_date)->format('d/m/Y') ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Fin d\'affectation') }}</p>
+                    <p class="text-gray-600">{{ optional($professional->end_date)->format('d/m/Y') ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Référence') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ $professional->description ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Référence') }}</p>
+                    <p class="text-gray-600">{{ $professional->description ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-1 text-end">
@@ -97,10 +97,10 @@
                 </div>
             </div>
         </div>
-        <hr class="my-2">
+        <hr class="my-3">
     @empty
         <div class="my-2">
-            <p class="mt-1 text-sm text-gray-600">{{ __('Aucune information professionnelle enregistrée') }}</p>
+            <p class="text-sm text-gray-600">{{ __('Aucune information professionnelle enregistrée') }}</p>
         </div>
     @endforelse
 </div>

@@ -826,8 +826,9 @@ class PersonnelController extends Controller
 
         // Gestion des sections
         $tab = request('tab', 'personnal_information');
+        $auth = false;
 
-        return view('personnel.profile.show', compact('profile', 'profileRank', 'profileUnit', 'selectRanks', 'selectUnits', 'referenceDate', 'age', 'serviceSeniority', 'rankSeniority', 'careerEndDate', 'tab'));
+        return view('personnel.profile.show', compact('profile', 'profileRank', 'profileUnit', 'selectRanks', 'selectUnits', 'referenceDate', 'age', 'serviceSeniority', 'rankSeniority', 'careerEndDate', 'tab', 'auth'));
     }
 
     /**

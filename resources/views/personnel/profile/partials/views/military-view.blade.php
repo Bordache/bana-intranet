@@ -11,8 +11,9 @@
             <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="militaryDropdown">
                 <li>
                     <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#militaryModal"
-                        data-action="{{ route('military_details.update', ['profile' => $profile->id, 'id' => $profile->militaryDetail->id, 'auth' => $auth ?? false]) }}"
-                        data-method="PUT" data-title="Modification de renseignements militaires"
+                        data-action="{{ route($auth ? 'myprofile.military_details.update' : 'military_details.update', ['profile' => $profile->id, 'id' => $profile->militaryDetail->id, 'auth' => $auth ?? false]) }}"
+                        data-method="PUT"
+                        data-title="Modification de renseignements militaires"
                         data-army="{{ $profile->militaryDetail->army }}"
                         data-position="{{ $profile->militaryDetail->position }}"
                         data-position_date="{{ optional($profile->militaryDetail->position_date)->format('Y-m-d') }}"
@@ -45,152 +46,152 @@
     <hr class="my-3">
     <div class="row g-3">
         <div class="col-md-6">
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Armée') }}
+            <div class="mb-3">
+                <p class="text-sm font-medium text-gray-900">{{ __('Armée') }}
                 </p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->army ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Position') }}
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">{{ __('Position') }}
                 </p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->position ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Date de position') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ optional($profile->militaryDetail->position_date)->format('d/m/Y') ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Référence de position') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->position_reference ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Numéro d\'enregistrement militaire') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->military_registration_number ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Numéro de carte militaire') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->military_id_card_number ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Numéro d\'enregistrement financier') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->finance_registration_number ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
-                    {{ __('Origine du recrutement') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
+                    {{ __('Origine') }}</p>
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->recruitment_origin ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
-                    {{ __('Promotion de recrutement') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
+                    {{ __('Promotion') }}</p>
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->recruitment_promotion ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Date d\'entrée en service') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ optional($profile->militaryDetail->service_entry_date)->format('d/m/Y') ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Affectation au corps') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->corps_assignment ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Affectation à l\'unité') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profileUnit->unit_name ?? '-' }}</p>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="mb-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Grade') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profileRank->rank_abbreviate ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Date de nomination') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ optional($profile->militaryDetail->rank_date)->format('d/m/Y') ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Fonction actuelle') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->current_function ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Spécialité') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->specialty ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Affectation exacte') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->exact_assignment ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Date de début d\'interruption') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ optional($profile->militaryDetail->interruption_start_date)->format('d/m/Y') ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Date de fin d\'interruption') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ optional($profile->militaryDetail->interruption_end_date)->format('d/m/Y') ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Statut militaire') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->military_status ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Référence du statut militaire') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->military_status_reference ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Permis de conduire militaire') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->military_driver_license ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Autres informations') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->militaryDetail->other_information ?? '-' }}</p>
             </div>
         </div>

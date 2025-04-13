@@ -112,7 +112,7 @@ class ChildrenDetailController extends Controller
                 );
             }
 
-           return back()->with(['success' => 'Enfant mis à jour avec succès.', 'tab' => 'children_details']);
+          return back()->with(['success' => 'Enfant mis à jour avec succès.', 'tab' => 'children_details']);
        }
        return back()->with(['info' => 'Aucune modification détectée.', 'tab' => 'children_details']);
     }

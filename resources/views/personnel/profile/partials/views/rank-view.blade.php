@@ -35,20 +35,20 @@
         <div class="row g-3">
             <div class="col-md-3">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Grade') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ $rank->history_rank ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Grade') }}</p>
+                    <p class="text-gray-600">{{ $rank->history_rank ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Date d\'effet') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ optional($rank->history_promotion_date)->format('d/m/Y') ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Date d\'effet') }}</p>
+                    <p class="text-gray-600">{{ optional($rank->history_promotion_date)->format('d/m/Y') ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Référence') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ $rank->history_rank_reference ?? '-' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ __('Référence') }}</p>
+                    <p class="text-gray-600">{{ $rank->history_rank_reference ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-1 text-end">
@@ -83,10 +83,10 @@
                 </div>
             </div>
         </div>
-        <hr class="my-2">
+        <hr class="my-3">
     @empty
         <div class="my-2">
-            <p class="mt-1 text-sm text-gray-600">{{ __('Aucun grade enregistré') }}</p>
+            <p class="text-sm text-gray-600">{{ __('Aucun grade enregistré') }}</p>
         </div>
     @endforelse
 </div>

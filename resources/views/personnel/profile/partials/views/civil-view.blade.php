@@ -10,7 +10,8 @@
             <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="civilDropdown">
                 <li>
                     <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#civilModal"
-                        data-action="{{ route('personnel.update', ['id' => $profile->id, 'auth' => $auth ?? false ]) }}" data-method="PUT"
+                        data-action="{{ route($auth ? 'myprofile.personnel.update' : 'personnel.update', ['id' => $profile->id, 'auth' => $auth ]) }}"
+                        data-method="PUT"
                         data-title="Modification d'état civil" data-name="{{ $profile->name }}"
                         data-firstname="{{ $profile->firstname }}"
                         data-birth_date="{{ optional($profile->birth_date)->format('Y-m-d') }}"
@@ -37,137 +38,137 @@
     <hr class="my-3">
     <div class="row g-3">
         <div class="col-md-6">
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Genre') }}
+            <div class="mb-3">
+                <p class="text-sm font-medium text-gray-900">{{ __('Genre') }}
                 </p>
-                <p class="mt-1 text-sm text-gray-600">{{ $profile->gender ?? '-' }}
-                </p>
-            </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Nom') }}
-                </p>
-                <p class="mt-1 text-sm text-gray-600">{{ $profile->name ?? '-' }}</p>
-            </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Prénoms') }}
-                </p>
-                <p class="mt-1 text-sm text-gray-600">{{ $profile->firstname ?? '-' }}
+                <p class="text-gray-600">{{ $profile->gender ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">{{ __('Nom') }}
+                </p>
+                <p class="text-gray-600">{{ $profile->name ?? '-' }}</p>
+            </div>
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">{{ __('Prénoms') }}
+                </p>
+                <p class="text-gray-600">{{ $profile->firstname ?? '-' }}
+                </p>
+            </div>
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Date de naissance') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ optional($profile->birth_date)->format('d/m/Y') ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Lieu de naissance') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->birth_place ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Carte d\'identité nationale') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->national_id ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Date de délivrance') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ optional($profile->issue_date)->format('d/m/Y') ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Lieu de délivrance') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->issue_place ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Date de duplicata') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ optional($profile->duplicate_date)->format('d/m/Y') ?? '-' }}
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Lieu de duplicata') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->duplicate_place ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Adresse actuelle') }}
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">{{ __('Adresse actuelle') }}
                 </p>
-                <p class="mt-1 text-sm text-gray-600">{{ $profile->address ?? '-' }}
+                <p class="text-gray-600">{{ $profile->address ?? '-' }}
                 </p>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="mb-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Contact téléphonique') }}</p>
-                <p class="mt-1 text-sm text-gray-600">{{ $profile->phone ?? '-' }}</p>
+                <p class="text-gray-600">{{ $profile->phone ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Adresse email') }}
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">{{ __('Adresse email') }}
                 </p>
-                <p class="mt-1 text-sm text-primary">
+                <p class="text-primary">
                     <a href="mailto:{{ $profile->email }}" class="underline">{{ $profile->email ?? '-' }}</a>
                 </p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Groupe sanguin') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->blood_group ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ __('Taille (en cm)') }}
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">{{ __('Taille (en cm)') }}
                 </p>
-                <p class="mt-1 text-sm text-gray-600">{{ $profile->size ?? '-' }}</p>
+                <p class="text-gray-600">{{ $profile->size ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Nom du père') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->father_name ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Nom de la mère') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->mother_name ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Situation matrimoniale') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->marital_status ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Adresse de repli') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->fallback_address ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Permis de conduire') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->driver_license ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Sports pratiqués') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->practiced_sport ?? '-' }}</p>
             </div>
-            <div class="my-2">
-                <p class="mt-1 text-sm font-medium text-gray-900">
+            <div class="my-3">
+                <p class="text-sm font-medium text-gray-900">
                     {{ __('Centres d\'intérêts') }}</p>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="text-gray-600">
                     {{ $profile->hobbies ?? '-' }}</p>
             </div>
         </div>

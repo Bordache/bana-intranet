@@ -36,25 +36,25 @@
         <div class="row g-3">
             <div class="col-md-3">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">
+                    <p class="text-sm font-medium text-gray-900">
                         {{ __('Intitulé') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">
+                    <p class="text-gray-600">
                         {{ $award->honorary_title ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">
+                    <p class="text-sm font-medium text-gray-900">
                         {{ __('Promotion') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">
+                    <p class="text-gray-600">
                         {{ $award->honorary_promotion ?? '-' }}</p>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="my-2">
-                    <p class="mt-1 text-sm font-medium text-gray-900">
+                    <p class="text-sm font-medium text-gray-900">
                         {{ __('Référence') }}</p>
-                    <p class="mt-1 text-sm text-gray-600">
+                    <p class="text-gray-600">
                         {{ $award->honorary_reference ?? '-' }}</p>
                 </div>
             </div>
@@ -93,10 +93,10 @@
                 </div>
             </div>
         </div>
-        <hr class="my-2">
+        <hr class="my-3">
     @empty
         <div class="my-2">
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="text-sm text-gray-600">
                 {{ __('Aucune décoration enregistrée') }}</p>
         </div>
     @endforelse

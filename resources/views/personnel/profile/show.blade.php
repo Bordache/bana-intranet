@@ -35,7 +35,7 @@
                                     <p class="text-muted mb-0">{{ $profileRank->rank_name }}</p>
                                 </div>
                             </div>
-                            @if(auth()->user()->profile_id !== $profile->id)
+                            @if (auth()->user()->profile_id !== $profile->id)
                                 <div>
                                     <ul>
                                         {{-- <li class="mb-2">
@@ -48,7 +48,7 @@
                                         <li>
                                             <form action="{{ route('personnel.destroy', $profile->id) }}" method="POST"
                                                 class="d-inline"
-                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer {{ $profileRank->rank_abbreviate .' '. $profile->name .' '. $profile->firstname }} ?')">
+                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer {{ $profileRank->rank_abbreviate . ' ' . $profile->name . ' ' . $profile->firstname }} ?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" title="Supprimer"
@@ -68,9 +68,9 @@
                                 <button class="nav-link" id="nav-perm-tab" data-bs-toggle="tab"
                                     data-bs-target="#nav-perm" type="button" role="tab" aria-controls="nav-perm"
                                     aria-selected="false">Congés et permissions</button>
-                                    <button class="nav-link" id="nav-service-status-tab" data-bs-toggle="tab"
-                                    data-bs-target="#nav-service-status" type="button" role="tab" aria-controls="nav-service-status"
-                                    aria-selected="false">Décompte</button>
+                                <button class="nav-link" id="nav-service-status-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-service-status" type="button" role="tab"
+                                    aria-controls="nav-service-status" aria-selected="false">Décompte</button>
                                 <button class="nav-link" id="nav-role-tab" data-bs-toggle="tab"
                                     data-bs-target="#nav-role" type="button" role="tab" aria-controls="nav-role"
                                     aria-selected="false">Pièces jointes</button>
@@ -86,63 +86,78 @@
                                 <div class="d-flex align-items-start">
                                     <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
                                         aria-orientation="vertical">
-                                        <button class="nav-link btn-sm text-start
-                                        @if(!session('tab'))
-                                            active
+                                        <button
+                                            class="nav-link btn-sm text-start
+                                        @if (!session('tab')) active
                                         @elseif(session('tab') == 'personal_information')
-                                            active
-                                        @endif " id="v-pills-civil-status-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-civil-status" type="button"
-                                            role="tab" aria-controls="v-pills-civil-status"
-                                            aria-selected="true">Etat civil</button>
-                                        <button class="nav-link text-start btn-sm {{ session('tab') == 'military_detail' ? 'active' : '' }}" id="v-pills-military-status-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-military-status"
-                                            type="button" role="tab" aria-controls="v-pills-military-status"
-                                            aria-selected="false">Renseignements militaires</button>
-                                        <button class="nav-link text-start btn-sm {{ session('tab') == 'spouse_details' ? 'active' : '' }}" id="v-pills-spouse-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-spouse" type="button"
-                                            role="tab" aria-controls="v-pills-spouse"
-                                            aria-selected="false">Conjoint(e)</button>
-                                        <button class="nav-link text-start btn-sm {{ session('tab') == 'children_details' ? 'active' : '' }}" id="v-pills-children-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-children" type="button"
-                                            role="tab" aria-controls="v-pills-children"
-                                            aria-selected="false">Enfant(s)</button>
-                                        <button class="nav-link text-start btn-sm {{ session('tab') == 'academic_paths' ? 'active' : '' }}" id="v-pills-education-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-education" type="button"
-                                            role="tab" aria-controls="v-pills-education"
-                                            aria-selected="false">Parcours académique</button>
-                                        <button class="nav-link text-start btn-sm {{ session('tab') == 'military_paths' ? 'active' : '' }}" id="v-pills-military-path-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-military-path"
-                                            type="button" role="tab" aria-controls="v-pills-military-path"
-                                            aria-selected="false">Parcours militaire</button>
-                                        <button class="nav-link text-start btn-sm {{ session('tab') == 'professional_careers' ? 'active' : '' }}" id="v-pills-professional-path-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-professional-path"
-                                            type="button" role="tab" aria-controls="v-pills-professional-path"
-                                            aria-selected="false">Parcours professionnel</button>
-                                        <button class="nav-link text-start btn-sm {{ session('tab') == 'rank_histories' ? 'active' : '' }}" id="v-pills-rank-history-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-rank-history"
-                                            type="button" role="tab" aria-controls="v-pills-rank-history"
-                                            aria-selected="false">Grades successifs</button>
-                                        <button class="nav-link text-start btn-sm {{ session('tab') == 'honorary_distinctions' ? 'active' : '' }}" id="v-pills-aware-history-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-aware-history"
-                                            type="button" role="tab" aria-controls="v-pills-aware-history"
-                                            aria-selected="false">Décorations successives</button>
-                                        <button class="nav-link text-start btn-sm {{ session('tab') == 'campaign_histories' ? 'active' : '' }}" id="v-pills-campaign-history-tab"
-                                            data-bs-toggle="pill" data-bs-target="#v-pills-campaign-history"
-                                            type="button" role="tab" aria-controls="v-pills-campaign-history"
-                                            aria-selected="false">Campagnes militaires</button>
+                                            active @endif "
+                                            id="v-pills-civil-status-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-civil-status" type="button" role="tab"
+                                            aria-controls="v-pills-civil-status" aria-selected="true">Etat
+                                            civil</button>
+                                        <button
+                                            class="nav-link text-start btn-sm {{ session('tab') == 'military_detail' ? 'active' : '' }}"
+                                            id="v-pills-military-status-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-military-status" type="button" role="tab"
+                                            aria-controls="v-pills-military-status" aria-selected="false">Renseignements
+                                            militaires</button>
+                                        <button
+                                            class="nav-link text-start btn-sm {{ session('tab') == 'spouse_details' ? 'active' : '' }}"
+                                            id="v-pills-spouse-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-spouse" type="button" role="tab"
+                                            aria-controls="v-pills-spouse" aria-selected="false">Conjoint(e)</button>
+                                        <button
+                                            class="nav-link text-start btn-sm {{ session('tab') == 'children_details' ? 'active' : '' }}"
+                                            id="v-pills-children-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-children" type="button" role="tab"
+                                            aria-controls="v-pills-children" aria-selected="false">Enfant(s)</button>
+                                        <button
+                                            class="nav-link text-start btn-sm {{ session('tab') == 'academic_paths' ? 'active' : '' }}"
+                                            id="v-pills-education-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-education" type="button" role="tab"
+                                            aria-controls="v-pills-education" aria-selected="false">Parcours
+                                            académique</button>
+                                        <button
+                                            class="nav-link text-start btn-sm {{ session('tab') == 'military_paths' ? 'active' : '' }}"
+                                            id="v-pills-military-path-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-military-path" type="button" role="tab"
+                                            aria-controls="v-pills-military-path" aria-selected="false">Parcours
+                                            militaire</button>
+                                        <button
+                                            class="nav-link text-start btn-sm {{ session('tab') == 'professional_careers' ? 'active' : '' }}"
+                                            id="v-pills-professional-path-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-professional-path" type="button" role="tab"
+                                            aria-controls="v-pills-professional-path" aria-selected="false">Parcours
+                                            professionnel</button>
+                                        <button
+                                            class="nav-link text-start btn-sm {{ session('tab') == 'rank_histories' ? 'active' : '' }}"
+                                            id="v-pills-rank-history-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-rank-history" type="button" role="tab"
+                                            aria-controls="v-pills-rank-history" aria-selected="false">Grades
+                                            successifs</button>
+                                        <button
+                                            class="nav-link text-start btn-sm {{ session('tab') == 'honorary_distinctions' ? 'active' : '' }}"
+                                            id="v-pills-aware-history-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-aware-history" type="button" role="tab"
+                                            aria-controls="v-pills-aware-history" aria-selected="false">Décorations
+                                            successives</button>
+                                        <button
+                                            class="nav-link text-start btn-sm {{ session('tab') == 'campaign_histories' ? 'active' : '' }}"
+                                            id="v-pills-campaign-history-tab" data-bs-toggle="pill"
+                                            data-bs-target="#v-pills-campaign-history" type="button" role="tab"
+                                            aria-controls="v-pills-campaign-history" aria-selected="false">Campagnes
+                                            militaires</button>
                                     </div>
                                     <div class="tab-content w-100" id="v-pills-tabContent">
 
                                         <!-- Etat civil -->
 
                                         <div class="tab-pane fade
-                                        @if(!session('tab'))
-                                            show active
+                                        @if (!session('tab')) show active
                                         @elseif(session('tab') == 'personal_information')
-                                            show active
-                                        @endif
-                                        " id="v-pills-civil-status" role="tabpanel"
+                                            show active @endif
+                                        "
+                                            id="v-pills-civil-status" role="tabpanel"
                                             aria-labelledby="v-pills-civil-status-tab">
                                             @include('personnel.profile.partials.views.civil-view')
                                             @include('personnel.profile.partials.templates.civil-modal')
@@ -150,7 +165,8 @@
 
                                         <!-- Renseignements militaires -->
 
-                                        <div class="tab-pane fade {{ session('tab') == 'military_detail' ? 'show active' : '' }}" id="v-pills-military-status" role="tabpanel"
+                                        <div class="tab-pane fade {{ session('tab') == 'military_detail' ? 'show active' : '' }}"
+                                            id="v-pills-military-status" role="tabpanel"
                                             aria-labelledby="v-pills-military-status-tab">
                                             @include('personnel.profile.partials.views.military-view')
                                             @include('personnel.profile.partials.templates.military-modal')
@@ -158,15 +174,16 @@
 
                                         <!-- Conjoint(e) -->
 
-                                        <div class="tab-pane fade {{ session('tab') == 'spouse_details' ? 'show active' : '' }}" id="v-pills-spouse" role="tabpanel"
-                                            aria-labelledby="v-pills-spouse-tab">
+                                        <div class="tab-pane fade {{ session('tab') == 'spouse_details' ? 'show active' : '' }}"
+                                            id="v-pills-spouse" role="tabpanel" aria-labelledby="v-pills-spouse-tab">
                                             @include('personnel.profile.partials.views.spouse-view')
                                             @include('personnel.profile.partials.templates.spouse-modal')
                                         </div>
 
                                         <!-- Enfant(s) -->
 
-                                        <div class="tab-pane fade {{ session('tab') == 'children_details' ? 'show active' : '' }}" id="v-pills-children" role="tabpanel"
+                                        <div class="tab-pane fade {{ session('tab') == 'children_details' ? 'show active' : '' }}"
+                                            id="v-pills-children" role="tabpanel"
                                             aria-labelledby="v-pills-children-tab">
                                             @include('personnel.profile.partials.views.children-view')
                                             @include('personnel.profile.partials.templates.children-modal')
@@ -174,7 +191,8 @@
 
                                         <!-- Parcours académique -->
 
-                                        <div class="tab-pane fade {{ session('tab') == 'academic_paths' ? 'show active' : '' }}" id="v-pills-education" role="tabpanel"
+                                        <div class="tab-pane fade {{ session('tab') == 'academic_paths' ? 'show active' : '' }}"
+                                            id="v-pills-education" role="tabpanel"
                                             aria-labelledby="v-pills-education-tab">
                                             @include('personnel.profile.partials.views.school-view')
                                             @include('personnel.profile.partials.templates.school-modal')
@@ -182,7 +200,8 @@
 
                                         <!-- Parcours militaire -->
 
-                                        <div class="tab-pane fade {{ session('tab') == 'military_paths' ? 'show active' : '' }}" id="v-pills-military-path" role="tabpanel"
+                                        <div class="tab-pane fade {{ session('tab') == 'military_paths' ? 'show active' : '' }}"
+                                            id="v-pills-military-path" role="tabpanel"
                                             aria-labelledby="v-pills-military-path-tab">
                                             @include('personnel.profile.partials.views.formation-view')
                                             @include('personnel.profile.partials.templates.formation-modal')
@@ -190,7 +209,8 @@
 
                                         <!-- Parcours professionnel -->
 
-                                        <div class="tab-pane fade {{ session('tab') == 'professional_careers' ? 'show active' : '' }}" id="v-pills-professional-path" role="tabpanel"
+                                        <div class="tab-pane fade {{ session('tab') == 'professional_careers' ? 'show active' : '' }}"
+                                            id="v-pills-professional-path" role="tabpanel"
                                             aria-labelledby="v-pills-professional-path-tab">
                                             @include('personnel.profile.partials.views.career-view')
                                             @include('personnel.profile.partials.templates.career-modal')
@@ -198,7 +218,8 @@
 
                                         <!-- Grades successifs -->
 
-                                        <div class="tab-pane fade {{ session('tab') == 'rank_histories' ? 'show active' : '' }}" id="v-pills-rank-history" role="tabpanel"
+                                        <div class="tab-pane fade {{ session('tab') == 'rank_histories' ? 'show active' : '' }}"
+                                            id="v-pills-rank-history" role="tabpanel"
                                             aria-labelledby="v-pills-rank-history-tab">
                                             @include('personnel.profile.partials.views.rank-view')
                                             @include('personnel.profile.partials.templates.rank-modal')
@@ -206,7 +227,8 @@
 
                                         <!-- Décorations successives -->
 
-                                        <div class="tab-pane fade {{ session('tab') == 'honorary_distinctions' ? 'show active' : '' }}" id="v-pills-aware-history" role="tabpanel"
+                                        <div class="tab-pane fade {{ session('tab') == 'honorary_distinctions' ? 'show active' : '' }}"
+                                            id="v-pills-aware-history" role="tabpanel"
                                             aria-labelledby="v-pills-aware-history-tab">
                                             @include('personnel.profile.partials.views.award-view')
                                             @include('personnel.profile.partials.templates.award-modal')
@@ -214,7 +236,8 @@
 
                                         <!-- Campagnes militaires -->
 
-                                        <div class="tab-pane fade {{ session('tab') == 'campaign_histories' ? 'show active' : '' }}" id="v-pills-campaign-history" role="tabpanel"
+                                        <div class="tab-pane fade {{ session('tab') == 'campaign_histories' ? 'show active' : '' }}"
+                                            id="v-pills-campaign-history" role="tabpanel"
                                             aria-labelledby="v-pills-campaign-history-tab">
                                             @include('personnel.profile.partials.views.campaign-view')
                                             @include('personnel.profile.partials.templates.campaign-modal')
@@ -238,71 +261,78 @@
                                 <div class="row g-3">
                                     <div class="col-md-10">
                                         <div class="d-flex align-items-start">
-                                            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                              <button class="nav-link active text-start" id="v-pills-serv-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-serv-stat" type="button" role="tab" aria-controls="v-pills-serv-stat" aria-selected="true">Etat de service</button>
-                                              <button class="nav-link text-start" id="v-pills-perm-stat-tab" data-bs-toggle="pill" data-bs-target="#v-pills-perm-stat" type="button" role="tab" aria-controls="v-pills-perm-stat" aria-selected="false">Congés et permissions</button>
+                                            <div class="nav flex-column nav-pills me-3" id="v-pills-tab"
+                                                role="tablist" aria-orientation="vertical">
+                                                <button class="nav-link active text-start" id="v-pills-serv-stat-tab"
+                                                    data-bs-toggle="pill" data-bs-target="#v-pills-serv-stat"
+                                                    type="button" role="tab" aria-controls="v-pills-serv-stat"
+                                                    aria-selected="true">Etat de service</button>
+                                                <button class="nav-link text-start" id="v-pills-perm-stat-tab"
+                                                    data-bs-toggle="pill" data-bs-target="#v-pills-perm-stat"
+                                                    type="button" role="tab" aria-controls="v-pills-perm-stat"
+                                                    aria-selected="false">Congés et permissions</button>
                                             </div>
                                             <div class="tab-content w-100" id="v-pills-tabContent">
                                                 <!-- Etat de service -->
-                                                <div class="tab-pane fade show active" id="v-pills-serv-stat" role="tabpanel" aria-labelledby="v-pills-serv-stat-tab">
-                                                    <div id="etatService" class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
+                                                <div class="tab-pane fade show active" id="v-pills-serv-stat"
+                                                    role="tabpanel" aria-labelledby="v-pills-serv-stat-tab">
+                                                    <div id="etatService"
+                                                        class="border border-gray-200 p-3 mb-4 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)]">
                                                         <h3 class="text-lg font-medium text-gray-900">
                                                             {{ __('Etat de service') }}</h3>
                                                         <hr class="my-3">
-                                                        <div class="row g-3">
-                                                            <div class="col-md-3">
-                                                                <div class="my-2">
-                                                                    <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                        {{ __('Age') }}</p>
-                                                                    <p id="age" class="mt-1 text-sm text-gray-600">
-                                                                        {{ $age ? floor($age) . ' ans' : '-' }}</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="my-2">
-                                                                    <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                        {{ __('Ancienneté de service') }}</p>
-                                                                    <p id="serviceSeniority" class="mt-1 text-sm text-gray-600">
-                                                                        @if ($serviceSeniority)
-                                                                            {{ floor($serviceSeniority / 365) }} {{ __('an' . (floor($serviceSeniority / 365) > 1 ? 's' : '')) }},
-                                                                            {{ floor(($serviceSeniority % 365) / 30) }} {{ __('mois' . (floor(($serviceSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                                            {{ ($serviceSeniority % 365) % 30 }} {{ __('jour' . (($serviceSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                                        @else
-                                                                            -
-                                                                        @endif
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="my-2">
-                                                                    <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                        {{ __('Ancienneté de port de grade') }}</p>
-                                                                    <p id="rankSeniority" class="mt-1 text-sm text-gray-600">
-                                                                        @if ($rankSeniority)
-                                                                            {{ floor($rankSeniority / 365) }} {{ __('an' . (floor($rankSeniority / 365) > 1 ? 's' : '')) }},
-                                                                            {{ floor(($rankSeniority % 365) / 30) }} {{ __('mois' . (floor(($rankSeniority % 365) / 30) > 1 ? '' : '')) }},
-                                                                            {{ ($rankSeniority % 365) % 30 }} {{ __('jour' . (($rankSeniority % 365) % 30 > 1 ? 's' : '')) }}
-                                                                        @else
-                                                                            -
-                                                                        @endif
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="my-2">
-                                                                    <p class="mt-1 text-sm font-medium text-gray-900">
-                                                                        {{ __('Date de fin de carrière') }}</p>
-                                                                    <p id="careerEndDate" class="mt-1 text-sm text-gray-600">
-                                                                        {{ $careerEndDate ? $careerEndDate->format('d/m/Y') : '-' }}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
+                                                        <div class="my-2">
+                                                            <p class="text-sm font-medium text-gray-900">
+                                                                {{ __('Age') }}</p>
+                                                            <p id="age" class="text-gray-600">
+                                                                {{ $age ? floor($age) . ' ans' : '-' }}</p>
                                                         </div>
+                                                        <div class="my-2">
+                                                            <p class="text-sm font-medium text-gray-900">
+                                                                {{ __('Ancienneté de service') }}</p>
+                                                            <p id="serviceSeniority" class="text-gray-600">
+                                                                @if ($serviceSeniority)
+                                                                    {{ floor($serviceSeniority / 365) }}
+                                                                    {{ __('an' . (floor($serviceSeniority / 365) > 1 ? 's' : '')) }},
+                                                                    {{ floor(($serviceSeniority % 365) / 30) }}
+                                                                    {{ __('mois' . (floor(($serviceSeniority % 365) / 30) > 1 ? '' : '')) }},
+                                                                    {{ ($serviceSeniority % 365) % 30 }}
+                                                                    {{ __('jour' . (($serviceSeniority % 365) % 30 > 1 ? 's' : '')) }}
+                                                                @else
+                                                                    -
+                                                                @endif
+                                                            </p>
+                                                        </div>
+                                                        <div class="my-2">
+                                                            <p class="text-sm font-medium text-gray-900">
+                                                                {{ __('Ancienneté de port de grade actuel') }}</p>
+                                                            <p id="rankSeniority" class="text-gray-600">
+                                                                @if ($rankSeniority)
+                                                                    {{ floor($rankSeniority / 365) }}
+                                                                    {{ __('an' . (floor($rankSeniority / 365) > 1 ? 's' : '')) }},
+                                                                    {{ floor(($rankSeniority % 365) / 30) }}
+                                                                    {{ __('mois' . (floor(($rankSeniority % 365) / 30) > 1 ? '' : '')) }},
+                                                                    {{ ($rankSeniority % 365) % 30 }}
+                                                                    {{ __('jour' . (($rankSeniority % 365) % 30 > 1 ? 's' : '')) }}
+                                                                @else
+                                                                    -
+                                                                @endif
+                                                            </p>
+                                                        </div>
+                                                        <div class="my-2">
+                                                            <p class="text-sm font-medium text-gray-900">
+                                                                {{ __('Date de fin de carrière') }}</p>
+                                                            <p id="careerEndDate" class="text-gray-600">
+                                                                {{ $careerEndDate ? $careerEndDate->format('d/m/Y') : '-' }}
+                                                            </p>
+                                                        </div>
+
+                                                        <!-- Congés et permissions -->
+                                                        <div class="tab-pane fade" id="v-pills-perm-stat"
+                                                            role="tabpanel" aria-labelledby="v-pills-perm-stat-tab">
+                                                            ...</div>
                                                     </div>
                                                 </div>
-
-                                                <!-- Congés et permissions -->
-                                                <div class="tab-pane fade" id="v-pills-perm-stat" role="tabpanel" aria-labelledby="v-pills-perm-stat-tab">...</div>
                                             </div>
                                         </div>
                                     </div>
@@ -310,7 +340,8 @@
                                         <form id="referenceDateForm">
                                             <div class="mb-3">
                                                 <x-input-label for="reference_date" :value="__('Date de référence')" />
-                                                <x-text-input id="reference_date" name="reference_date" type="date" :value="now()->format('Y-m-d')" />
+                                                <x-text-input id="reference_date" name="reference_date"
+                                                    type="date" :value="now()->format('Y-m-d')" />
                                             </div>
                                         </form>
                                     </div>
@@ -320,21 +351,19 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <a href="{{ route('personnel.create') }}"
-        class="btn btn-primary position-fixed bottom-3 end-3 rounded-circle shadow d-flex align-items-center justify-content-center" title="Ajouter nouveau"
-        style="width: 46px; height: 46px;">
-            <i class="fas fa-user-plus"></i>
-    </a>
+            <a href="{{ route('personnel.create') }}"
+                class="btn btn-primary position-fixed bottom-3 end-3 rounded-circle shadow d-flex align-items-center justify-content-center"
+                title="Ajouter nouveau" style="width: 46px; height: 46px;">
+                <i class="fas fa-user-plus"></i>
+            </a>
 </x-app-layout>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const profileId = {{ $profile->id }};
         const referenceDateInput = document.getElementById('reference_date');
 
-        referenceDateInput.addEventListener('change', function () {
+        referenceDateInput.addEventListener('change', function() {
             updateEtatService(profileId);
         });
 
@@ -347,28 +376,29 @@
             }
 
             fetch(`/personnel/profile/${profileId}/update-calculations`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                },
-                body: JSON.stringify({ reference_date: referenceDate }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('age').textContent = data.age
-                    ? `${Math.floor(data.age)} an${Math.floor(data.age) > 1 ? 's' : '-'}`
-                    : '-';
-                document.getElementById('serviceSeniority').textContent = data.serviceSeniority
-                    ? `${Math.floor(data.serviceSeniority / 365)} an${Math.floor(data.serviceSeniority / 365) > 1 ? 's' : ''}, ${Math.floor((data.serviceSeniority % 365) / 30)} mois, ${data.serviceSeniority % 365 % 30} jour${data.serviceSeniority % 365 % 30 > 1 ? 's' : ''}`
-                    : '-';
-                document.getElementById('rankSeniority').textContent = data.rankSeniority
-                    ? `${Math.floor(data.rankSeniority / 365)} an${Math.floor(data.rankSeniority / 365) > 1 ? 's' : ''}, ${Math.floor((data.rankSeniority % 365) / 30)} mois, ${data.rankSeniority % 365 % 30} jour${data.rankSeniority % 365 % 30 > 1 ? 's' : ''}`
-                    : '-';
-                document.getElementById('careerEndDate').textContent = data.careerEndDate ?? '-';
-            })
-            .catch(error => console.error('Erreur lors de la mise à jour :', error));
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                    },
+                    body: JSON.stringify({
+                        reference_date: referenceDate
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('age').textContent = data.age ?
+                        `${Math.floor(data.age)} an${Math.floor(data.age) > 1 ? 's' : '-'}` :
+                        '-';
+                    document.getElementById('serviceSeniority').textContent = data.serviceSeniority ?
+                        `${Math.floor(data.serviceSeniority / 365)} an${Math.floor(data.serviceSeniority / 365) > 1 ? 's' : ''}, ${Math.floor((data.serviceSeniority % 365) / 30)} mois, ${data.serviceSeniority % 365 % 30} jour${data.serviceSeniority % 365 % 30 > 1 ? 's' : ''}` :
+                        '-';
+                    document.getElementById('rankSeniority').textContent = data.rankSeniority ?
+                        `${Math.floor(data.rankSeniority / 365)} an${Math.floor(data.rankSeniority / 365) > 1 ? 's' : ''}, ${Math.floor((data.rankSeniority % 365) / 30)} mois, ${data.rankSeniority % 365 % 30} jour${data.rankSeniority % 365 % 30 > 1 ? 's' : ''}` :
+                        '-';
+                    document.getElementById('careerEndDate').textContent = data.careerEndDate ?? '-';
+                })
+                .catch(error => console.error('Erreur lors de la mise à jour :', error));
         }
     });
 </script>
-

@@ -110,6 +110,50 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         Route::delete('/account', [ProfileController::class, 'destroy'])->name('myprofile.destroy');
         Route::get('/profile', [ProfileController::class, 'show'])->name('myprofile.show');
         Route::patch('/profile', [ProfileController::class, 'updateCivilStatus'])->name('myprofile.updateCivilStatus');
+        Route::prefix('/profile')->group(function () {
+            Route::put('/{id}', [PersonnelController::class, 'update'])->name('myprofile.personnel.update');
+
+            Route::put('/{profile}/{id}', [MilitaryDetailController::class, 'update'])->name('myprofile.military_details.update');
+
+            Route::post('/{profile}', [SpouseDetailController::class, 'store'])->name('myprofile.spouse_details.store');
+            Route::put('/{profile}/{id}', [SpouseDetailController::class, 'update'])->name('myprofile.spouse_details.update');
+            Route::delete('/{profile}/{id}', [SpouseDetailController::class, 'destroy'])->name('myprofile.spouse_details.destroy');
+
+            Route::post('/{profile}', [ChildrenDetailController::class, 'store'])->name('myprofile.children_details.store');
+            Route::put('/{profile}/{id}', [ChildrenDetailController::class, 'update'])->name('myprofile.children_details.update');
+            Route::delete('/{profile}/{id}', [ChildrenDetailController::class, 'destroy'])->name('myprofile.children_details.destroy');
+            Route::delete('/{profile}', [ChildrenDetailController::class, 'destroyAll'])->name('myprofile.children_details.destroyAll');
+
+            Route::put('/{profile}/{id}', [AcademicPathController::class, 'update'])->name('myprofile.academic_paths.update');
+            Route::post('/{profile}', [AcademicPathController::class, 'store'])->name('myprofile.children_details.update');
+            Route::delete('/{profile}/{id}', [AcademicPathController::class, 'destroy'])->name('myprofile.academic_paths.destroy');
+            Route::delete('/{profile}', [AcademicPathController::class, 'destroyAll'])->name('myprofile.academic_paths.destroyAll');
+
+            Route::put('/{profile}/{id}', [MilitaryPathController::class, 'update'])->name('myprofile.military_paths.update');
+            Route::post('/{profile}', [MilitaryPathController::class, 'store'])->name('myprofile.military_paths.store');
+            Route::delete('/{profile}/{id}', [MilitaryPathController::class, 'destroy'])->name('myprofile.military_paths.destroy');
+            Route::delete('/{profile}', [MilitaryPathController::class, 'destroyAll'])->name('myprofile.military_paths.destroyAll');
+
+            Route::put('/{profile}/{id}', [ProfessionalCareerController::class, 'update'])->name('myprofile.professional_careers.update');
+            Route::post('/{profile}', [ProfessionalCareerController::class, 'store'])->name('myprofile.professional_careers.store');
+            Route::delete('/{profile}/{id}', [ProfessionalCareerController::class, 'destroy'])->name('myprofile.professional_careers.destroy');
+            Route::delete('/{profile}', [ProfessionalCareerController::class, 'destroyAll'])->name('myprofile.professional_careers.destroyAll');
+
+            Route::put('/{profile}/{id}', [RankHistoryController::class, 'update'])->name('myprofile.rank_histories.update');
+            Route::post('/{profile}', [RankHistoryController::class, 'store'])->name('myprofile.rank_histories.store');
+            Route::delete('/{profile}/{id}', [RankHistoryController::class, 'destroy'])->name('myprofile.rank_histories.destroy');
+            Route::delete('/{profile}', [RankHistoryController::class, 'destroyAll'])->name('myprofile.rank_histories.destroyAll');
+
+            Route::put('/{profile}/{id}', [HonoraryDistinctionController::class, 'update'])->name('myprofile.honorary_distinctions.update');
+            Route::post('/{profile}', [HonoraryDistinctionController::class, 'store'])->name('myprofile.honorary_distinctions.store');
+            Route::delete('/{profile}/{id}', [HonoraryDistinctionController::class, 'destroy'])->name('myprofile.honorary_distinctions.destroy');
+            Route::delete('/{profile}', [HonoraryDistinctionController::class, 'destroyAll'])->name('myprofile.honorary_distinctions.destroyAll');
+
+            Route::put('/{profile}/{id}', [MilitaryCampaignController::class, 'update'])->name('myprofile.campaign_histories.update');
+            Route::post('/{profile}', [MilitaryCampaignController::class, 'store'])->name('myprofile.campaign_histories.store');
+            Route::delete('/{profile}/{id}', [MilitaryCampaignController::class, 'destroy'])->name('myprofile.campaign_histories.destroy');
+            Route::delete('/{profile}', [MilitaryCampaignController::class, 'destroyAll'])->name('myprofile.campaign_histories.destroyAll');
+        });
     });
 
     // Routes pour la communication
